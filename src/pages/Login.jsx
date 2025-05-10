@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Flex, Card, Layout, Alert } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 
@@ -61,7 +61,7 @@ const Login = () => {
                                     Ingresar
                                 </Button>
                                 <div style={{ marginTop: 8, textAlign: 'center' }}>
-                                    ¿No tenés cuenta? <a href="#">Registrate</a>
+                                    ¿No tenés cuenta? <Link to="/register" >Registrate</Link>
                                 </div>
                             </Form.Item>
                         </Form>
