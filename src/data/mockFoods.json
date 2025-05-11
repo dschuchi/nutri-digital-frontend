@@ -1,0 +1,63 @@
+[
+    {
+      "id": "1",
+      "nombre": "Fideos Spaghetti",
+      "marca": "Marolio",
+      "porcion": "1 taza",
+      "calorias": 210,
+      "proteinas": 7,
+      "carbohidratos": 42,
+      "grasas": 1.2,
+      "tipo": "carbohidrato",
+      "restricciones": ["vegetariano"]
+    },
+    {
+      "id": "2",
+      "nombre": "Pechuga de Pollo",
+      "marca": "Granja Natural",
+      "porcion": "100g",
+      "calorias": 165,
+      "proteinas": 31,
+      "carbohidratos": 0,
+      "grasas": 3.6,
+      "tipo": "proteina",
+      "restricciones": []
+    },
+    {
+      "id": "3",
+      "nombre": "Tofu",
+      "marca": "SoyLife",
+      "porcion": "100g",
+      "calorias": 144,
+      "proteinas": 15,
+      "carbohidratos": 3.9,
+      "grasas": 8,
+      "tipo": "proteina",
+      "restricciones": ["vegano", "sin gluten"]
+    },
+    {
+      "id": "4",
+      "nombre": "Pan Integral",
+      "marca": "Bimbo",
+      "porcion": "2 rebanadas",
+      "calorias": 140,
+      "proteinas": 6,
+      "carbohidratos": 24,
+      "grasas": 2,
+      "tipo": "carbohidrato",
+      "restricciones": ["vegetariano"]
+    },
+    {
+      "id": "5",
+      "nombre": "Yogur descremado",
+      "marca": "La Serenísima",
+      "porcion": "1 pote (120g)",
+      "calorias": 80,
+      "proteinas": 5,
+      "carbohidratos": 12,
+      "grasas": 0.5,
+      "tipo": "grasa",
+      "restricciones": ["sin gluten"]
+    }
+  ]
+  
