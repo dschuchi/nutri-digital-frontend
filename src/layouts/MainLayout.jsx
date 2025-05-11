@@ -9,6 +9,7 @@ function MainLayout() {
     const menuItems = [
         { key: 'home', label: 'Home' },
         { key: 'buscar-alimento', label: 'Buscar alimento' },
+        { key: 'agregar-alimento', label: 'Cargar alimentacion' },
         { key: 'about', label: 'About' },
     ];
 
