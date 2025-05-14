@@ -1,12 +1,29 @@
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Input, Flex, Card, Layout } from 'antd';
+import { Button, Form, Input, Flex, Card, Layout, Checkbox } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { register } from '../api/user';
 
 const Register = () => {
     const navigate = useNavigate();
 
-    const onFinish = () => {
-        navigate('/');
+    const onFinish = (values) => {
+        const role = values.isDoctor ? 'doctor' : 'usuario';
+        register(
+            {
+                user: values.username,
+                password: values.password,
+                name: values.name,
+                lastname: values.lastName,
+                role,
+            }
+        )
+            .then(() => {
+                alert('Usuario registrado con éxito');
+                navigate('/');
+            })
+            .catch((error) => {
+                alert('Error al registrar el usuario: ' + error.message);
+            })
     };
 
     return (
@@ -29,6 +46,27 @@ const Register = () => {
                             style={{ width: 250 }}
                             onFinish={onFinish}
                         >
+
+                            <Form.Item
+                                name="name"
+                                rules={[{ required: true, message: 'Ingrese su nombre' }]}
+                            >
+                                <Input placeholder="Nombre" />
+                            </Form.Item>
+
+                            <Form.Item
+                                name="lastName"
+                                rules={[{ required: true, message: 'Ingrese su apellido' }]}
+                            >
+                                <Input placeholder="Apellido" />
+                            </Form.Item>
+
+                            <Form.Item
+                                name="isDoctor"
+                                valuePropName="checked"
+                            >
+                                <Checkbox>Soy doctor</Checkbox>
+                            </Form.Item>
 
                             <Form.Item
                                 name="username"
@@ -64,7 +102,7 @@ const Register = () => {
                             </Form.Item>
 
                             <Form.Item>
-                                <Flex justify='space-between' align='center' gap='large'> 
+                                <Flex justify='space-between' align='center' gap='large'>
                                     <Button type="primary" htmlType="submit" style={{ width: '50%' }}>
                                         Registrarse
                                     </Button>

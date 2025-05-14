@@ -5,13 +5,19 @@ import Register from '../pages/Register';
 import MainLayout from '../layouts/MainLayout';
 import FoodSearch from "../pages/FoodSearch";
 import AddFoodEntry from "../pages/AddFoodEntry";
+import ProtectedRoute from './ProtectedRoute';
 
 function AppRoutes() {
     return (
         <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route element={<MainLayout />}>
+            <Route element={
+                <ProtectedRoute>
+                    <MainLayout />
+                </ProtectedRoute>
+            }>
+                <Route path="/" element={<Home />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/buscar-alimento" element={<FoodSearch />} />
                 <Route path="/agregar-alimento" element={<AddFoodEntry />} />

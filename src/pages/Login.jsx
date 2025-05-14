@@ -2,17 +2,21 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Form, Input, Flex, Card, Layout, Alert } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
     const navigate = useNavigate();
     const [showError, setShowError] = useState(false);
+    const { login } = useAuth();
 
     const onFinish = (values) => {
-        if (values.username === 'admin' && values.password === 'admin') {
-            navigate('/home');
-        } else {
-            setShowError(true);
-        }
+        login(values.username, values.password)
+            .then(() => {
+                navigate('/');
+            })
+            .catch(() => {
+                setShowError(true);
+            });
     };
 
     return (
@@ -22,12 +26,12 @@ const Login = () => {
                 backgroundImage: 'url(login-background.avif)',
                 backgroundRepeat: 'repeat',
                 backgroundColor: 'rgba(255, 255, 255, 0.3)',
-                backgroundBlendMode: 'overlay',                    
+                backgroundBlendMode: 'overlay',
             }}
         >
             <Flex justify="center" align="center" style={{ height: '100vh' }}>
                 <Card>
-                    <img src='logo-fullname.png' style={{maxWidth:500, paddingBottom: 30}} />
+                    <img src='logo-fullname.png' style={{ maxWidth: 500, paddingBottom: 30 }} />
                     <Flex justify='center' align='center'>
                         <Form
                             name="login"

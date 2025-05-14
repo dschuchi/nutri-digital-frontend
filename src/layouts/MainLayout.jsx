@@ -9,12 +9,11 @@ function MainLayout() {
     const menuItems = [
         { key: 'home', label: 'Home' },
         { key: 'buscar-alimento', label: 'Buscar alimento' },
-        { key: 'agregar-alimento', label: 'Cargar alimentacion' },
-        { key: 'about', label: 'About' },
+        { key: 'agregar-alimento', label: 'Cargar alimentacion' }
     ];
 
     return (
-        <Layout>
+        <Layout style={{ minHeight: '100vh' }}>
             <Header>
                 <Flex justify="space-between">
                     <div>
@@ -29,7 +28,7 @@ function MainLayout() {
                     />
                 </Flex>
             </Header>
-            <Content style={{ padding: 24 }}>
+            <Content style={{ flex: 1, margin: '20px' }}>
                 <Outlet />
             </Content>
         </Layout>
