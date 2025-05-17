@@ -1,6 +1,6 @@
 import { Button, Form, InputNumber, Select, Typography, AutoComplete, message } from 'antd';
 import { useState } from 'react';
-import mockFoods from '../data/mockFoods.json';
+import { search } from '../api/food';
 
 const { Option } = Select;
 
@@ -8,14 +8,23 @@ const AddFoodEntry = () => {
   const [form] = Form.useForm();
   const [options, setOptions] = useState([]);
 
-  const handleSearch = (value) => {
-    const matches = mockFoods.data.filter(item =>
-      item.name.toLowerCase().includes(value.toLowerCase())
-    );
-    setOptions(matches.map(food => ({
-      value: food.name,
-      label: `${food.name} (${food.brand})`
-    })));
+  const handleSearch = async (value) => {
+    if (!value) return;
+
+    try {
+      const res = await search(value);
+      const results = res.data || [];
+
+      setOptions(
+        results.map(food => ({
+          value: food.name,
+          label: `${food.name} (${food.brand || 'Sin marca'})`
+        }))
+      );
+    } catch (err) {
+      console.error(err);
+      message.error("No se pudo buscar alimentos");
+    }
   };
 
   const onFinish = (values) => {
