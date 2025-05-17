@@ -1,10 +1,17 @@
-import { Flex, Layout, Menu } from 'antd';
+import { Avatar, Button, Dropdown, Flex, Layout, Menu } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { UserOutlined } from '@ant-design/icons';
 
 const { Header, Content } = Layout;
 
 function MainLayout() {
+    const { user, logout } = useAuth();
     const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        await logout();
+    };
 
     const menuItems = [
         { key: 'home', label: 'Home' },
@@ -12,10 +19,18 @@ function MainLayout() {
         { key: 'agregar-alimento', label: 'Cargar alimentacion' }
     ];
 
+    const dropdownItems = [
+        {
+            key: 'logout',
+            label: 'Cerrar sesión',
+            onClick: handleLogout,
+        },
+    ];
+
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <Header>
-                <Flex justify="space-between">
+                <Flex justify="space-between" align='center'>
                     <div>
                         <img src='logo-white.png' height={64} />
                     </div>
@@ -24,8 +39,18 @@ function MainLayout() {
                         mode="horizontal"
                         items={menuItems}
                         onClick={({ key }) => navigate(`/${key}`)}
-                        style={{ height: 64 }}
+                        style={{ height: 64, flex: 1, justifyContent: 'flex-end'  }}
                     />
+                    <Dropdown
+                        menu={{ items: dropdownItems }}
+                        placement="bottomRight"
+                        trigger={['click']}
+                    >
+                        <Button type="text" style={{ color: 'white' }}>
+                            <Avatar icon={<UserOutlined />} />
+                            {user}
+                        </Button>
+                    </Dropdown>
                 </Flex>
             </Header>
             <Content style={{ flex: 1, margin: '20px' }}>

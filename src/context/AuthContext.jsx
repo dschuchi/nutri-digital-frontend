@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
       localStorage.removeItem('token');
       setUser(null);
     } else {
-      setUser(decoded);
+      setUser(decoded.name);
     }
 
     setLoading(false);
