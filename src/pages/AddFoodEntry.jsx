@@ -1,31 +1,13 @@
-import { Button, Form, InputNumber, Select, Typography, AutoComplete, message } from 'antd';
+import { Button, Form, InputNumber, Select, Typography, message } from 'antd';
 import { useState } from 'react';
-import { search } from '../api/food';
+import FoodSearchModal from '../components/FoodSearchModal';
 
 const { Option } = Select;
 
 const AddFoodEntry = () => {
   const [form] = Form.useForm();
-  const [options, setOptions] = useState([]);
-
-  const handleSearch = async (value) => {
-    if (!value) return;
-
-    try {
-      const res = await search(value);
-      const results = res.data || [];
-
-      setOptions(
-        results.map(food => ({
-          value: food.name,
-          label: `${food.name} (${food.brand || 'Sin marca'})`
-        }))
-      );
-    } catch (err) {
-      console.error(err);
-      message.error("No se pudo buscar alimentos");
-    }
-  };
+  const [showModal, setShowModal] = useState(false);
+  const [selectedFood, setSelectedFood] = useState(null);
 
   const onFinish = (values) => {
     if (isNaN(values.portion)) {
@@ -35,6 +17,12 @@ const AddFoodEntry = () => {
     console.log("Entrada registrada:", values);
     message.success("Alimento registrado exitosamente");
     form.resetFields();
+    setSelectedFood(null);
+  };
+
+  const handleSelectFood = (food) => {
+    setSelectedFood(food);
+    form.setFieldValue("food", food.name);
   };
 
   return (
@@ -44,29 +32,21 @@ const AddFoodEntry = () => {
       <Form form={form} layout="vertical" onFinish={onFinish}>
         <Form.Item
           name="food"
-          label="Buscar alimento"
+          label="Alimento seleccionado"
           rules={[{ required: true, message: 'Seleccioná un alimento' }]}
         >
-          <AutoComplete
-            options={options}
-            onSearch={handleSearch}
-            placeholder="Ej: Pepsi, Pan integral"
-          />
+          <>
+            <Button type="dashed" block onClick={() => setShowModal(true)}>
+              {selectedFood ? `${selectedFood.name} (${selectedFood.brand || 'Sin marca'})` : 'Buscar alimento'}
+            </Button>
+          </>
         </Form.Item>
 
-        <Form.Item
-          name="portion"
-          label="Porción"
-          rules={[{ required: true, message: 'Ingresá una porción válida' }]}
-        >
+        <Form.Item name="portion" label="Porción" rules={[{ required: true, message: 'Ingresá una porción válida' }]}>
           <InputNumber min={0} style={{ width: '100%' }} placeholder="Cantidad" />
         </Form.Item>
 
-        <Form.Item
-          name="unit"
-          label="Unidad"
-          rules={[{ required: true, message: 'Seleccioná una unidad' }]}
-        >
+        <Form.Item name="unit" label="Unidad" rules={[{ required: true, message: 'Seleccioná una unidad' }]}>
           <Select placeholder="Unidad">
             <Option value="g">Gramos (g)</Option>
             <Option value="ml">Mililitros (ml)</Option>
@@ -75,11 +55,7 @@ const AddFoodEntry = () => {
           </Select>
         </Form.Item>
 
-        <Form.Item
-          name="meal"
-          label="Momento del día"
-          rules={[{ required: true, message: 'Seleccioná cuándo lo consumiste' }]}
-        >
+        <Form.Item name="meal" label="Momento del día" rules={[{ required: true, message: 'Seleccioná cuándo lo consumiste' }]}>
           <Select placeholder="Seleccioná">
             <Option value="Desayuno">Desayuno</Option>
             <Option value="Almuerzo">Almuerzo</Option>
@@ -95,6 +71,12 @@ const AddFoodEntry = () => {
           </Button>
         </Form.Item>
       </Form>
+
+      <FoodSearchModal
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        onSelect={handleSelectFood}
+      />
     </div>
   );
 };
