@@ -46,7 +46,9 @@ const FoodSearch = () => {
       />
 
       {loading ? (
-        <Spin size="large" />
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40vh' }}>
+          <Spin size="large" style={{ transform: 'scale(1.5)' }} />
+        </div>
       ) : currentFoods.length > 0 ? (
         <>
           {currentFoods.map(item => (
