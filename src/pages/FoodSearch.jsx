@@ -1,6 +1,6 @@
 import { Input, Typography, Card, Empty, Spin, Collapse, Button } from 'antd';
 import { useEffect, useRef, useState } from 'react';
-import mfpFoodsRaw from '../data/mockFoods.json';
+import { search } from '../api/food';
 
 const { Search } = Input;
 const { Panel } = Collapse;
@@ -18,13 +18,7 @@ const FoodSearch = () => {
 
   useEffect(() => {
     setLoading(true);
-    setTimeout(() => {
-      const data = mfpFoodsRaw.data || [];
-      setAllFoods(data);
-      setFilteredFoods(data);
-      setVisibleFoods(data.slice(0, ITEMS_PER_BATCH));
-      setLoading(false);
-    }, 1000);
+    setLoading(false);
   }, []);
 
   const loadMore = () => {
@@ -34,15 +28,20 @@ const FoodSearch = () => {
     });
   };
 
-  const onSearch = (value) => {
-    const lower = value.toLowerCase();
-    const filtered = allFoods.filter(food =>
-      food.name.toLowerCase().includes(lower) ||
-      (food.brand && food.brand.toLowerCase().includes(lower))
-    );
-    setFilteredFoods(filtered);
-    setVisibleFoods(filtered.slice(0, ITEMS_PER_BATCH));
-    setQuery(value);
+  const onSearch = async (value) => {
+    setLoading(true);
+    try {
+      const response = await search(value);
+      const results = response.data || [];
+      setAllFoods(results);
+      setFilteredFoods(results);
+      setVisibleFoods(results.slice(0, ITEMS_PER_BATCH));
+      setQuery(value);
+    } catch (err) {
+      console.error(err);
+      message.error("Error al buscar alimentos");
+    }
+    setLoading(false);
   };
 
   // Detectar scroll hasta el final
