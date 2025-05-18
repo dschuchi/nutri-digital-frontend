@@ -1,5 +1,5 @@
-import { Input, Typography, Card, Empty, Spin, Collapse, Pagination, message, Button } from 'antd';
-import { useState } from 'react';
+import { Input, Typography, Card, Empty, Spin, Collapse, Pagination, message, Button, Select } from 'antd';
+import { useState, useEffect } from 'react';
 import { search } from '../api/food';
 
 const { Search } = Input;
@@ -12,13 +12,47 @@ const FoodSearchContent = ({ onSelect }) => {
   const [allFoods, setAllFoods] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedTipo, setSelectedTipo] = useState(null);
+  const [selectedRestricciones, setSelectedRestricciones] = useState([]);
+  const [tipos, setTipos] = useState([]);
+  const [restricciones, setRestricciones] = useState([]);
+
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        const response = await search(''); // o usar algún valor genérico como 'a'
+        const results = response.data || [];
+
+        const uniqueTipos = [...new Set(results.map(f => f.tipo).filter(Boolean))];
+        const uniqueRestricciones = [...new Set(
+          results.flatMap(f => f.restricciones?.split(',').map(r => r.trim()).filter(Boolean))
+        )];
+
+        setTipos(uniqueTipos);
+        setRestricciones(uniqueRestricciones);
+      } catch (err) {
+        console.error(err);
+        message.error("Error al cargar filtros iniciales");
+      }
+    };
+
+    fetchFilters();
+  }, []);
+
 
   const onSearch = async (value) => {
     setLoading(true);
     try {
       const response = await search(value);
       const results = response.data || [];
+      const uniqueTipos = [...new Set(results.map(f => f.tipo).filter(Boolean))];
+      const uniqueRestricciones = [...new Set(
+        results.flatMap(f => f.restricciones?.split(',').map(r => r.trim()).filter(Boolean))
+      )];
+
       setAllFoods(results);
+      setTipos(uniqueTipos);
+      setRestricciones(uniqueRestricciones);
       setQuery(value);
       setCurrentPage(1);
     } catch (err) {
@@ -28,9 +62,24 @@ const FoodSearchContent = ({ onSelect }) => {
     setLoading(false);
   };
 
+
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentFoods = allFoods.slice(indexOfFirstItem, indexOfLastItem);
+
+  const filteredFoods = allFoods.filter(item => {
+    const matchesTipo = !selectedTipo || item.tipo === selectedTipo;
+
+    const restriccionesArray = (item.restricciones || '')
+      .split(',')
+      .map(r => r.trim())
+      .filter(Boolean);
+
+    const matchesRestricciones = selectedRestricciones.length === 0 ||
+      selectedRestricciones.every(sel => restriccionesArray.includes(sel));
+
+    return matchesTipo && matchesRestricciones;
+  });
+  const currentFoods = filteredFoods.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <>
@@ -42,6 +91,34 @@ const FoodSearchContent = ({ onSelect }) => {
         onSearch={onSearch}
         style={{ marginBottom: 20 }}
       />
+
+      {(tipos.length > 0 || restricciones.length > 0) && (
+        <div style={{ display: 'flex', gap: 16, marginBottom: 20 }}>
+          <Select
+            placeholder="Filtrar por tipo"
+            allowClear
+            onChange={(value) => setSelectedTipo(value)}
+            style={{ minWidth: 200 }}
+          >
+            {tipos.map(tipo => (
+              <Select.Option key={tipo} value={tipo}>{tipo}</Select.Option>
+            ))}
+          </Select>
+
+          <Select
+            placeholder="Filtrar por restricciones"
+            mode="multiple"
+            allowClear
+            value={selectedRestricciones}
+            onChange={setSelectedRestricciones}
+            style={{ minWidth: 300 }}
+          >
+            {restricciones.map(r => (
+              <Select.Option key={r} value={r}>{r}</Select.Option>
+            ))}
+          </Select>
+        </div>
+      )}
 
       {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40vh' }}>
@@ -89,7 +166,7 @@ const FoodSearchContent = ({ onSelect }) => {
           <Pagination
             current={currentPage}
             pageSize={ITEMS_PER_PAGE}
-            total={allFoods.length}
+            total={filteredFoods.length}
             onChange={(page) => setCurrentPage(page)}
             style={{ textAlign: 'center', marginTop: 32 }}
           />
