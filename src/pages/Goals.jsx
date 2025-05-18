@@ -1,22 +1,23 @@
-import { Flex, List, Typography } from "antd";
+import { Button, Flex, Form, Input, InputNumber, List, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { getMacroNutrientGoals, getMicroNutrientGoals } from "../api/nutrientGoals";
+import { getMacroNutrientGoals, getMicroNutrientGoals, updateMacroNutrientGoals } from "../api/nutrientGoals";
 import { useAuth } from "../context/AuthContext";
 
 const Goals = () => {
     const [microNutrientGoals, setMicroNutrientGoals] = useState([]);
     const [macroNutrientGoals, setMacroNutrientGoals] = useState([]);
     const [activityGoals, setActivityGoals] = useState([]);
+    const [edit, setEdit] = useState(false);
     const { user } = useAuth();
 
     useEffect(() => {
         getMacroNutrientGoals(user.id)
             .then((res) => {
                 setMacroNutrientGoals([
-                    { name: 'Calorías', value: res.data[0].calories, unit: 'kcal' },
-                    { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: 'g' },
-                    { name: 'Grasas', value: res.data[0].total_fat, unit: 'g' },
-                    { name: 'Proteínas', value: res.data[0].protein, unit: 'g' },
+                    { name: 'Calorías', value: res.data[0].calories, unit: 'kcal', key: 'calories' },
+                    { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: 'g', key: 'total_carbs' },
+                    { name: 'Grasas', value: res.data[0].total_fat, unit: 'g', key: 'total_fat' },
+                    { name: 'Proteínas', value: res.data[0].protein, unit: 'g', key: 'protein' },
                 ]);
             })
             .catch((err) => { console.error("Error fetching nutrient goals:", err) });
@@ -42,6 +43,42 @@ const Goals = () => {
             .catch((err) => { console.error("Error fetching nutrient goals:", err) });
     }, []);
 
+    const [form] = Form.useForm();
+
+    const handleSave = () => {
+        form
+            .validateFields()
+            .then((values) => {
+                updateMacroNutrientGoals(values)
+                    .then((res) => {
+                        console.log("Nutrient goals updated successfully:", res);
+                        setMacroNutrientGoals([
+                            { name: 'Calorías', value: res.data[0].calories, unit: 'kcal', key: 'calories' },
+                            { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: 'g', key: 'total_carbs' },
+                            { name: 'Grasas', value: res.data[0].total_fat, unit: 'g', key: 'total_fat' },
+                            { name: 'Proteínas', value: res.data[0].protein, unit: 'g', key: 'protein' },
+                        ]);
+                    })
+                    .catch((err) => {
+                        console.error("Error updating nutrient goals:", err);
+                    });
+                setEdit(false);
+            })
+            .catch((info) => {
+                console.log('Validación fallida:', info);
+            });
+    };
+
+    useEffect(() => {
+        if (macroNutrientGoals.length > 0) {
+            const formValues = Object.fromEntries(
+                macroNutrientGoals.map(item => [item.key, item.value])
+            );
+            form.setFieldsValue(formValues);
+        }
+    }, [macroNutrientGoals, form]);
+
+
     return (
         <div>
             <Typography.Title level={2}>Objetivos</Typography.Title>
@@ -49,23 +86,53 @@ const Goals = () => {
                 <div style={{ width: "40%" }}>
                     <Flex vertical gap='large'>
                         <div>
-                            <Typography.Title level={4}>Objetivos de nutrición diarios</Typography.Title>
-                            <List
-                                bordered
-                                dataSource={macroNutrientGoals}
-                                renderItem={(item) => (
-                                    <List.Item>
-                                        <div>
-                                            <Typography.Text strong>
-                                                {item.name}
-                                            </Typography.Text>
-                                        </div>
-                                        <div>
-                                            {item.value} {item.unit}
-                                        </div>
-                                    </List.Item>
-                                )}
-                            />
+                            <Flex justify="space-between" align="center">
+                                <Typography.Title level={4}>Objetivos de nutrición diarios</Typography.Title>
+                                <div>
+                                    {edit ? (
+                                        <>
+                                            <Button onClick={handleSave}>Guardar</Button>
+                                            <Button onClick={() => setEdit(false)}>Cancelar</Button>
+                                        </>
+                                    ) : (
+                                        <Button onClick={() => setEdit(true)}>Editar</Button>
+                                    )}
+                                </div>
+                            </Flex>
+                            <Form
+                                form={form}
+                                name="nutrient-goals">
+                                <List
+                                    bordered
+                                    dataSource={macroNutrientGoals}
+                                    renderItem={(item) => (
+                                        <List.Item>
+                                            <div>
+                                                <Typography.Text strong>
+                                                    {item.name}
+                                                </Typography.Text>
+                                            </div>
+                                            <div>
+                                                {edit ? (
+                                                    <Form.Item
+                                                        name={item.key}
+                                                        style={{ margin: 0 }}
+                                                        rules={[{ required: true, message: 'Campo requerido' }]}
+                                                    >
+                                                        <InputNumber suffix={item.unit} />
+                                                    </Form.Item>
+                                                ) : (
+                                                    <span>
+                                                        {item.value} {item.unit}
+                                                    </span>
+                                                )}
+
+                                            </div>
+                                        </List.Item>
+                                    )}
+                                />
+                            </Form>
+
                         </div>
 
                         <div>

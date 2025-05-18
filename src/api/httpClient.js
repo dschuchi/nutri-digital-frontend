@@ -51,6 +51,18 @@ const httpClient = {
     });
     return handleResponse(response);
   },
+
+  patch: async (endpoint, data) => {
+    const response = await fetch(`${BASE_URL}${endpoint}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      },
+      body: JSON.stringify(data),
+    });
+    return handleResponse(response);
+  },
 };
 
 const handleResponse = async (response) => {
