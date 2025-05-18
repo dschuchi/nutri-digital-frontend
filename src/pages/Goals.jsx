@@ -1,14 +1,16 @@
 import { Flex, List, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { searchMicroNutrientGoals } from "../api/nutrientGoals";
+import { useAuth } from "../context/AuthContext";
 
 const Goals = () => {
     const [microNutrientGoals, setMicroNutrientGoals] = useState([]);
     const [macroNutrientGoals, setMacroNutrientGoals] = useState([]);
     const [activityGoals, setActivityGoals] = useState([]);
+    const { user } = useAuth();
 
     useEffect(() => {
-        searchMicroNutrientGoals(1)
+        searchMicroNutrientGoals(user.id)
             .then((res) => {
                 setMicroNutrientGoals([
                     { name: 'Grasa saturada', value: res.data[0].saturated_fat, unit: 'g' },

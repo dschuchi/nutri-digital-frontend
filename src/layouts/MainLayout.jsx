@@ -49,7 +49,7 @@ function MainLayout() {
                     >
                         <Button type="text" style={{ color: 'white' }}>
                             <Avatar icon={<UserOutlined />} />
-                            {user}
+                            {user.name}
                         </Button>
                     </Dropdown>
                 </Flex>
