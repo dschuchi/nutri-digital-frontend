@@ -1,7 +1,7 @@
 import { Avatar, Button, Dropdown, Flex, Layout, Menu } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { UserOutlined } from '@ant-design/icons';
+import { UserOutlined, MoreOutlined } from '@ant-design/icons';
 
 const { Header, Content } = Layout;
 
@@ -15,9 +15,20 @@ function MainLayout() {
 
     const menuItems = [
         { key: 'home', label: 'Home' },
-        { key: 'buscar-alimento', label: 'Buscar alimento' },
-        { key: 'agregar-alimento', label: 'Cargar alimentacion' },
         { key: 'objetivos', label: 'Objetivos' }
+    ];
+
+    const moreMenuItems = [
+        {
+            key: 'buscar-alimento',
+            label: 'Buscar alimento',
+            onClick: () => navigate('/buscar-alimento')
+        },
+        {
+            key: 'agregar-alimento',
+            label: 'Cargar alimentación',
+            onClick: () => navigate('/agregar-alimento')
+        }
     ];
 
     const dropdownItems = [
@@ -35,6 +46,7 @@ function MainLayout() {
                     <div>
                         <img src='logo-white.png' height={64} />
                     </div>
+
                     <Menu
                         theme='dark'
                         mode="horizontal"
@@ -43,17 +55,26 @@ function MainLayout() {
                         style={{
                             height: 72,
                             lineHeight: '72px',
-                            fontSize: 16    ,
+                            fontSize: 16,
                             flex: 1,
                             justifyContent: 'flex-end'
                         }}
                     />
+
+                    <Dropdown
+                        menu={{ items: moreMenuItems }}
+                        placement="bottomRight"
+                        trigger={['click']}
+                    >
+                        <Button type="text" icon={<MoreOutlined />} style={{ color: 'white', fontSize: 20 }} />
+                    </Dropdown>
+
                     <Dropdown
                         menu={{ items: dropdownItems }}
                         placement="bottomRight"
                         trigger={['click']}
                     >
-                        <Button type="text" style={{ color: 'white' }}>
+                        <Button type="text" style={{ color: 'white', marginLeft: 8 }}>
                             <Avatar icon={<UserOutlined />} />
                             {user.name}
                         </Button>
