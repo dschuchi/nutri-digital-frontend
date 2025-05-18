@@ -6,6 +6,7 @@ import MainLayout from '../layouts/MainLayout';
 import FoodSearch from "../pages/FoodSearch";
 import AddFoodEntry from "../pages/AddFoodEntry";
 import ProtectedRoute from './ProtectedRoute';
+import Goals from '../pages/Goals';
 
 function AppRoutes() {
     return (
@@ -21,6 +22,7 @@ function AppRoutes() {
                 <Route path="/home" element={<Home />} />
                 <Route path="/buscar-alimento" element={<FoodSearch />} />
                 <Route path="/agregar-alimento" element={<AddFoodEntry />} />
+                <Route path="/objetivos" element={<Goals />} />
             </Route>
         </Routes>
     );
