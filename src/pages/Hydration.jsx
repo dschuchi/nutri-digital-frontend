@@ -1,17 +1,17 @@
-import { Button, Card, Divider, Flex, Form, Input, Table, Typography } from "antd";
+import { Button, Card, DatePicker, Divider, Flex, Form, Input, Table, Typography } from "antd";
 import { deleteHydration, getHydrationHistory, newHydration } from "../api/hydration";
 import { useEffect, useState } from "react";
-
+import dayjs from "dayjs";
 
 const Hydration = () => {
     const [hydrationHistory, setHydrationHistory] = useState([]);
+    const [date, setDate] = useState(dayjs());
 
-    useEffect(() => {
-        const nowString = new Date().toISOString();
-        getHydrationHistory(nowString)
+    const fetchHydration = (selectedDate) => {
+        const dateString = selectedDate.startOf('day').toISOString();
+        getHydrationHistory(dateString)
             .then((res) => {
-                setHydrationHistory(res.data);
-                const mappedData = res.data.map((item, idx) => ({
+                const mappedData = res.data.map((item) => ({
                     key: item.id,
                     fecha: item.date_consumed ? item.date_consumed.split('T')[0] : '',
                     cantidad: item.mililiters,
@@ -21,10 +21,17 @@ const Hydration = () => {
             .catch((err) => {
                 console.error("Error fetching hydration history:", err);
             });
-    }, []);
+    };
+
+    useEffect(() => {
+        fetchHydration(date);
+    }, [date]);
 
     function onFinish(values) {
-        newHydration(values.hydration)
+        newHydration({
+            mililiters: values.hydration,
+            date_consumed: date.format('YYYY-MM-DD'),
+        })
             .then((res) => {
                 setHydrationHistory((prev) => [
                     ...prev,
@@ -77,6 +84,7 @@ const Hydration = () => {
                                     <Input
                                         placeholder="Cantidad de agua"
                                         type="number"
+                                        disabled={!date.isSame(dayjs(), 'day')}
                                     />
                                 </Form.Item>
                                 <Button type="primary" htmlType="submit">
@@ -88,7 +96,15 @@ const Hydration = () => {
                 </Card>
 
                 <Card>
-                    <Typography.Title level={4}>Historial de hidratación</Typography.Title>
+                    <Flex justify="space-between" align="center" style={{ marginBottom: 16 }}>
+                        <Typography.Title level={4}>Historial de hidratación</Typography.Title>
+                        <DatePicker
+                            value={date}
+                            onChange={setDate}
+                            allowClear={false}
+                            format="YYYY-MM-DD"
+                        />
+                    </Flex>
                     <Table
                         dataSource={sortedHydrationHistory}
                         columns={[
@@ -110,6 +126,7 @@ const Hydration = () => {
                                         danger
                                         size="small"
                                         onClick={() => handleDelete(record.key)}
+                                        disabled={!date.isSame(dayjs(), 'day')}
                                     >
                                         Borrar
                                     </Button>
