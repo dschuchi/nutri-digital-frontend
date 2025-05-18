@@ -1,5 +1,7 @@
 import { Button, Form, InputNumber, Select, Typography, message } from 'antd';
 import { useState } from 'react';
+import { addConsumedEntry } from '../api/consumed';
+import { useAuth } from '../context/AuthContext';
 import FoodSearchModal from '../components/FoodSearchModal';
 
 const { Option } = Select;
@@ -8,16 +10,36 @@ const AddFoodEntry = () => {
   const [form] = Form.useForm();
   const [showModal, setShowModal] = useState(false);
   const [selectedFood, setSelectedFood] = useState(null);
+  const { user } = useAuth()
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     if (isNaN(values.portion)) {
       message.error("La porción debe ser un número válido");
       return;
     }
-    console.log("Entrada registrada:", values);
-    message.success("Alimento registrado exitosamente");
-    form.resetFields();
-    setSelectedFood(null);
+
+    if (!selectedFood?.id) {
+      message.error("No se ha seleccionado un alimento válido");
+      return;
+    }
+
+    const payload = {
+      portion: values.portion.toString(),
+      unit: values.unit,
+      type_of_food: values.meal,
+      id_user: user.id,
+      id_food: selectedFood.id,
+    };
+
+    try {
+      await addConsumedEntry(payload);
+      message.success("Alimento registrado exitosamente");
+      form.resetFields();
+      setSelectedFood(null);
+    } catch (err) {
+      message.error("Hubo un error al registrar el consumo");
+      console.error(err);
+    }
   };
 
   const handleSelectFood = (food) => {
