@@ -17,7 +17,7 @@ export async function getHydrationHistory(date) {
 }
 
 export async function deleteHydration(id) {
-    const res = await httpClient.delete(`/hidratation/${id}`);
+    const res = await httpClient.delete(`/hidratation?id=${id}`);
     if (!res) {
         throw new Error("Failed to delete hydration record");
     }

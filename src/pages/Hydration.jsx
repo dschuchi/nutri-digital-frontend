@@ -51,6 +51,7 @@ const Hydration = () => {
     };
 
     const totalHidratacion = hydrationHistory.reduce((acc, item) => acc + (item.cantidad || 0), 0);
+    const sortedHydrationHistory = [...hydrationHistory].sort((a, b) => b.key - a.key);
 
     return (
         <div>
@@ -89,7 +90,7 @@ const Hydration = () => {
                 <Card>
                     <Typography.Title level={4}>Historial de hidratación</Typography.Title>
                     <Table
-                        dataSource={hydrationHistory}
+                        dataSource={sortedHydrationHistory}
                         columns={[
                             {
                                 title: 'Fecha',
