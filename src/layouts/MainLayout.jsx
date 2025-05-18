@@ -30,7 +30,7 @@ function MainLayout() {
 
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <Header>
+            <Header style={{ height: 72 }}>
                 <Flex justify="space-between" align='center'>
                     <div>
                         <img src='logo-white.png' height={64} />
@@ -40,7 +40,13 @@ function MainLayout() {
                         mode="horizontal"
                         items={menuItems}
                         onClick={({ key }) => navigate(`/${key}`)}
-                        style={{ height: 64, flex: 1, justifyContent: 'flex-end'  }}
+                        style={{
+                            height: 72,
+                            lineHeight: '72px',
+                            fontSize: 16    ,
+                            flex: 1,
+                            justifyContent: 'flex-end'
+                        }}
                     />
                     <Dropdown
                         menu={{ items: dropdownItems }}
