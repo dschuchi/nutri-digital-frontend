@@ -16,7 +16,8 @@ function MainLayout() {
     const menuItems = [
         { key: 'home', label: 'Home' },
         { key: 'buscar-alimento', label: 'Buscar alimento' },
-        { key: 'agregar-alimento', label: 'Cargar alimentacion' }
+        { key: 'agregar-alimento', label: 'Cargar alimentacion' },
+        { key: 'objetivos', label: 'Objetivos' }
     ];
 
     const dropdownItems = [
@@ -48,7 +49,7 @@ function MainLayout() {
                     >
                         <Button type="text" style={{ color: 'white' }}>
                             <Avatar icon={<UserOutlined />} />
-                            {user}
+                            {user.name}
                         </Button>
                     </Dropdown>
                 </Flex>
