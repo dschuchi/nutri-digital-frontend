@@ -1,6 +1,6 @@
 import { Flex, List, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { searchMicroNutrientGoals } from "../api/nutrientGoals";
+import { getMacroNutrientGoals, getMicroNutrientGoals } from "../api/nutrientGoals";
 import { useAuth } from "../context/AuthContext";
 
 const Goals = () => {
@@ -10,7 +10,18 @@ const Goals = () => {
     const { user } = useAuth();
 
     useEffect(() => {
-        searchMicroNutrientGoals(user.id)
+        getMacroNutrientGoals(user.id)
+            .then((res) => {
+                setMacroNutrientGoals([
+                    { name: 'Calorías', value: res.data[0].calories, unit: 'kcal' },
+                    { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: 'g' },
+                    { name: 'Grasas', value: res.data[0].total_fat, unit: 'g' },
+                    { name: 'Proteínas', value: res.data[0].protein, unit: 'g' },
+                ]);
+            })
+            .catch((err) => { console.error("Error fetching nutrient goals:", err) });
+
+        getMicroNutrientGoals(user.id)
             .then((res) => {
                 setMicroNutrientGoals([
                     { name: 'Grasa saturada', value: res.data[0].saturated_fat, unit: 'g' },
@@ -50,7 +61,7 @@ const Goals = () => {
                                             </Typography.Text>
                                         </div>
                                         <div>
-                                            {item.name}
+                                            {item.value} {item.unit}
                                         </div>
                                     </List.Item>
                                 )}
@@ -70,7 +81,7 @@ const Goals = () => {
                                             </Typography.Text>
                                         </div>
                                         <div>
-                                            {item.name}
+                                            {item.value} {item.unit}
                                         </div>
                                     </List.Item>
                                 )}
