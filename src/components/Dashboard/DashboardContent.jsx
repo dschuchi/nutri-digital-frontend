@@ -5,6 +5,7 @@ import MacroCard from './MacroCard';
 import HealthyHeartCard from './HealthyHeartCard';
 import LowCarbCard from './LowCarbCard';
 import SummaryCard from './SummaryCard';
+import MicronutrientsCard from './MicronutrientsCard';
 
 const { Title } = Typography;
 
@@ -48,6 +49,7 @@ const DashboardContent = ({ data, agua, objetivoAgua = 2000 }) => {
         <Col xs={24} md={12}><CalorieCard {...calorias} /></Col>
         <Col xs={24} md={12}><WaterProgressCard consumoActual={agua} consumoObjetivo={objetivoAgua} /></Col>
         <Col xs={24}><MacroCard data={macronutrientes} /></Col>
+        <Col xs={24}><MicronutrientsCard data={{ ...consumed, goals }} /></Col>
         <Col xs={24} md={8}><HealthyHeartCard data={corazonSaludable} /></Col>
         <Col xs={24} md={8}><LowCarbCard data={bajosCarbohidratos} /></Col>
         <Col xs={24} md={8}><SummaryCard data={resumen} /></Col>
