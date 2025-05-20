@@ -84,7 +84,6 @@ const Hydration = () => {
                                     <Input
                                         placeholder="Cantidad de agua"
                                         type="number"
-                                        disabled={!date.isSame(dayjs(), 'day')}
                                     />
                                 </Form.Item>
                                 <Button type="primary" htmlType="submit">
@@ -126,7 +125,6 @@ const Hydration = () => {
                                         danger
                                         size="small"
                                         onClick={() => handleDelete(record.key)}
-                                        disabled={!date.isSame(dayjs(), 'day')}
                                     >
                                         Borrar
                                     </Button>

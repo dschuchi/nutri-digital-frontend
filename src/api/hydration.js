@@ -1,7 +1,7 @@
 import httpClient from "./httpClient";
 
-export async function newHydration(mililiters) {
-    const res = await httpClient.post(`/hidratation`, { mililiters });
+export async function newHydration(data) {
+    const res = await httpClient.post(`/hidratation`, data);
     if (!res) {
         throw new Error("Failed to create new hydration record");
     }
