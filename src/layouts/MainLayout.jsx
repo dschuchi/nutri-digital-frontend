@@ -16,7 +16,8 @@ function MainLayout() {
     const menuItems = [
         { key: 'home', label: 'Home' },
         { key: 'objetivos', label: 'Objetivos' },
-        { key: 'hidratacion', label: 'Hidratación' }
+        { key: 'hidratacion', label: 'Hidratación' },
+        { key: 'profesionales', label: 'Profesionales' }
     ];
 
     const moreMenuItems = [
