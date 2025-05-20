@@ -1,4 +1,4 @@
-import { Button, Card, DatePicker, Divider, Flex, Form, Input, Table, Typography } from "antd";
+import { Button, Card, DatePicker, Divider, Empty, Flex, Form, InputNumber, Table, Typography } from "antd";
 import { deleteHydration, getHydrationHistory, newHydration } from "../api/hydration";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
@@ -81,7 +81,7 @@ const Hydration = () => {
                                     ]}
                                     normalize={value => value ? Number(value) : value}
                                 >
-                                    <Input
+                                    <InputNumber
                                         placeholder="Cantidad de agua"
                                         type="number"
                                     />
@@ -133,6 +133,7 @@ const Hydration = () => {
                         ]}
                         pagination
                         size="small"
+                        locale={{emptyText: <Empty description='No se registran consumos hoy.'/>}}
                     />
                 </Card>
             </Flex>

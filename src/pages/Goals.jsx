@@ -15,10 +15,10 @@ const Goals = () => {
         getMacroNutrientGoals(user.id)
             .then((res) => {
                 setMacroNutrientGoals([
-                    { name: 'Calorías', value: res.data[0].calories, unit: 'kcal', key: 'calories' },
-                    { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: 'g', key: 'total_carbs' },
-                    { name: 'Grasas', value: res.data[0].total_fat, unit: 'g', key: 'total_fat' },
-                    { name: 'Proteínas', value: res.data[0].protein, unit: 'g', key: 'protein' },
+                    { name: 'Calorías', value: res.data[0].calories, unit: '', key: 'calories' },
+                    { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: '%', key: 'total_carbs' },
+                    { name: 'Grasas', value: res.data[0].total_fat, unit: '%', key: 'total_fat' },
+                    { name: 'Proteínas', value: res.data[0].protein, unit: '%', key: 'protein' },
                 ]);
             })
             .catch((err) => { console.error("Error fetching nutrient goals:", err) });
@@ -56,9 +56,9 @@ const Goals = () => {
                         console.log("Nutrient goals updated successfully:", res);
                         setMacroNutrientGoals([
                             { name: 'Calorías', value: res.data[0].calories, unit: 'kcal', key: 'calories' },
-                            { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: 'g', key: 'total_carbs' },
-                            { name: 'Grasas', value: res.data[0].total_fat, unit: 'g', key: 'total_fat' },
-                            { name: 'Proteínas', value: res.data[0].protein, unit: 'g', key: 'protein' },
+                            { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: '%', key: 'total_carbs' },
+                            { name: 'Grasas', value: res.data[0].total_fat, unit: '%', key: 'total_fat' },
+                            { name: 'Proteínas', value: res.data[0].protein, unit: '%', key: 'protein' },
                         ]);
                     })
                     .catch((err) => {
@@ -163,7 +163,10 @@ const Goals = () => {
                                                     <Form.Item
                                                         name={item.key}
                                                         style={{ margin: 0 }}
-                                                        rules={[{ required: true, message: 'Campo requerido' }]}
+                                                        rules={[
+                                                            { required: true, message: 'Campo requerido' },
+                                                            { type: 'number', min: 1, message: 'Debe ser mayor a 1' }
+                                                        ]}
                                                     >
                                                         <InputNumber suffix={item.unit} />
                                                     </Form.Item>
@@ -234,7 +237,10 @@ const Goals = () => {
                                             <Form.Item
                                                 name={item.key}
                                                 style={{ margin: 0 }}
-                                                rules={[{ required: true, message: 'Campo requerido' }]}
+                                                rules={[
+                                                    { required: true, message: 'Campo requerido' },
+                                                    { type: 'number', min: 1, message: 'Debe ser mayor a 1' }
+                                                ]}
                                             >
                                                 <InputNumber suffix={item.unit} />
                                             </Form.Item>
