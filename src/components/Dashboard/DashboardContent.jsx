@@ -1,11 +1,10 @@
 import { Row, Col, Typography } from 'antd';
 import CalorieCard from './CalorieCard';
 import WaterProgressCard from './WaterProgressCard';
-import MacroCard from './MacroCard';
 import HealthyHeartCard from './HealthyHeartCard';
 import LowCarbCard from './LowCarbCard';
 import SummaryCard from './SummaryCard';
-import MicronutrientsCard from './MicronutrientsCard';
+import MacroMicronutrientSwitcher from './MacroMicronutrientSwitcher/MacroMicronutrientSwitcher';
 
 const { Title } = Typography;
 
@@ -48,8 +47,11 @@ const DashboardContent = ({ data, agua, objetivoAgua = 2000 }) => {
       <Row gutter={[16, 16]}>
         <Col xs={24} md={12}><CalorieCard {...calorias} /></Col>
         <Col xs={24} md={12}><WaterProgressCard consumoActual={agua} consumoObjetivo={objetivoAgua} /></Col>
-        <Col xs={24}><MacroCard data={macronutrientes} /></Col>
-        <Col xs={24}><MicronutrientsCard data={{ ...consumed, goals }} /></Col>
+
+        <Col xs={24}>
+          <MacroMicronutrientSwitcher macros={macronutrientes} micros={{ ...consumed, goals }} />
+        </Col>
+
         <Col xs={24} md={8}><HealthyHeartCard data={corazonSaludable} /></Col>
         <Col xs={24} md={8}><LowCarbCard data={bajosCarbohidratos} /></Col>
         <Col xs={24} md={8}><SummaryCard data={resumen} /></Col>
