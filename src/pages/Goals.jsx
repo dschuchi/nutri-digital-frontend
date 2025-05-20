@@ -1,13 +1,14 @@
 import { Button, Flex, Form, Input, InputNumber, List, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { getMacroNutrientGoals, getMicroNutrientGoals, updateMacroNutrientGoals } from "../api/nutrientGoals";
+import { getMacroNutrientGoals, getMicroNutrientGoals, updateMacroNutrientGoals, updateMicroNutrientGoals } from "../api/nutrientGoals";
 import { useAuth } from "../context/AuthContext";
 
 const Goals = () => {
     const [microNutrientGoals, setMicroNutrientGoals] = useState([]);
     const [macroNutrientGoals, setMacroNutrientGoals] = useState([]);
     const [activityGoals, setActivityGoals] = useState([]);
-    const [edit, setEdit] = useState(false);
+    const [editMacro, setEditMacro] = useState(false);
+    const [editMicro, setEditMicro] = useState(false);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -25,28 +26,29 @@ const Goals = () => {
         getMicroNutrientGoals(user.id)
             .then((res) => {
                 setMicroNutrientGoals([
-                    { name: 'Grasa saturada', value: res.data[0].saturated_fat, unit: 'g' },
-                    { name: 'Grasa poliinsaturada', value: res.data[0].polyunsaturated_fat, unit: 'g' },
-                    { name: 'Grasa monoinsaturada', value: res.data[0].monounsaturated_fat, unit: 'g' },
-                    { name: 'Grasa trans', value: res.data[0].trans_fat, unit: 'g' },
-                    { name: 'Colesterol', value: res.data[0].cholesterol, unit: 'mg' },
-                    { name: 'Sodio', value: res.data[0].sodium, unit: 'mg' },
-                    { name: 'Potasio', value: res.data[0].potassium, unit: 'mg' },
-                    { name: 'Fibra', value: res.data[0].fiber, unit: 'g' },
-                    { name: 'Azúcar', value: res.data[0].sugar, unit: 'g' },
-                    { name: 'Vitamina A', value: res.data[0].vitamin_a, unit: '%DV' },
-                    { name: 'Vitamina C', value: res.data[0].vitamin_c, unit: '%DV' },
-                    { name: 'Calcio', value: res.data[0].calcium, unit: '%DV' },
-                    { name: 'Hierro', value: res.data[0].iron, unit: '%DV' },
+                    { name: 'Grasa saturada', value: res.data[0].saturated_fat, unit: 'g', key: 'saturated_fat' },
+                    { name: 'Grasa poliinsaturada', value: res.data[0].polyunsaturated_fat, unit: 'g', key: 'polyunsaturated_fat' },
+                    { name: 'Grasa monoinsaturada', value: res.data[0].monounsaturated_fat, unit: 'g', key: 'monounsaturated_fat' },
+                    { name: 'Grasa trans', value: res.data[0].trans, unit: 'g', key: 'trans' },
+                    { name: 'Colesterol', value: res.data[0].cholesterol, unit: 'mg', key: 'cholesterol' },
+                    { name: 'Sodio', value: res.data[0].sodium, unit: 'mg', key: 'sodium' },
+                    { name: 'Potasio', value: res.data[0].potassium, unit: 'mg', key: 'potassium' },
+                    { name: 'Fibra', value: res.data[0].fiber, unit: 'g', key: 'fiber' },
+                    { name: 'Azúcar', value: res.data[0].sugar, unit: 'g', key: 'sugar' },
+                    { name: 'Vitamina A', value: res.data[0].vitamin_a, unit: '%DV', key: 'vitamin_a' },
+                    { name: 'Vitamina C', value: res.data[0].vitamin_c, unit: '%DV', key: 'vitamin_c' },
+                    { name: 'Calcio', value: res.data[0].calcium, unit: '%DV', key: 'calcium' },
+                    { name: 'Hierro', value: res.data[0].iron, unit: '%DV', key: 'iron' },
                 ])
             })
             .catch((err) => { console.error("Error fetching nutrient goals:", err) });
     }, []);
 
-    const [form] = Form.useForm();
+    const [formMacro] = Form.useForm();
+    const [formMicro] = Form.useForm();
 
-    const handleSave = () => {
-        form
+    const handleSaveMacro = () => {
+        formMacro
             .validateFields()
             .then((values) => {
                 updateMacroNutrientGoals(values)
@@ -62,21 +64,65 @@ const Goals = () => {
                     .catch((err) => {
                         console.error("Error updating nutrient goals:", err);
                     });
-                setEdit(false);
+                setEditMacro(false);
             })
             .catch((info) => {
                 console.log('Validación fallida:', info);
             });
     };
 
+    const handleSaveMicro = () => {
+        formMicro
+            .validateFields()
+            .then((values) => {
+                updateMicroNutrientGoals(values)
+                    .then((res) => {
+                        console.log("Nutrient goals updated successfully:", res);
+                        setMicroNutrientGoals([
+                            { name: 'Grasa saturada', value: res.data[0].saturated_fat, unit: 'g', key: 'saturated_fat' },
+                            { name: 'Grasa poliinsaturada', value: res.data[0].polyunsaturated_fat, unit: 'g', key: 'polyunsaturated_fat' },
+                            { name: 'Grasa monoinsaturada', value: res.data[0].monounsaturated_fat, unit: 'g', key: 'monounsaturated_fat' },
+                            { name: 'Grasa trans', value: res.data[0].trans, unit: 'g', key: 'trans' },
+                            { name: 'Colesterol', value: res.data[0].cholesterol, unit: 'mg', key: 'cholesterol' },
+                            { name: 'Sodio', value: res.data[0].sodium, unit: 'mg', key: 'sodium' },
+                            { name: 'Potasio', value: res.data[0].potassium, unit: 'mg', key: 'potassium' },
+                            { name: 'Fibra', value: res.data[0].fiber, unit: 'g', key: 'fiber' },
+                            { name: 'Azúcar', value: res.data[0].sugar, unit: 'g', key: 'sugar' },
+                            { name: 'Vitamina A', value: res.data[0].vitamin_a, unit: '%DV', key: 'vitamin_a' },
+                            { name: 'Vitamina C', value: res.data[0].vitamin_c, unit: '%DV', key: 'vitamin_c' },
+                            { name: 'Calcio', value: res.data[0].calcium, unit: '%DV', key: 'calcium' },
+                            { name: 'Hierro', value: res.data[0].iron, unit: '%DV', key: 'iron' },
+                        ]);
+                    })
+                    .catch((err) => {
+                        console.error("Error updating nutrient goals:", err);
+                    });
+                setEditMicro(false);
+            })
+            .catch((info) => {
+                console.log('Validación fallida:', info);
+            });
+    }
+
     useEffect(() => {
         if (macroNutrientGoals.length > 0) {
             const formValues = Object.fromEntries(
                 macroNutrientGoals.map(item => [item.key, item.value])
             );
-            form.setFieldsValue(formValues);
+            formMacro.setFieldsValue(formValues);
         }
-    }, [macroNutrientGoals, form]);
+    }, [macroNutrientGoals, formMacro]);
+
+
+    useEffect(() => {
+        if (microNutrientGoals.length > 0) {
+            const formValues = Object.fromEntries(
+                microNutrientGoals.map(item => [item.key, item.value])
+            );
+            formMicro.setFieldsValue(formValues);
+        }
+    }, [microNutrientGoals, formMicro]);
+
 
 
     return (
@@ -89,19 +135,19 @@ const Goals = () => {
                             <Flex justify="space-between" align="center">
                                 <Typography.Title level={4}>Objetivos de nutrición diarios</Typography.Title>
                                 <div>
-                                    {edit ? (
+                                    {editMacro ? (
                                         <>
-                                            <Button onClick={handleSave}>Guardar</Button>
-                                            <Button onClick={() => setEdit(false)}>Cancelar</Button>
+                                            <Button onClick={handleSaveMacro}>Guardar</Button>
+                                            <Button onClick={() => setEditMacro(false)}>Cancelar</Button>
                                         </>
                                     ) : (
-                                        <Button onClick={() => setEdit(true)}>Editar</Button>
+                                        <Button onClick={() => setEditMacro(true)}>Editar</Button>
                                     )}
                                 </div>
                             </Flex>
                             <Form
-                                form={form}
-                                name="nutrient-goals">
+                                form={formMacro}
+                                name="macro-goals">
                                 <List
                                     bordered
                                     dataSource={macroNutrientGoals}
@@ -113,7 +159,7 @@ const Goals = () => {
                                                 </Typography.Text>
                                             </div>
                                             <div>
-                                                {edit ? (
+                                                {editMacro ? (
                                                     <Form.Item
                                                         name={item.key}
                                                         style={{ margin: 0 }}
@@ -126,7 +172,6 @@ const Goals = () => {
                                                         {item.value} {item.unit}
                                                     </span>
                                                 )}
-
                                             </div>
                                         </List.Item>
                                     )}
@@ -158,23 +203,51 @@ const Goals = () => {
                 </div>
 
                 <div style={{ width: "40%" }}>
-                    <Typography.Title level={4}>Micronutrientes</Typography.Title>
-                    <List
-                        bordered
-                        dataSource={microNutrientGoals}
-                        renderItem={(item) => (
-                            <List.Item>
-                                <div>
-                                    <Typography.Text strong>
-                                        {item.name}
-                                    </Typography.Text>
-                                </div>
-                                <div>
-                                    {item.value} {item.unit}
-                                </div>
-                            </List.Item>
-                        )}
-                    />
+                    <Flex justify="space-between" align="center">
+                        <Typography.Title level={4}>Micronutrientes</Typography.Title>
+                        <div>
+                            {editMicro ? (
+                                <>
+                                    <Button onClick={handleSaveMicro}>Guardar</Button>
+                                    <Button onClick={() => setEditMicro(false)}>Cancelar</Button>
+                                </>
+                            ) : (
+                                <Button onClick={() => setEditMicro(true)}>Editar</Button>
+                            )}
+                        </div>
+                    </Flex>
+                    <Form
+                        form={formMicro}
+                        name="micro-goals">
+                        <List
+                            bordered
+                            dataSource={microNutrientGoals}
+                            renderItem={(item) => (
+                                <List.Item>
+                                    <div>
+                                        <Typography.Text strong>
+                                            {item.name}
+                                        </Typography.Text>
+                                    </div>
+                                    <div>
+                                        {editMicro ? (
+                                            <Form.Item
+                                                name={item.key}
+                                                style={{ margin: 0 }}
+                                                rules={[{ required: true, message: 'Campo requerido' }]}
+                                            >
+                                                <InputNumber suffix={item.unit} />
+                                            </Form.Item>
+                                        ) : (
+                                            <span>
+                                                {item.value} {item.unit}
+                                            </span>
+                                        )}
+                                    </div>
+                                </List.Item>
+                            )}
+                        />
+                    </Form>
                 </div>
             </Flex>
         </div>

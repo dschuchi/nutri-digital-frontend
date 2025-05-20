@@ -23,3 +23,11 @@ export async function updateMacroNutrientGoals(data) {
     }
     return res;
 }
+
+export async function updateMicroNutrientGoals(data) {
+    const res = await httpClient.patch(`/nutrient-goals/micro/update`, data);
+    if (!res) {
+        throw new Error("Failed to update nutrient goals data");
+    }
+    return res;
+}
