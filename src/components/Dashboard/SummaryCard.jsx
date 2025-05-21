@@ -37,6 +37,27 @@ const SummaryCard = ({ data }) => {
     handleClose();
   };
 
+  const nutrientUnits = {
+    calories: 'kcal',
+    total_carbs: '%',
+    total_fat: '%',
+    protein: '%',
+    saturated_fat: 'g',
+    polyunsaturated_fat: 'g',
+    monounsaturated_fat: 'g',
+    trans: 'g',
+    cholesterol: 'mg',
+    sodium: 'mg',
+    potassium: 'mg',
+    fiber: 'g',
+    sugar: 'g',
+    vitamin_a: '%DV',
+    vitamin_c: '%DV',
+    calcium: '%DV',
+    iron: '%DV',
+  };
+
+
   return (
     <>
       <Card
@@ -57,7 +78,9 @@ const SummaryCard = ({ data }) => {
                 strokeColor="#1890ff"
                 strokeWidth={6}
               />
-              <Text type="secondary" style={{ fontSize: 12 }}>{actual} g</Text>
+              <Text type="secondary" style={{ fontSize: 12 }}>
+                {actual} {nutrientUnits[key] || ''}
+              </Text>
             </div>
           );
         })}

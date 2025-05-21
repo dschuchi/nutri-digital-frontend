@@ -19,3 +19,23 @@ export async function addConsumedEntry(data) {
     throw error;
   }
 }
+
+/**
+ * Elimina una entrada de consumo para un usuario.
+ * @param {Object} data - Datos de la entrada a eliminar.
+ * @param {number} data.id_user - ID del usuario.
+ * @param {number} data.id_food - ID del alimento.
+ * @param {string} data.date_consumed - Fecha del consumo (formato "YYYY-MM-DD").
+ * @returns {Promise} Respuesta del servidor.
+ */
+export async function deleteConsumedEntry(data) {
+  try {
+    const response = await httpClient.delete("/consumed", {
+      data: data, // Axios permite pasar el body en DELETE usando la opción `data`
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al eliminar consumo:", error);
+    throw error;
+  }
+}

@@ -34,7 +34,7 @@ const MicronutrientsCard = ({ data }) => {
               <Progress
                 type="circle"
                 percent={Math.round(porcentaje)}
-                format={() => `${actual}mg`}
+                format={() => `${actual} %`}
                 strokeColor={color}
                 width={70}
               />
@@ -45,7 +45,7 @@ const MicronutrientsCard = ({ data }) => {
                     type={excedido ? 'danger' : 'secondary'}
                     style={{ fontSize: 12 }}
                   >
-                    {actual} / {objetivo}mg ({Math.round((actual / objetivo) * 100)}%)
+                    {actual} / {objetivo} ({Math.round((actual / objetivo) * 100)}%)
                   </Text>
                 </div>
               )}

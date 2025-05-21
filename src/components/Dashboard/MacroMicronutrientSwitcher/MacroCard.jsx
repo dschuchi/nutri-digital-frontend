@@ -45,12 +45,12 @@ const MacroCard = ({ data }) => {
               <div style={{ marginTop: 4 }}>
                 {faltan && (
                   <Text style={{ fontSize: 12 }} type="secondary">
-                    {objetivo - actual} g faltan
+                    falta {objetivo - actual} %
                   </Text>
                 )}
                 {excedido && (
                   <Text style={{ fontSize: 12 }} type="danger">
-                    {actual - objetivo} g excedidos
+                    {actual - objetivo} % excedido
                   </Text>
                 )}
               </div>
