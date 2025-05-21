@@ -64,7 +64,12 @@ const DashboardContent = ({ data, agua, objetivoAgua = 2000 }) => {
         <Row gutter={[16, 8]} style={{ marginTop: 4 }}>
             <Col xs={24} md={8}><HealthyHeartCard data={corazonSaludable} /></Col>
             <Col xs={24} md={8}><LowCarbCard data={bajosCarbohidratos} /></Col>
-            <Col xs={24} md={8}><SummaryCard data={resumen} /></Col>
+            <Col xs={24} md={8}><SummaryCard data={Object.fromEntries(
+              Object.entries(consumed).map(([key, val]) => [
+                key,
+                { actual: safe(val), objetivo: safe(goals[key]) }
+              ])
+            )} /></Col>
         </Row>
 
     </div>
