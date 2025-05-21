@@ -45,7 +45,7 @@ function MainLayout() {
         <Layout style={{ minHeight: '100vh' }}>
             <Header style={{ height: 72 }}>
                 <Flex justify="space-between" align='center'>
-                    <div>
+                    <div style={{ cursor: 'pointer' }} onClick={() => navigate('/home')}>
                         <img src='logo-white.png' height={64} />
                     </div>
 
