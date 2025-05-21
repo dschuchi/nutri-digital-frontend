@@ -16,10 +16,11 @@ const MicronutrientsCard = ({ data }) => {
   return (
     <Card title="Micronutrientes" style={{ padding: '12px 16px', borderRadius: 12 }}>
       <Row justify="space-around" align="bottom" wrap>
-        {micronutrientes.map((item) => {
-          const { label, actual, objetivo } = item;
-          const porcentaje = objetivo > 0 ? (actual / objetivo) * 100 : 0;
-          const excedido = porcentaje > 100;
+        {micronutrientes.map(({ label, actual, objetivo }) => {
+          const sinObjetivo = objetivo == null || objetivo === 0;
+          const excedido = !sinObjetivo && actual > objetivo;
+          const porcentaje = sinObjetivo ? 100 : Math.min((actual / objetivo) * 100, 100);
+          const color = excedido ? '#ff4d4f' : '#52c41a';
 
           return (
             <Col
@@ -31,21 +32,23 @@ const MicronutrientsCard = ({ data }) => {
             >
               <Text>{label}</Text>
               <Progress
-                type="dashboard"
-                percent={Math.min(porcentaje, 100)}
-                showInfo={false}
-                strokeColor={excedido ? '#ff4d4f' : '#52c41a'}
-                strokeWidth={10}
-                style={{ maxHeight: 80, margin: '0 8px' }}
+                type="circle"
+                percent={Math.round(porcentaje)}
+                format={() => `${actual}mg`}
+                strokeColor={color}
+                width={70}
               />
-              <div style={{ marginTop: 4 }}>
-                <Text
-                  type={excedido ? 'danger' : 'secondary'}
-                  style={{ fontSize: 12 }}
-                >
-                  {actual} / {objetivo} ({Math.round(porcentaje)}%)
-                </Text>
-              </div>
+
+              {!sinObjetivo && (
+                <div style={{ marginTop: 4 }}>
+                  <Text
+                    type={excedido ? 'danger' : 'secondary'}
+                    style={{ fontSize: 12 }}
+                  >
+                    {actual} / {objetivo}mg ({Math.round((actual / objetivo) * 100)}%)
+                  </Text>
+                </div>
+              )}
             </Col>
           );
         })}
