@@ -1,21 +1,28 @@
 .card-switcher-container {
   width: 100%;
   position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
-/* Ambos componentes están uno debajo del otro, pero solo uno es visible */
-.switch-card {
-  transition: opacity 0.4s ease;
+.card-switcher-container:hover {
+  box-shadow: 0 0 0 2px #1890ff inset;
 }
 
-.switch-card.hidden {
-  opacity: 0;
-  height: 0;
-  overflow: hidden;
-  pointer-events: none;
+.card-switcher-container:active {
+  transform: scale(0.98);
 }
 
-.switch-card.visible {
-  opacity: 1;
-  height: auto;
+.switch-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  font-size: 20px;
+  color: #999;
+  transition: color 0.2s;
+}
+
+.switch-icon:hover {
+  color: #1890ff;
 }
