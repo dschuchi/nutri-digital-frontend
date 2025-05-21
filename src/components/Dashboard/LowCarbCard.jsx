@@ -4,7 +4,7 @@ const { Text } = Typography;
 
 const LowCarbCard = ({ data }) => {
   return (
-    <Card title="Con bajo contenido de carbohidratos" style={{ borderRadius: 12 }}>
+    <Card title="Con bajo contenido de carbohidratos" style={{ padding: '12px 16px', borderRadius: 12 }}>
       {Object.entries(data).map(([label, val]) => (
         <div key={label}>
           <Text>{label.charAt(0).toUpperCase() + label.slice(1)}</Text>

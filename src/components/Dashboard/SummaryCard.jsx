@@ -4,7 +4,7 @@ const { Text, Link } = Typography;
 
 const SummaryCard = ({ data }) => {
   return (
-    <Card title="Resumen personalizado" extra={<Link>Cambiar nutrientes</Link>} style={{ borderRadius: 12 }}>
+    <Card title="Resumen personalizado" extra={<Link>Cambiar nutrientes</Link>} style={{ padding: '12px 16px', borderRadius: 12 }}>
       {Object.entries(data).map(([label, val]) => (
         <div key={label}>
           <Text>{label.charAt(0).toUpperCase() + label.slice(1)}</Text>

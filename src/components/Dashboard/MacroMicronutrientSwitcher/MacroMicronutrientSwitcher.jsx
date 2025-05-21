@@ -8,14 +8,14 @@ const MacroMicronutrientSwitcher = ({ macros, micros }) => {
 
   return (
     <div
-      className="card-container"
+      className="card-switcher-container"
       onClick={() => setMostrarMicros((prev) => !prev)}
       style={{ cursor: 'pointer' }}
     >
-      <div className={`card macro ${mostrarMicros ? 'back' : 'front'}`}>
+      <div className={`switch-card ${!mostrarMicros ? 'visible' : 'hidden'}`}>
         <MacroCard data={macros} />
       </div>
-      <div className={`card micro ${mostrarMicros ? 'front' : 'back'}`}>
+      <div className={`switch-card ${mostrarMicros ? 'visible' : 'hidden'}`}>
         <MicronutrientsCard data={micros} />
       </div>
     </div>

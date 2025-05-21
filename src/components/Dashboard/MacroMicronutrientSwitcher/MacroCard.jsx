@@ -4,7 +4,7 @@ const { Title, Text } = Typography;
 
 const MacroCard = ({ data }) => {
   return (
-    <Card style={{ borderRadius: 12 }}>
+    <Card style={{ padding: '12px 16px', borderRadius: 12 }}>
       <Title level={4}>Macronutrientes</Title>
       <Row justify="space-around">
         {Object.entries(data).map(([key, val]) => (
@@ -22,7 +22,7 @@ const MacroCard = ({ data }) => {
             >
               {val.actual}
             </div>
-            <Text type="secondary">{val.objetivo - val.actual} g faltan</Text>
+            <Text style={{ fontSize: 12 }} type="secondary">{val.objetivo - val.actual} g faltan</Text>
           </Col>
         ))}
       </Row>

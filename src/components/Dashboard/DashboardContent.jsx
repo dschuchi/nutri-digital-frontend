@@ -1,6 +1,6 @@
 import { Row, Col, Typography } from 'antd';
 import CalorieCard from './CalorieCard';
-import WaterProgressCard from './WaterProgressCard';
+import WaterGlassCard from './WaterGlassCard/WaterGlassCard';
 import HealthyHeartCard from './HealthyHeartCard';
 import LowCarbCard from './LowCarbCard';
 import SummaryCard from './SummaryCard';
@@ -44,18 +44,29 @@ const DashboardContent = ({ data, agua, objetivoAgua = 2000 }) => {
 
   return (
     <div style={{ padding: '24px' }}>
-      <Row gutter={[16, 16]}>
-        <Col xs={24} md={12}><CalorieCard {...calorias} /></Col>
-        <Col xs={24} md={12}><WaterProgressCard consumoActual={agua} consumoObjetivo={objetivoAgua} /></Col>
+        <Row gutter={[16, 8]}>
+            <Col xs={24} md={18}>
+                <CalorieCard {...calorias} />
+            </Col>
+            <Col xs={24} md={6}>
+                <WaterGlassCard consumoActual={agua} consumoObjetivo={objetivoAgua} />
+            </Col>
+        </Row>
 
-        <Col xs={24}>
-          <MacroMicronutrientSwitcher macros={macronutrientes} micros={{ ...consumed, goals }} />
-        </Col>
+        <Row gutter={[16, 8]} style={{ marginTop: 8 }}>
+            <Col xs={24}>
+                <MacroMicronutrientSwitcher macros={macronutrientes} micros={{ ...consumed, goals }} />
+            </Col>
+        </Row>
 
-        <Col xs={24} md={8}><HealthyHeartCard data={corazonSaludable} /></Col>
-        <Col xs={24} md={8}><LowCarbCard data={bajosCarbohidratos} /></Col>
-        <Col xs={24} md={8}><SummaryCard data={resumen} /></Col>
-      </Row>
+
+            {/* Segunda fila con 3 columnas */}
+        <Row gutter={[16, 8]} style={{ marginTop: 4 }}>
+            <Col xs={24} md={8}><HealthyHeartCard data={corazonSaludable} /></Col>
+            <Col xs={24} md={8}><LowCarbCard data={bajosCarbohidratos} /></Col>
+            <Col xs={24} md={8}><SummaryCard data={resumen} /></Col>
+        </Row>
+
     </div>
   );
 };

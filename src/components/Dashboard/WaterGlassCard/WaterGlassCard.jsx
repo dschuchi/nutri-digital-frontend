@@ -6,7 +6,7 @@ const WaterGlassCard = ({ consumoActual, consumoObjetivo }) => {
   const translateY = 100 - porcentaje;
 
   return (
-    <Card title="Consumo de Agua" bordered={false} style={{ textAlign: 'center' }}>
+    <Card title="Consumo de Agua" bordered={false} style={{ padding: '12px 16px', textAlign: 'center' }}>
       <div className="glass-container">
         <div className="glass">
           <div className="water-wrapper">
