@@ -62,9 +62,9 @@ const CalorieCard = ({ objetivo, alimentos, ejercicio }) => {
 
           <Col xs={24} sm={16}>
             <Space direction="vertical" size={8}>
-              <Text><AimOutlined style={{ marginRight: 8 }} /> <b>{objetivo}</b> Objetivo base</Text>
-              <Text><ForkOutlined style={{ marginRight: 8 }} /> <b>{alimentos}</b> Alimentos</Text>
-              <Text><FireOutlined style={{ marginRight: 8 }} /> <b>{ejercicio}</b> Ejercicio</Text>
+              <Text><AimOutlined style={{ marginRight: 8 }} /> <b>{objetivo}</b> Objetivo de calorías</Text>
+              <Text><ForkOutlined style={{ marginRight: 8 }} /> <b>{alimentos}</b> Calorías ingeridas por alimentos</Text>
+              <Text><FireOutlined style={{ marginRight: 8 }} /> <b>{ejercicio}</b> Calorías quemadas</Text>
             </Space>
           </Col>
         </Row>
