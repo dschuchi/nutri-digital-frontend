@@ -34,16 +34,14 @@ const Dashboard = () => {
   if (!data) return <div>Cargando...</div>;
 
   return (
-    <>
-      <div style={{ padding: '16px 24px' }}>
-        <DatePicker
-          value={selectedDate ? dayjs(selectedDate) : null}
-          onChange={(date) => setSelectedDate(date?.toDate() || new Date())}
-          style={{ marginBottom: 16 }}
-        />
-      </div>
+    <div style={{ maxWidth: 1280, margin: '0 auto', padding: '16px 24px' }}>
+      <DatePicker
+        value={selectedDate ? dayjs(selectedDate) : null}
+        onChange={(date) => setSelectedDate(date?.toDate() || new Date())}
+        style={{ marginBottom: 16 }}
+      />
       <DashboardContent data={data} agua={agua} />
-    </>
+    </div>
   );
 };
 
