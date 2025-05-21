@@ -1,7 +1,7 @@
 import { Button, Empty, Flex, Input, Select, Table, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { getProfessionals } from '../api/professional';
-import Icon, { MessageOutlined } from '@ant-design/icons';
+import { MailFilled, MessageOutlined, StarFilled } from '@ant-design/icons';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -10,6 +10,7 @@ export function Professionals() {
     const [search, setSearch] = useState('');
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
     const [professionals, setProfessionals] = useState([]);
+    const [minRate, setMinRate] = useState(0);
 
     const columns = [
         {
@@ -24,8 +25,19 @@ export function Professionals() {
         },
         {
             title: 'Calificaciones',
-            dataIndex: 'reviews',
-            key: 'reviews',
+            dataIndex: 'rate',
+            key: 'rate',
+            render: (text) => (
+                <Flex align='center' gap={'small'}>
+                    <div>
+                        {text} / 5 <StarFilled />
+                    </div>
+                    <Button disabled>
+                        <MailFilled />
+                    </Button>
+                </Flex>
+
+            ),
         },
         {
             title: 'Acciones',
@@ -45,7 +57,7 @@ export function Professionals() {
                     key: item.id,
                     name: item.name,
                     specialty: item.specialty,
-                    reviews: item.reviews,
+                    rate: item.rate,
                 }));
                 setProfessionals(mappedData);
             })
@@ -60,10 +72,16 @@ export function Professionals() {
         const matchesSearch =
             prof.name.toLowerCase().includes(search.toLowerCase()) ||
             prof.specialty.toLowerCase().includes(search.toLowerCase());
+
         const matchesSpecialty =
             !selectedSpecialty || prof.specialty === selectedSpecialty;
-        return matchesSearch && matchesSpecialty;
+
+        const matchesRate =
+            minRate === null || prof.rate >= minRate;
+
+        return matchesSearch && matchesSpecialty && matchesRate;
     });
+
 
     return (
         <div>
@@ -87,6 +105,18 @@ export function Professionals() {
                     {specialties.map((spec) => (
                         <Option key={spec} value={spec}>
                             {spec}
+                        </Option>
+                    ))}
+                </Select>
+                <Select
+                    placeholder="Calificación mínima"
+                    allowClear
+                    onChange={(value) => setMinRate(value ?? null)}
+                    style={{ width: 180 }}
+                >
+                    {[5, 4, 3, 2, 1].map((rate) => (
+                        <Option key={rate} value={rate}>
+                            {rate} ★ o más
                         </Option>
                     ))}
                 </Select>
