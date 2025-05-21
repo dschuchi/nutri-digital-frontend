@@ -39,7 +39,7 @@ const MacroCard = ({ data }) => {
                 type="circle"
                 percent={Math.round(porcentaje)}
                 width={70}
-                format={() => `${actual}g`}
+                format={() => `${actual}%`}
                 strokeColor={color}
               />
               <div style={{ marginTop: 4 }}>
