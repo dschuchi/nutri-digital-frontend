@@ -8,10 +8,11 @@ const CalorieCard = ({ objetivo, alimentos, ejercicio }) => {
   const cardRef = useRef(null);
   const [scale, setScale] = useState(1);
 
-  const restantes = objetivo - alimentos + ejercicio;
-  const exceso = restantes < 0;
+  const sinObjetivo = objetivo == null || objetivo === 0;
+  const restantes = sinObjetivo ? 0 : objetivo - alimentos + ejercicio;
+  const exceso = !sinObjetivo && restantes < 0;
   const excedidas = Math.abs(restantes);
-  const porcentaje = Math.min(excedidas / objetivo * 100, 100);
+  const porcentaje = sinObjetivo ? 100 : Math.min((excedidas / objetivo) * 100, 100);
   const color = exceso ? '#ff4d4f' : '#fa8c16';
 
   useEffect(() => {
@@ -43,7 +44,7 @@ const CalorieCard = ({ objetivo, alimentos, ejercicio }) => {
               format={() => (
                 <div>
                   <div style={{ fontSize: 20, fontWeight: 'bold', color }}>
-                    {exceso ? excedidas : restantes}
+                    {sinObjetivo ? alimentos : exceso ? excedidas : restantes}
                   </div>
                   <div
                     style={{
@@ -52,7 +53,7 @@ const CalorieCard = ({ objetivo, alimentos, ejercicio }) => {
                       fontWeight: exceso ? 'bold' : 'normal',
                     }}
                   >
-                    {exceso ? 'Excedido' : 'Restantes'}
+                    {sinObjetivo ? 'Consumidas' : exceso ? 'Excedidas' : 'Restantes'}
                   </div>
                 </div>
               )}
