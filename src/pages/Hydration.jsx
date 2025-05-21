@@ -2,6 +2,7 @@ import { Button, Card, DatePicker, Divider, Empty, Flex, Form, InputNumber, Tabl
 import { deleteHydration, getHydrationHistory, newHydration } from "../api/hydration";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import WaterGlassCard from "../components/Dashboard/WaterGlassCard/WaterGlassCard";
 
 const Hydration = () => {
     const [hydrationHistory, setHydrationHistory] = useState([]);
@@ -57,44 +58,48 @@ const Hydration = () => {
             });
     };
 
-    const totalHidratacion = hydrationHistory.reduce((acc, item) => acc + (item.cantidad || 0), 0);
+    const goalHydration = 2000;
+    const totalHydration = hydrationHistory.reduce((acc, item) => acc + (item.cantidad || 0), 0);
     const sortedHydrationHistory = [...hydrationHistory].sort((a, b) => b.key - a.key);
 
     return (
         <div>
             <Typography.Title level={2}>Hidratación</Typography.Title>
-            <Flex vertical gap={'large'}>
-                <Card style={{ textAlign: 'center' }}>
-                    <Typography.Title level={2}>{totalHidratacion} ml</Typography.Title>
-                    <Divider />
-                    <Form
-                        name="hydration"
-                        onFinish={onFinish}
-                    >
-                        <Form.Item>
-                            <Flex gap="small" justify="center">
-                                <Form.Item
-                                    name="hydration"
-                                    rules={[
-                                        { required: true, message: 'Ingrese la cantidad de agua' },
-                                        { type: 'number', min: 1, message: 'Debe ser mayor a 0' }
-                                    ]}
-                                    normalize={value => value ? Number(value) : value}
-                                >
-                                    <InputNumber
-                                        placeholder="Cantidad de agua"
-                                        type="number"
-                                    />
-                                </Form.Item>
-                                <Button type="primary" htmlType="submit">
-                                    Agregar
-                                </Button>
-                            </Flex>
-                        </Form.Item>
-                    </Form>
-                </Card>
-
-                <Card>
+            <Flex gap={'large'}>
+                <Flex vertical gap={'large'}>
+                    <Card title='¡Registra tu hidratación!' style={{ width: '30vw' }}>
+                        <Form
+                            name="hydration"
+                            onFinish={onFinish}
+                            style={{ width: '100%' }}
+                        >
+                            <Form.Item style={{ marginBottom: 0 }}>
+                                <Flex gap="small" align="center" style={{ width: '100%' }}>
+                                    <Form.Item
+                                        name="hydration"
+                                        rules={[
+                                            { required: true, message: 'Ingrese la cantidad de agua' },
+                                            { type: 'number', min: 1, message: 'Debe ser mayor a 0' }
+                                        ]}
+                                        normalize={value => value ? Number(value) : value}
+                                        style={{ flex: 1, marginBottom: 0 }}
+                                    >
+                                        <InputNumber
+                                            placeholder="Cantidad de agua"
+                                            type="number"
+                                            style={{ width: '100%' }}
+                                        />
+                                    </Form.Item>
+                                    <Button type="primary" htmlType="submit">
+                                        Agregar
+                                    </Button>
+                                </Flex>
+                            </Form.Item>
+                        </Form>
+                    </Card>
+                    <WaterGlassCard  consumoActual={totalHydration} consumoObjetivo={goalHydration} />
+                </Flex>
+                <Card style={{ width: '70vw' }}>
                     <Flex justify="space-between" align="center" style={{ marginBottom: 16 }}>
                         <Typography.Title level={4}>Historial de hidratación</Typography.Title>
                         <DatePicker
@@ -133,7 +138,7 @@ const Hydration = () => {
                         ]}
                         pagination
                         size="small"
-                        locale={{emptyText: <Empty description='No se registran consumos hoy.'/>}}
+                        locale={{ emptyText: <Empty description='No se registran consumos hoy.' /> }}
                     />
                 </Card>
             </Flex>
