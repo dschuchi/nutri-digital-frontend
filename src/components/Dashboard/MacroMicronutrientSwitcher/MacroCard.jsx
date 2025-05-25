@@ -1,4 +1,5 @@
 import { Card, Col, Row, Typography, Progress } from 'antd';
+import './MacroCard.css';
 
 const { Title, Text } = Typography;
 
@@ -36,6 +37,7 @@ const MacroCard = ({ data }) => {
             <Col key={key} style={{ textAlign: 'center' }}>
               <Text strong>{nombre}</Text><br />
               <Progress
+                className="custom-progress-text"
                 type="circle"
                 percent={Math.round(porcentaje)}
                 width={70}

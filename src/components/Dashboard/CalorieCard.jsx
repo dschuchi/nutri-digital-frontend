@@ -49,7 +49,7 @@ const CalorieCard = ({ objetivo, alimentos, ejercicio }) => {
                   <div
                     style={{
                       fontSize: 12,
-                      color: exceso ? '#ff4d4f' : 'inherit',
+                      color: exceso ? '#ff4d4f' : '#fa8c16',
                       fontWeight: exceso ? 'bold' : 'normal',
                     }}
                   >
