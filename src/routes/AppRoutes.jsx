@@ -9,6 +9,7 @@ import ProtectedRoute from './ProtectedRoute';
 import Goals from '../pages/Goals';
 import Hydration from '../pages/Hydration';
 import { Professionals } from '../pages/Professionals';
+import { Chat } from '../components/professionals/Chat';
 
 function AppRoutes() {
     return (
@@ -27,6 +28,7 @@ function AppRoutes() {
                 <Route path="/objetivos" element={<Goals />} />
                 <Route path="/hidratacion" element={<Hydration />} />
                 <Route path="/profesionales" element={<Professionals />} />
+                <Route path="/chat" element={<Chat />} />
             </Route>
         </Routes>
     );

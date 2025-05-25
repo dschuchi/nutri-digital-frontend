@@ -2,6 +2,10 @@ import { Button, Empty, Flex, Input, Select, Table, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { getProfessionals } from '../api/professional';
 import { MailFilled, MessageOutlined, StarFilled } from '@ant-design/icons';
+import { getRequestClient, sendRequest } from '../api/requestProfessional';
+import { getMyProfessional } from '../api/patient';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -11,6 +15,8 @@ export function Professionals() {
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
     const [professionals, setProfessionals] = useState([]);
     const [minRate, setMinRate] = useState(0);
+    const [hasProfessionals, setHasProfessionals] = useState(false);
+    const { user } = useAuth()
 
     const columns = [
         {
@@ -36,21 +42,51 @@ export function Professionals() {
                         <MailFilled />
                     </Button>
                 </Flex>
-
             ),
         },
         {
             title: 'Acciones',
             key: 'actions',
-            render: () => (
-                <Button>
-                    <MessageOutlined />
+            render: (_, record) => (
+                <Button onClick={() => handleSendRequest(record.key)}>
+                    <Typography.Text>Enviar solicitud</Typography.Text>
                 </Button>
             ),
         },
     ];
 
+    function handleSendRequest(professionalId) {
+        sendRequest(professionalId)
+            .then((res) => {
+                navigate('/chat');
+            })
+            .catch((error) => {
+                console.error("Error sending request:", error);
+            });
+    }
+
+    const navigate = useNavigate()
+
     useEffect(() => {
+        getMyProfessional(user.id)
+            .then((res) => {
+                if (res.data.length > 0) {
+                    setHasProfessionals(true);
+                    navigate('/chat')
+                }
+            }).catch((res) => {
+                console.error("Error fetching my professional data:", res);
+            });
+        getRequestClient(user.id)
+            .then((res) => {
+                if (res.data.length > 0) {
+                    setHasProfessionals(true);
+                    navigate('/chat')
+                }
+            })
+            .catch((res) => {
+                console.error("Error fetching request client data:", res);
+            });
         getProfessionals()
             .then((res) => {
                 const mappedData = res.data.map((item) => ({

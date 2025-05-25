@@ -1,8 +1,8 @@
 import { Button, Card, Input, List, Space, Typography } from 'antd';
-
-const { TextArea } = Input;
-const { Text } = Typography;
-
+import { useEffect, useState } from 'react';
+import { getRequestClient } from '../../api/requestProfessional';
+import { useAuth } from '../../context/AuthContext';
+import { getMyProfessional } from '../../api/patient';
 
 const messages = [
     {
@@ -18,37 +18,48 @@ const messages = [
 ];
 
 export function Chat() {
-    return (
-        <div style={{ padding: '2rem', maxWidth: 800, margin: '0 auto' }}>
-            <Space direction="vertical" size="large" style={{ width: '100%' }}>
+    const [active, setActive] = useState(false);
+    const { user } = useAuth();
 
-                
+    useEffect(() => {
+        getMyProfessional(user.id)
+            .then((res) => {
+                if (res && res.data.length > 0) {
+                    setActive(true);
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching professional data:', error);
+            });
+    }, []);
+
+    return (
+        <div>
+            <Space direction="vertical" size="large" style={{ width: '100%' }}>
                 <Space direction="horizontal" style={{ justifyContent: 'space-between', width: '100%' }}>
-                    <Card style={{ flex: 1, textAlign: 'center' }}>
-                        <Text strong>Esperando que el profesional acepte la solicitud</Text>
+                    <Card hidden={active} size='small'>
+                        <Typography.Text>Esperando que el profesional acepte la solicitud</Typography.Text>
                     </Card>
                     <Button danger>Cancelar</Button>
                 </Space>
 
-                
                 <Card>
                     <div style={{ maxHeight: 300, overflowY: 'auto', marginBottom: '1rem' }}>
                         <List
                             dataSource={messages}
                             renderItem={(item) => (
                                 <List.Item style={{ display: 'block' }}>
-                                    <Text strong>{item.author}:</Text>
+                                    <Typography.Text strong>{item.author}:</Typography.Text>
                                     <div>{item.content}</div>
-                                    <Text type="secondary" style={{ fontSize: '0.8rem' }}>
+                                    <Typography.Text type="secondary" style={{ fontSize: '0.8rem' }}>
                                         {item.timestamp}
-                                    </Text>
+                                    </Typography.Text>
                                 </List.Item>
                             )}
                         />
                     </div>
 
-                    
-                    <TextArea rows={4} placeholder="Escribe tu mensaje aquí..." />
+                    <Input.TextArea disabled={!active} rows={4} placeholder="Escribe tu mensaje aquí..." />
                     <div style={{ textAlign: 'right', marginTop: '1rem' }}>
                         <Button type="primary">Enviar</Button>
                     </div>

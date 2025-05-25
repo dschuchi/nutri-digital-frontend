@@ -6,26 +6,28 @@ export async function sendRequest(idProfessional) {
     return res;
 }
 
-export async function cancelRequest(idProfessional) {
-    const res = await httpClient.post(`/request/cancel?id=${idProfessional}`);
+export async function cancelRequest(idRequest) {
+    const res = await httpClient.post(`/request/cancel?id=${idRequest}`);
     if (!res) throw new Error('Request cancellation failed');
     return res;
 }
 
-export async function approveRequest(idProfessional) {
-    const res = await httpClient.post(`/request/approve?id=${idProfessional}`);
+export async function approveRequest(idRequest) {
+    const res = await httpClient.post(`/request/approve?id=${idRequest}`);
     if (!res) throw new Error('Request approval failed');
     return res;
 }
 
+// TODO esto se llama cada 'x' segundos, 
+// sirve para que el profesional vea las solicitudes pendientes
 export async function getRequestProfessional() {
     const res = await httpClient.get('/request/professional');
     if (!res) throw new Error('Failed to fetch professional requests');
     return res;
 }
 
-export async function getRequestClient() {
-    const res = await httpClient.get('/request/client');
+export async function getRequestClient(idUser) {
+    const res = await httpClient.get(`/request/client?id=${idUser}`);
     if (!res) throw new Error('Failed to fetch client requests');
     return res;
 }
