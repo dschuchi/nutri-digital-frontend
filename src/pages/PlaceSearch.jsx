@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
-import { Table, Input, Select, Slider, Typography, Empty, Row, Col } from 'antd';
+import { Table, Input, Select, Slider, Typography, Empty, Row, Col, Modal } from 'antd';
 import { getPlaces } from '../api/places';
+import { useNavigate } from 'react-router-dom';
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -11,53 +12,87 @@ const SitesPage = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
-  const [distanceMax, setDistanceMax] = useState(10000);
+  const [distanceMax, setDistanceMax] = useState(30000);
   const yaBusque = useRef(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetch = async () => {
-      if (yaBusque.current) return;
-      yaBusque.current = true;
+    if (yaBusque.current) return;
+    yaBusque.current = true;
 
-      try {
-        console.log("1...");
-
+    const getLocationAndLoadPlaces = async () => {
+        try {
         const getUserOrigin = () =>
-          new Promise((resolve, reject) => {
+            new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject);
-          });
+            });
 
         const position = await getUserOrigin();
         const { latitude, longitude } = position.coords;
 
-        console.log("lat/lon:", latitude, longitude);
-
         const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
-        console.log("Fetching:", url);
-
         const res = await fetch(url, {
-          headers: {
+            headers: {
             'User-Agent': 'NutriDigital/1.0 (franz@example.com)',
-          },
+            },
         });
 
         const geo = await res.json();
         const originAddress = geo.display_name;
-        console.log("originAddress:", originAddress);
-
         const data = await getPlaces(originAddress);
         setPlaces(data);
-      } catch (error) {
-        console.warn("Fallo geolocalización o geocoding. Usando búsqueda sin origen.");
+
+        localStorage.setItem('ubicacion-confirmada', 'true');
+        } catch (error) {
+        console.warn("Error en geolocalización, usando búsqueda sin origen.");
         const data = await getPlaces();
         setPlaces(data);
-      } finally {
+        } finally {
         setLoading(false);
-      }
+        }
     };
 
-    fetch();
-  }, []);
+    const yaConfirmo = localStorage.getItem('ubicacion-confirmada') === 'true';
+    if (yaConfirmo) {
+        getLocationAndLoadPlaces();
+        return;
+    }
+
+    navigator.permissions
+        .query({ name: 'geolocation' })
+        .then((result) => {
+        if (result.state === 'granted') {
+            getLocationAndLoadPlaces();
+        } else {
+            Modal.confirm({
+            title: '¿Querés compartir tu ubicación?',
+            content: 'Necesitamos tu ubicación para mostrarte los sitios más cercanos.',
+            okText: 'Sí, compartir',
+            cancelText: 'No, volver al inicio',
+            onOk: async () => {
+                await getLocationAndLoadPlaces();
+            },
+            onCancel: () => {
+                navigate('/');
+            },
+            });
+        }
+        })
+        .catch(() => {
+        Modal.confirm({
+            title: '¿Querés compartir tu ubicación?',
+            content: 'Necesitamos tu ubicación para mostrarte los sitios más cercanos.',
+            okText: 'Sí, compartir',
+            cancelText: 'No, volver al inicio',
+            onOk: async () => {
+            await getLocationAndLoadPlaces();
+            },
+            onCancel: () => {
+            navigate('/');
+            },
+        });
+        });
+    }, [navigate]);
 
   useEffect(() => {
     let filteredData = [...places];
