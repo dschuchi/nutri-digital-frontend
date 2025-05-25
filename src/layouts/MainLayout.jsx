@@ -30,6 +30,11 @@ function MainLayout() {
             key: 'agregar-alimento',
             label: 'Cargar alimentación',
             onClick: () => navigate('/agregar-alimento')
+        },
+        {
+            key: 'alimentos-consumidos',
+            label: 'Alimentos consumidos',
+            onClick: () => navigate('/alimentos-consumidos')
         }
     ];
 
