@@ -18,21 +18,13 @@ export async function approveRequest(idProfessional) {
     return res;
 }
 
-
-// TODO rechazar deberia ser para el profesional
-export async function rejectRequest(idProfessional) {
-    const res = await httpClient.post(`/request/reject?id=${idProfessional}`);
-    if (!res) throw new Error('Request rejection failed');
-    return res;
-}
-
-export async function getRequestsProfessional() {
+export async function getRequestProfessional() {
     const res = await httpClient.get('/request/professional');
     if (!res) throw new Error('Failed to fetch professional requests');
     return res;
 }
 
-export async function getRequestsClient() {
+export async function getRequestClient() {
     const res = await httpClient.get('/request/client');
     if (!res) throw new Error('Failed to fetch client requests');
     return res;
