@@ -1,13 +1,14 @@
 import { Input, Typography, Card, Empty, Spin, Collapse, Pagination, message, Button, Select } from 'antd';
 import { useState, useEffect } from 'react';
 import { search } from '../api/food';
+import AddFoodModal from './AddFoodModal';
 
 const { Search } = Input;
 const { Panel } = Collapse;
 
 const ITEMS_PER_PAGE = 10;
 
-const FoodSearchContent = ({ onSelect }) => {
+const FoodSearchContent = () => {
   const [query, setQuery] = useState('');
   const [allFoods, setAllFoods] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,11 +17,13 @@ const FoodSearchContent = ({ onSelect }) => {
   const [selectedRestricciones, setSelectedRestricciones] = useState([]);
   const [tipos, setTipos] = useState([]);
   const [restricciones, setRestricciones] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [foodToLoad, setFoodToLoad] = useState(null);
 
   useEffect(() => {
     const fetchFilters = async () => {
       try {
-        const response = await search(''); // o usar algún valor genérico como 'a'
+        const response = await search('');
         const results = response.data || [];
 
         const uniqueTipos = [...new Set(results.map(f => f.tipo).filter(Boolean))];
@@ -38,7 +41,6 @@ const FoodSearchContent = ({ onSelect }) => {
 
     fetchFilters();
   }, []);
-
 
   const onSearch = async (value) => {
     setLoading(true);
@@ -62,23 +64,20 @@ const FoodSearchContent = ({ onSelect }) => {
     setLoading(false);
   };
 
-
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
 
   const filteredFoods = allFoods.filter(item => {
     const matchesTipo = !selectedTipo || item.tipo === selectedTipo;
-
     const restriccionesArray = (item.restricciones || '')
       .split(',')
       .map(r => r.trim())
       .filter(Boolean);
-
     const matchesRestricciones = selectedRestricciones.length === 0 ||
       selectedRestricciones.every(sel => restriccionesArray.includes(sel));
-
     return matchesTipo && matchesRestricciones;
   });
+
   const currentFoods = filteredFoods.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
@@ -151,15 +150,16 @@ const FoodSearchContent = ({ onSelect }) => {
                 </Panel>
               </Collapse>
 
-              {onSelect && (
-                <Button
-                  type="primary"
-                  style={{ marginTop: 12 }}
-                  onClick={() => onSelect(item)}
-                >
-                  Seleccionar
-                </Button>
-              )}
+              <Button
+                type="primary"
+                style={{ marginTop: 12 }}
+                onClick={() => {
+                  setFoodToLoad(item);
+                  setModalVisible(true);
+                }}
+              >
+                Cargar
+              </Button>
             </Card>
           ))}
 
@@ -173,6 +173,17 @@ const FoodSearchContent = ({ onSelect }) => {
         </>
       ) : (
         query && <Empty description="No se encontraron resultados" />
+      )}
+
+      {foodToLoad && (
+        <AddFoodModal
+          open={modalVisible}
+          onClose={() => {
+            setModalVisible(false);
+            setFoodToLoad(null);
+          }}
+          food={foodToLoad}
+        />
       )}
     </>
   );
