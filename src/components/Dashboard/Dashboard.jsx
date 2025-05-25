@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { getPanelData } from '../../api/progressPanel';
 import { getHydrationHistory } from '../../api/hydration';
 import DashboardContent from './DashboardContent';
-import { DatePicker, Typography, Row, Col } from 'antd';
 import dayjs from 'dayjs';
 
 const Dashboard = () => {
@@ -30,34 +29,22 @@ const Dashboard = () => {
     fetchData(selectedDate);
   }, [selectedDate]);
 
-  const { Title } = Typography;
+  const handleChangeDay = (delta) => {
+    const newDate = dayjs(selectedDate).add(delta, 'day').toDate();
+    setSelectedDate(newDate);
+  };
 
   if (!data) return <div>Cargando...</div>;
 
   return (
     <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-      <div style={{ padding: '16px 24px' }}>
-        <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
-          <Col>
-            <Title level={2} style={{ margin: 0 }}>Resumen diario</Title>
-          </Col>
-          <Col>
-            <DatePicker
-              value={dayjs(selectedDate)}
-              onChange={(date) => setSelectedDate(date?.toDate() || new Date())}
-              style={{
-                height: 40,
-                padding: '0 12px',
-                borderRadius: 8,
-                boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-              }}
-            />
-          </Col>
-        </Row>
-      </div>
-
-      {/* El DashboardContent probablemente ya tenga su propio padding o grid */}
-      <DashboardContent data={data} agua={agua} />
+      <DashboardContent
+        data={data}
+        agua={agua}
+        selectedDate={selectedDate}
+        onDateChange={setSelectedDate}
+        onChangeDay={handleChangeDay}
+      />
     </div>
   );
 };
