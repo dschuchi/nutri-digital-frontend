@@ -11,6 +11,7 @@ import Hydration from '../pages/Hydration';
 import { Professionals } from '../pages/Professionals';
 import ConsumedEntries from '../pages/FoodConsumed';
 import { Chat } from '../components/professionals/Chat';
+import SitesPage from '../pages/PlaceSearch'
 
 function AppRoutes() {
     return (
@@ -31,6 +32,7 @@ function AppRoutes() {
                 <Route path="/profesionales" element={<Professionals />} />
                 <Route path="/alimentos-consumidos" element={<ConsumedEntries />} />                
                 <Route path="/chat" element={<Chat />} />
+                <Route path="/lugares" element={<SitesPage />} />
             </Route>
         </Routes>
     );
