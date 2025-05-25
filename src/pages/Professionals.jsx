@@ -126,7 +126,6 @@ export function Professionals() {
                 dataSource={filteredProfessionals}
                 columns={columns}
                 rowKey="key"
-                pagination={false}
                 locale={{ emptyText: <Empty description="No se encontraron profesionales." /> }}
             />
         </div>
