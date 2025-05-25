@@ -123,7 +123,23 @@ const Goals = () => {
         }
     }, [microNutrientGoals, formMicro]);
 
-
+    const validateMacroSum = (_, value) => {
+        const values = formMacro.getFieldsValue();
+        const total =
+            Number(values.total_carbs || 0) +
+            Number(values.total_fat || 0) +
+            Number(values.protein || 0);
+        if (
+            values.total_carbs !== undefined &&
+            values.total_fat !== undefined &&
+            values.protein !== undefined
+        ) {
+            if (total !== 100) {
+                return Promise.reject('La suma de carbohidratos, grasas y proteínas debe ser exactamente 100%');
+            }
+        }
+        return Promise.resolve();
+    };
 
     return (
         <div>
@@ -165,7 +181,10 @@ const Goals = () => {
                                                         style={{ margin: 0 }}
                                                         rules={[
                                                             { required: true, message: 'Campo requerido' },
-                                                            { type: 'number', min: 1, message: 'Debe ser mayor a 1' }
+                                                            { type: 'number', min: 1, message: 'Debe ser mayor a 1' },
+                                                            ...(item.key === 'total_carbs' || item.key === 'total_fat' || item.key === 'protein'
+                                                                ? [{ validator: validateMacroSum }]
+                                                                : [])
                                                         ]}
                                                     >
                                                         <InputNumber suffix={item.unit} />
