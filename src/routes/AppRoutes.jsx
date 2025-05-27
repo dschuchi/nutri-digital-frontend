@@ -13,6 +13,7 @@ import ConsumedEntries from '../pages/FoodConsumed';
 import { Chat } from '../components/professionals/Chat';
 import SitesPage from '../pages/PlaceSearch'
 import { Patients } from '../pages/Patients';
+import { Requests } from '../pages/Requests';
 
 function AppRoutes() {
     return (
@@ -35,6 +36,7 @@ function AppRoutes() {
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/lugares" element={<SitesPage />} />
                 <Route path="/patients" element={<Patients />} />
+                <Route path="/requests" element={<Requests />} />
             </Route>
         </Routes>
     );
