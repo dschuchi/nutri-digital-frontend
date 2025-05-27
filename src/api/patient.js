@@ -8,8 +8,8 @@ export async function getMyProfessional(id) {
     return res;
 }
 
-export async function getMyPatient(id) {
-    const res = await httpClient.get(`/patient/mypatient?id=${id}`);	
+export async function getMyPatients(id) {
+    const res = await httpClient.get(`/patient/mypatients?id=${id}`);	
     if (!res) {
         throw new Error("Failed to fetch patient data");
     }
