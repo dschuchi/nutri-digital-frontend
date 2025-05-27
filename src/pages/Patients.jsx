@@ -4,7 +4,7 @@ import { getMyPatients } from '../api/patient';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getProfessionals } from '../api/professional';
-import { approveRequest, getRequestProfessional } from '../api/requestProfessional';
+import { approveRequest, cancelRequest, getRequestProfessional } from '../api/requestProfessional';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -22,6 +22,14 @@ export function Patients() {
             .then()
             .catch((error) => {
                 console.error("Error al aprobar la solicitud:", error);
+            });
+    }
+
+    function handleReject(idRequest) {
+        cancelRequest(idRequest)
+            .then()
+            .catch((error) => {
+                console.error("Error al rechazar la solicitud:", error);
             });
     }
 
@@ -45,9 +53,14 @@ export function Patients() {
             title: 'Acciones',
             key: 'actions',
             render: (_, record) => (
-                <Button onClick={() => handleApprove(record.key)}>
-                    Aprobar
-                </Button>
+                <>
+                    <Button onClick={() => handleApprove(record.key)}>
+                        Aprobar
+                    </Button>
+                    <Button onClick={() => handleReject(record.key)}>
+                        Rechazar
+                    </Button>
+                </>
             ),
         },
     ];
