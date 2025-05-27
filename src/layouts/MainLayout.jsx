@@ -18,7 +18,8 @@ function MainLayout() {
         { key: 'objetivos', label: 'Objetivos' },
         { key: 'hidratacion', label: 'Hidratación' },
         { key: 'profesionales', label: 'Profesionales' },
-        { key: 'lugares', label: 'Lugares' }
+        { key: 'patients', label: 'Pacientes' },
+        { key: 'lugares', label: 'Lugares' },
     ];
 
     const moreMenuItems = [

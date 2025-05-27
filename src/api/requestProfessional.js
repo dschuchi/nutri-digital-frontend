@@ -20,8 +20,8 @@ export async function approveRequest(idRequest) {
 
 // TODO esto se llama cada 'x' segundos, 
 // sirve para que el profesional vea las solicitudes pendientes
-export async function getRequestProfessional() {
-    const res = await httpClient.get('/request/professional');
+export async function getRequestProfessional(idProfessional) {
+    const res = await httpClient.get(`/request/professional?id=${idProfessional}`);
     if (!res) throw new Error('Failed to fetch professional requests');
     return res;
 }
