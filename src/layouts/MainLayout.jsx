@@ -89,9 +89,19 @@ function MainLayout() {
                     </Dropdown>
                 </Flex>
             </Header>
-            <Content style={{ flex: 1, margin: '20px' }}>
-                <Outlet />
+            <Content style={{ flex: 1, background: '#f5f5f5' }}>
+                <div
+                    style={{
+                    maxWidth: 1280,
+                    margin: '20px auto',
+                    padding: '0 16px',
+                    width: '100%',
+                    }}
+                >
+                    <Outlet />
+                </div>
             </Content>
+
         </Layout>
     );
 }

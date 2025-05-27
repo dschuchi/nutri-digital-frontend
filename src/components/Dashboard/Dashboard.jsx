@@ -37,7 +37,7 @@ const Dashboard = () => {
   if (!data) return <div>Cargando...</div>;
 
   return (
-    <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+    <div>
       <DashboardContent
         data={data}
         agua={agua}
