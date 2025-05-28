@@ -1,9 +1,8 @@
-// pages/UserChat.jsx
 import { useEffect, useState } from 'react';
 import { getMyProfessional } from '../../api/patient';
 import { useAuth } from '../../context/AuthContext';
 import { Chat } from './Chat';
-import { Typography } from 'antd';
+import { Button, Flex, Typography } from 'antd';
 
 export function UserChat() {
     const { user } = useAuth();
@@ -12,7 +11,6 @@ export function UserChat() {
     useEffect(() => {
         getMyProfessional(user.id)
             .then(res => {
-                console.log("Respuesta getMyProfessional:", res.data);
                 if (res.data?.length > 0) {
                     setTargetId(res.data[0].id);
                 }
@@ -23,8 +21,18 @@ export function UserChat() {
     }, [user.id]);
 
     return (
-        <div style={{ padding: '16px' }}>
-            <Typography.Title level={3}>Chat con tu profesional</Typography.Title>
+        <div>
+            <Flex justify='space-between'>
+                <Typography.Title level={3}>Chat con tu profesional</Typography.Title>
+                <Flex>
+                    <Button style={{marginInline: 10}} disabled>
+                        Reseñar
+                    </Button>
+                    <Button disabled>
+                        Cambiar profesional
+                    </Button>
+                </Flex>
+            </Flex>
             {targetId ? (
                 <Chat targetUserId={targetId} />
             ) : (
