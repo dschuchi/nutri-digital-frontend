@@ -6,6 +6,12 @@ export async function login(username, password) {
     return res;
 }
 
+export async function getUser(id) {
+    const res = await httpClient.get(`/user/${id}`);
+    if (!res) throw new Error('Get users failed');
+    return res;
+}
+
 export async function register(newUser) {
     const res = await httpClient.post("/user", newUser);
     return res;
