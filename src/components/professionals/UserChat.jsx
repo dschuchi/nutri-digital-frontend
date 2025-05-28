@@ -2,11 +2,22 @@ import { useEffect, useState } from 'react';
 import { getMyProfessional } from '../../api/patient';
 import { useAuth } from '../../context/AuthContext';
 import { Chat } from './Chat';
-import { Button, Flex, Typography } from 'antd';
+import { Button, Flex, Space, Typography } from 'antd';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { cancelRequest } from '../../api/requestProfessional';
 
 export function UserChat() {
     const { user } = useAuth();
     const [targetId, setTargetId] = useState(null);
+    const [searchParams] = useSearchParams();
+    const reqId = searchParams.get('req')
+    const navigate = useNavigate()
+
+    function handleCancel() {
+        cancelRequest(reqId)
+            .then(res => navigate('/profesionales'))
+            .catch(err => console.error("Error al cancelar solicitud"))
+    }
 
     useEffect(() => {
         getMyProfessional(user.id)
@@ -25,7 +36,7 @@ export function UserChat() {
             <Flex justify='space-between'>
                 <Typography.Title level={3}>Chat con tu profesional</Typography.Title>
                 <Flex>
-                    <Button style={{marginInline: 10}} disabled>
+                    <Button style={{ marginInline: 10 }} disabled>
                         Reseñar
                     </Button>
                     <Button disabled>
@@ -36,7 +47,10 @@ export function UserChat() {
             {targetId ? (
                 <Chat targetUserId={targetId} />
             ) : (
-                <Typography.Text>Tu solicitud aún no fue aceptada.</Typography.Text>
+                <Space>
+                    <Typography.Text>Tu solicitud aún no fue aceptada.</Typography.Text>
+                    <Button onClick={handleCancel}> Cancelar solicitud </Button>
+                </Space>
             )}
         </div>
     );

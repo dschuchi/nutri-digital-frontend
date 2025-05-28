@@ -81,7 +81,7 @@ export function Professionals() {
             .then((res) => {
                 if (res.data.length > 0) {
                     setHasProfessionals(true);
-                    navigate('/chat')
+                    navigate(`/chat?req=${res.data[0].id}`)
                 }
             })
             .catch((res) => {
