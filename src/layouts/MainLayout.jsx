@@ -18,6 +18,7 @@ function MainLayout() {
         { key: 'objetivos', label: 'Objetivos' },
         { key: 'hidratacion', label: 'Hidratación' },
         ...(user.professional ? [{ key: 'patients', label: 'Pacientes' }] : [{ key: 'profesionales', label: 'Profesionales' }]),
+        ...(user.professional ? [{ key: 'requests', label: 'Solicitudes' }] : []),
         { key: 'lugares', label: 'Lugares' },
     ];
 
@@ -92,10 +93,10 @@ function MainLayout() {
             <Content style={{ flex: 1, background: '#f5f5f5' }}>
                 <div
                     style={{
-                    maxWidth: 1280,
-                    margin: '20px auto',
-                    padding: '0 16px',
-                    width: '100%',
+                        maxWidth: 1280,
+                        margin: '20px auto',
+                        padding: '0 16px',
+                        width: '100%',
                     }}
                 >
                     <Outlet />
