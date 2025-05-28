@@ -124,7 +124,7 @@ const SitesPage = () => {
       sorter: (a, b) => a.distance - b.distance,
     },
     {
-      title: 'Link',
+      title: 'Mapa',
       dataIndex: 'href',
       key: 'href',
       render: (href) => (
