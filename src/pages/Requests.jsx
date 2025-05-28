@@ -1,12 +1,7 @@
-import { Button, Empty, Flex, Input, Select, Table, Typography } from 'antd';
+import { Button, Empty, Table, Typography } from 'antd';
 import { useEffect, useState } from 'react';
-import { getMyPatients } from '../api/patient';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { approveRequest, cancelRequest, getRequestProfessional } from '../api/requestProfessional';
-
-const { Search } = Input;
-const { Option } = Select;
 
 export function Requests() {
     const [patients, setPatients] = useState([]);
@@ -40,16 +35,11 @@ export function Requests() {
             key: 'lastname',
         },
         {
-            title: 'Estado',
-            dataIndex: 'state',
-            key: 'state',
-        },
-        {
             title: 'Acciones',
             key: 'actions',
             render: (_, record) => (
                 <>
-                    <Button onClick={() => handleApprove(record.key)}>
+                    <Button onClick={() => handleApprove(record.key)} style={{marginInline: 10}}>
                         Aprobar
                     </Button>
                     <Button onClick={() => handleReject(record.key)}>
@@ -67,7 +57,6 @@ export function Requests() {
                     key: item.id,
                     name: item.name,
                     lastname: item.lastname,
-                    state: item.state,
                 }));
                 setPatients(mappedData);
             })
@@ -76,20 +65,11 @@ export function Requests() {
             });
     }, []);
 
-
-    const statuses = [...new Set(patients.map(p => p.state).filter(Boolean))];
-
-    const filteredPatients = patients.filter((p) => {
-        const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
-        const matchesStatus = !statusFilter || p.state === statusFilter;
-        return matchesSearch && matchesStatus;
-    });
-
     return (
         <div>
             <Typography.Title level={2}>Solicitudes de pacientes</Typography.Title>
             <Table
-                dataSource={filteredPatients}
+                dataSource={patients}
                 columns={columns}
                 rowKey="key"
                 locale={{ emptyText: <Empty description="No se encontraron pacientes." /> }}

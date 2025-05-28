@@ -14,11 +14,10 @@ function MainLayout() {
     };
 
     const menuItems = [
-        { key: 'home', label: 'Home' },
+        { key: 'home', label: 'Inicio' },
         { key: 'objetivos', label: 'Objetivos' },
         { key: 'hidratacion', label: 'Hidratación' },
-        { key: 'profesionales', label: 'Profesionales' },
-        { key: 'patients', label: 'Pacientes' },
+        ...(user.professional ? [{ key: 'patients', label: 'Pacientes' }] : [{ key: 'profesionales', label: 'Profesionales' }]),
         { key: 'lugares', label: 'Lugares' },
     ];
 
