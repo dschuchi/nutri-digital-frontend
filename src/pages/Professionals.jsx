@@ -58,7 +58,17 @@ export function Professionals() {
     function handleSendRequest(professionalId) {
         sendRequest(professionalId)
             .then((res) => {
-                navigate('/chat');
+                // TODO podria estar mejor
+                getRequestClient(user.id)
+                    .then((res) => {
+                        if (res.data.length > 0) {
+                            setHasProfessionals(true);
+                            navigate(`/chat?req=${res.data[0].id}`)
+                        }
+                    })
+                    .catch((res) => {
+                        console.error("Error fetching request client data:", res);
+                    });
             })
             .catch((error) => {
                 console.error("Error sending request:", error);
