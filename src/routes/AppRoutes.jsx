@@ -10,7 +10,7 @@ import Goals from '../pages/Goals';
 import Hydration from '../pages/Hydration';
 import { Professionals } from '../pages/Professionals';
 import ConsumedEntries from '../pages/FoodConsumed';
-import { Chat } from '../components/professionals/Chat';
+import { ChatPage } from '../pages/ChatPage';
 import SitesPage from '../pages/PlaceSearch'
 import { Patients } from '../pages/Patients';
 import { Requests } from '../pages/Requests';
@@ -33,7 +33,7 @@ function AppRoutes() {
                 <Route path="/hidratacion" element={<Hydration />} />
                 <Route path="/profesionales" element={<Professionals />} />
                 <Route path="/alimentos-consumidos" element={<ConsumedEntries />} />
-                <Route path="/chat" element={<Chat />} />
+                <Route path="/chat" element={<ChatPage />} />
                 <Route path="/lugares" element={<SitesPage />} />
                 <Route path="/patients" element={<Patients />} />
                 <Route path="/requests" element={<Requests />} />

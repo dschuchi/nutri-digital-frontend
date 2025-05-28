@@ -7,7 +7,7 @@ import { Layout, Menu, Typography, Empty } from 'antd';
 
 const { Sider, Content } = Layout;
 
-export function ProfessionalChat() {
+export function ProfessionalChat({ forcedTargetId }) {
     const { user } = useAuth();
     const [patients, setPatients] = useState([]);
     const [selectedPatientId, setSelectedPatientId] = useState(null);
@@ -15,16 +15,15 @@ export function ProfessionalChat() {
     useEffect(() => {
         getMyPatients(user.id)
             .then(res => {
-                console.log("Respuesta getMyPatients:", res.data);
-                setPatients(res.data || []);
-                if (res.data.length > 0) {
-                    setSelectedPatientId(res.data[0].id);
+                const list = res.data || [];
+                setPatients(list);
+                if (list.length > 0) {
+                    const id = forcedTargetId || list[0].id;
+                    setSelectedPatientId(id);
                 }
             })
-            .catch(err => {
-                console.error("Error al obtener pacientes:", err);
-            });
-    }, [user.id]);
+            .catch(console.error);
+    }, [user.id, forcedTargetId]);
 
     return (
         <Layout style={{ minHeight: '80vh', border: '1px solid #f0f0f0', borderRadius: 8 }}>

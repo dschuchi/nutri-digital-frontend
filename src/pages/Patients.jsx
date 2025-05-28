@@ -2,6 +2,7 @@ import { Button, Empty, Flex, Input, Select, Table, Typography } from 'antd';
 import { useEffect, useState } from 'react';
 import { getMyPatients } from '../api/patient';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const { Search } = Input;
 
@@ -9,6 +10,11 @@ export function Patients() {
     const [search, setSearch] = useState('');
     const [patients, setPatients] = useState([]);
     const { user } = useAuth()
+    const navigate = useNavigate();
+
+    const handleSendMessage = (idPatient) => {
+        navigate(`/chat?target=${idPatient}`);
+    };
 
     const columns = [
         {
@@ -26,7 +32,7 @@ export function Patients() {
             key: 'actions',
             render: (_, record) => (
                 <>
-                    <Button>
+                    <Button onClick={()=>handleSendMessage(record.key)}>
                         Enviar mensaje
                     </Button>
                 </>
