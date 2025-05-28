@@ -9,7 +9,9 @@ export function Requests() {
 
     function handleApprove(idRequest) {
         approveRequest(idRequest)
-            .then()
+            .then(
+                loadRequest()
+            )
             .catch((error) => {
                 console.error("Error al aprobar la solicitud:", error);
             });
@@ -17,7 +19,9 @@ export function Requests() {
 
     function handleReject(idRequest) {
         cancelRequest(idRequest)
-            .then()
+            .then(
+                loadRequest()
+            )
             .catch((error) => {
                 console.error("Error al rechazar la solicitud:", error);
             });
@@ -39,7 +43,7 @@ export function Requests() {
             key: 'actions',
             render: (_, record) => (
                 <>
-                    <Button onClick={() => handleApprove(record.key)} style={{marginInline: 10}}>
+                    <Button onClick={() => handleApprove(record.key)} style={{ marginInline: 10 }}>
                         Aprobar
                     </Button>
                     <Button onClick={() => handleReject(record.key)}>
@@ -50,7 +54,7 @@ export function Requests() {
         },
     ];
 
-    useEffect(() => {
+    function loadRequest() {
         getRequestProfessional(user.id)
             .then((res) => {
                 const mappedData = res.data.map((item) => ({
@@ -63,6 +67,10 @@ export function Requests() {
             .catch((error) => {
                 console.error("Error al obtener los pacientes:", error);
             });
+    }
+
+    useEffect(() => {
+        loadRequest()
     }, []);
 
     return (
