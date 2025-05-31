@@ -1,6 +1,6 @@
 import { Button, Flex, Form, InputNumber, List, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { getExerciseGoals } from "../../api/exerciseGoals";
+import { getExerciseGoals, updateExerciseGoals } from "../../api/exerciseGoals";
 
 const ActivityGoals = () => {
     const [activityGoals, setActivityGoals] = useState([]);
@@ -25,12 +25,21 @@ const ActivityGoals = () => {
             .validateFields()
             .then(
                 values => {
-                    //TODO agregar petición al back
+                    updateExerciseGoals(values)
+                        .then((res) => {
+                            setActivityGoals([
+                                { name: 'Calorías quemadas / Semana', value: res.data[0].calories_burned_goal, unit: 'Cal', key: 'calories_burned_goal' }
+                            ])
+                        }).catch((err) => {
+                            console.error('Error updating exercise goals:', err);
+
+                        })
+                    setEdit(false)
                 }
             ).catch(err => {
                 console.error("Error updating activity goals:", err);
             })
-        setEdit(false)
+
     }
 
     const handleCancel = () => {

@@ -9,8 +9,8 @@ export async function getExerciseGoals() {
 }
 
 
-export async function updateExerciseGoals() {
-    const res = await httpClient.patch('/exercise-goals/update');
+export async function updateExerciseGoals(data) {
+    const res = await httpClient.patch('/exercise-goals/update', data);
     if (!res) {
         throw new Error("Failed to fetch exercise goals");
     }
