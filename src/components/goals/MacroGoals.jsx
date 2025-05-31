@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { Button, Flex, Form, InputNumber, List, Typography } from "antd";
+import { Alert, Button, Flex, Form, InputNumber, List, Typography } from "antd";
 import { getMacroNutrientGoals, updateMacroNutrientGoals } from "../../api/nutrientGoals";
 
 
@@ -8,6 +8,8 @@ const MacroGoals = () => {
     const [macroNutrientGoals, setMacroNutrientGoals] = useState([]);
     const [editMacro, setEditMacro] = useState(false);
     const { user } = useAuth();
+    const [showError, setShowError] = useState(false);
+
 
     useEffect(() => {
         getMacroNutrientGoals(user.id)
@@ -42,11 +44,26 @@ const MacroGoals = () => {
                         console.error("Error updating nutrient goals:", err);
                     });
                 setEditMacro(false);
+                setShowError(false)
+
             })
             .catch((info) => {
+                setShowError(true)
                 console.log('Validación fallida:', info);
             });
     };
+
+    const handleCancel = () => {
+        setEditMacro(false)
+        setShowError(false)
+
+        const originalValues = Object.fromEntries(
+            macroNutrientGoals.map(item => [item.key, item.value])
+        );
+        formMacro.resetFields()
+        formMacro.setFieldsValue(originalValues);
+    }
+
 
     useEffect(() => {
         if (macroNutrientGoals.length > 0) {
@@ -70,7 +87,7 @@ const MacroGoals = () => {
             values.protein !== undefined
         ) {
             if (total !== 100) {
-                return Promise.reject('La suma de carbohidratos, grasas y proteínas debe ser exactamente 100%');
+                return Promise.reject();
             }
         }
         return Promise.resolve();
@@ -85,51 +102,77 @@ const MacroGoals = () => {
                     {editMacro ? (
                         <>
                             <Button onClick={handleSaveMacro}>Guardar</Button>
-                            <Button onClick={() => setEditMacro(false)}>Cancelar</Button>
+                            <Button onClick={handleCancel}>Cancelar</Button>
                         </>
                     ) : (
                         <Button onClick={() => setEditMacro(true)}>Editar</Button>
                     )}
                 </div>
             </Flex>
-            <Form
-                form={formMacro}
-                name="macro-goals">
-                <List
-                    bordered
-                    dataSource={macroNutrientGoals}
-                    renderItem={(item) => (
-                        <List.Item>
-                            <div>
-                                <Typography.Text strong>
-                                    {item.name}
-                                </Typography.Text>
-                            </div>
-                            <div>
-                                {editMacro ? (
-                                    <Form.Item
-                                        name={item.key}
-                                        style={{ margin: 0 }}
-                                        rules={[
-                                            { required: true, message: 'Campo requerido' },
-                                            { type: 'number', min: 1, message: 'Debe ser mayor a 1' },
-                                            ...(item.key === 'total_carbs' || item.key === 'total_fat' || item.key === 'protein'
-                                                ? [{ validator: validateMacroSum }]
-                                                : [])
-                                        ]}
-                                    >
-                                        <InputNumber suffix={item.unit} />
-                                    </Form.Item>
-                                ) : (
-                                    <span>
-                                        {item.value} {item.unit}
-                                    </span>
-                                )}
-                            </div>
-                        </List.Item>
-                    )}
-                />
-            </Form>
+            <Form form={formMacro} name="macro-goals">
+                {showError && (
+                    <Form.Item>
+                        <Alert message="La suma de carbohidratos, grasas y proteínas debe ser exactamente 100%" type="error" showIcon closable onClose={() => setShowError(false)} />
+                    </Form.Item>
+                )}
+                <List bordered>
+                    <List.Item>
+                        <Typography.Text>
+                            Calorías
+                        </Typography.Text>
+                        <Form.Item
+                            name='calories'
+                            style={{ margin: 0, textAlign: 'right' }}
+                            rules={[
+                                { required: true, message: 'Campo requerido' },
+                                { type: 'number', min: 1, message: 'Debe ser mayor a 0' }]}>
+                            <InputNumber readOnly={!editMacro} suffix='' />
+                        </Form.Item>
+                    </List.Item>
+                    <List.Item>
+                        <Typography.Text>
+                            Carbohidratos
+                        </Typography.Text>
+                        <Form.Item
+                            name='total_carbs'
+                            style={{ margin: 0, textAlign: 'right' }}
+                            rules={[
+                                { required: true, message: 'Campo requerido' },
+                                { type: 'number', min: 1, message: 'Debe ser mayor a 0' },
+                                { validator: validateMacroSum }]}>
+                            <InputNumber readOnly={!editMacro} suffix='%' />
+                        </Form.Item>
+                    </List.Item>
+                    <List.Item>
+                        <Typography.Text>
+                            Grasas
+                        </Typography.Text>
+                        <Form.Item
+                            name='total_fat'
+                            style={{ margin: 0, textAlign: 'right' }}
+                            rules={[
+                                { required: true, message: 'Campo requerido' },
+                                { type: 'number', min: 1, message: 'Debe ser mayor a 0' },
+                                { validator: validateMacroSum }]}>
+                            <InputNumber readOnly={!editMacro} suffix='%' />
+                        </Form.Item>
+                    </List.Item>
+                    <List.Item>
+                        <Typography.Text>
+                            Proteínas
+                        </Typography.Text>
+                        <Form.Item
+                            name='protein'
+                            style={{ margin: 0, textAlign: 'right' }}
+                            rules={[
+                                { required: true, message: 'Campo requerido' },
+                                { type: 'number', min: 1, message: 'Debe ser mayor a 0' },
+                                { validator: validateMacroSum }]}>
+                            <InputNumber readOnly={!editMacro} suffix='%' />
+                        </Form.Item>
+                    </List.Item>
+                </List>
+            </Form >
         </>
     );
 };
