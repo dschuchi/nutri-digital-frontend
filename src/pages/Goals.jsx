@@ -1,5 +1,4 @@
-import { Flex, List, Typography } from "antd";
-import { useState } from "react";
+import { Flex, Typography } from "antd";
 import MacroGoals from "../components/goals/MacroGoals";
 import MicroGoals from "../components/goals/MicroGoals";
 import ActivityGoals from "../components/goals/ActivityGoals";
