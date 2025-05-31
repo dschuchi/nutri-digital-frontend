@@ -1,4 +1,4 @@
-import { Flex, Typography } from "antd";
+import { Flex, Image, Typography } from "antd";
 import MacroGoals from "../components/goals/MacroGoals";
 import MicroGoals from "../components/goals/MicroGoals";
 import ActivityGoals from "../components/goals/ActivityGoals";
@@ -16,6 +16,14 @@ const Goals = () => {
 
                         <div>
                             <ActivityGoals />
+                        </div>
+
+                        <div>
+                            <Image
+                                style={{ mixBlendMode: "multiply" }}
+                                src='goals.png'
+                                preview={false}
+                            />
                         </div>
                     </Flex>
                 </div>
