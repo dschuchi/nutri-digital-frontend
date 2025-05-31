@@ -126,7 +126,7 @@ const MacroGoals = () => {
                             rules={[
                                 { required: true, message: 'Campo requerido' },
                                 { type: 'number', min: 1, message: 'Debe ser mayor a 0' }]}>
-                            <InputNumber readOnly={!editMacro} controls={false} suffix='' />
+                            <InputNumber precision={0} readOnly={!editMacro} controls={false} suffix='' />
                         </Form.Item>
                     </List.Item>
                     <List.Item>
@@ -140,7 +140,7 @@ const MacroGoals = () => {
                                 { required: true, message: 'Campo requerido' },
                                 { type: 'number', min: 1, message: 'Debe ser mayor a 0' },
                                 { validator: validateMacroSum }]}>
-                            <InputNumber readOnly={!editMacro} controls={false} suffix='%' />
+                            <InputNumber precision={0} readOnly={!editMacro} controls={false} suffix='%' />
                         </Form.Item>
                     </List.Item>
                     <List.Item>
@@ -154,7 +154,7 @@ const MacroGoals = () => {
                                 { required: true, message: 'Campo requerido' },
                                 { type: 'number', min: 1, message: 'Debe ser mayor a 0' },
                                 { validator: validateMacroSum }]}>
-                            <InputNumber readOnly={!editMacro} controls={false} suffix='%' />
+                            <InputNumber precision={0} readOnly={!editMacro} controls={false} suffix='%' />
                         </Form.Item>
                     </List.Item>
                     <List.Item>
@@ -168,7 +168,7 @@ const MacroGoals = () => {
                                 { required: true, message: 'Campo requerido' },
                                 { type: 'number', min: 1, message: 'Debe ser mayor a 0' },
                                 { validator: validateMacroSum }]}>
-                            <InputNumber readOnly={!editMacro} controls={false} suffix='%' />
+                            <InputNumber precision={0} readOnly={!editMacro} controls={false} suffix='%' />
                         </Form.Item>
                     </List.Item>
                 </List>

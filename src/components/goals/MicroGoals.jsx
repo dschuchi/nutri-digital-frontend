@@ -118,7 +118,7 @@ const MicroGoals = () => {
                                 rules={[
                                     { required: true, message: 'Campo requerido' },
                                     { type: 'number', min: 1, message: 'Debe ser mayor a 0' }]}>
-                                <InputNumber readOnly={!editMicro} controls={false} suffix={item.unit} />
+                                <InputNumber precision={0} readOnly={!editMicro} controls={false} suffix={item.unit} />
                             </Form.Item>
                         </List.Item>
                     )}
