@@ -67,6 +67,14 @@ const MicroGoals = () => {
             });
     }
 
+     const handleCancel = () => {
+        setEditMicro(false)
+        const originalValues = Object.fromEntries(
+            microNutrientGoals.map(item => [item.key, item.value])
+        );
+        formMicro.resetFields()
+        formMicro.setFieldsValue(originalValues);
+    }
 
     useEffect(() => {
         if (microNutrientGoals.length > 0) {
@@ -85,7 +93,7 @@ const MicroGoals = () => {
                     {editMicro ? (
                         <>
                             <Button onClick={handleSaveMicro}>Guardar</Button>
-                            <Button onClick={() => setEditMicro(false)}>Cancelar</Button>
+                            <Button onClick={handleCancel}>Cancelar</Button>
                         </>
                     ) : (
                         <Button onClick={() => setEditMicro(true)}>Editar</Button>
@@ -100,29 +108,18 @@ const MicroGoals = () => {
                     dataSource={microNutrientGoals}
                     renderItem={(item) => (
                         <List.Item>
-                            <div>
-                                <Typography.Text strong>
-                                    {item.name}
-                                </Typography.Text>
-                            </div>
-                            <div>
-                                {editMicro ? (
-                                    <Form.Item
-                                        name={item.key}
-                                        style={{ margin: 0 }}
-                                        rules={[
-                                            { required: true, message: 'Campo requerido' },
-                                            { type: 'number', min: 1, message: 'Debe ser mayor a 1' }
-                                        ]}
-                                    >
-                                        <InputNumber suffix={item.unit} />
-                                    </Form.Item>
-                                ) : (
-                                    <span>
-                                        {item.value} {item.unit}
-                                    </span>
-                                )}
-                            </div>
+                            <Typography.Text strong>
+                                {item.name}
+                            </Typography.Text>
+
+                            <Form.Item
+                                name={item.key}
+                                style={{ margin: 0, textAlign: 'right' }}
+                                rules={[
+                                    { required: true, message: 'Campo requerido' },
+                                    { type: 'number', min: 1, message: 'Debe ser mayor a 0' }]}>
+                                <InputNumber readOnly={!editMicro} controls={false} suffix={item.unit} />
+                            </Form.Item>
                         </List.Item>
                     )}
                 />
