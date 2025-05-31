@@ -2,9 +2,9 @@ import { Flex, List, Typography } from "antd";
 import { useState } from "react";
 import MacroGoals from "../components/goals/MacroGoals";
 import MicroGoals from "../components/goals/MicroGoals";
+import ActivityGoals from "../components/goals/ActivityGoals";
 
 const Goals = () => {
-    const [activityGoals, setActivityGoals] = useState([]);
     return (
         <div>
             <Typography.Title level={2}>Objetivos</Typography.Title>
@@ -16,23 +16,7 @@ const Goals = () => {
                         </div>
 
                         <div>
-                            <Typography.Title level={4}>Preparación física</Typography.Title>
-                            <List
-                                bordered
-                                dataSource={activityGoals}
-                                renderItem={(item) => (
-                                    <List.Item>
-                                        <div>
-                                            <Typography.Text strong>
-                                                {item.name}
-                                            </Typography.Text>
-                                        </div>
-                                        <div>
-                                            {item.value} {item.unit}
-                                        </div>
-                                    </List.Item>
-                                )}
-                            />
+                            <ActivityGoals />
                         </div>
                     </Flex>
                 </div>
