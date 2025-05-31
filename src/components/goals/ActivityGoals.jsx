@@ -1,15 +1,21 @@
 import { Button, Flex, Form, InputNumber, List, Typography } from "antd";
 import { useEffect, useState } from "react";
+import { getExerciseGoals } from "../../api/exerciseGoals";
 
 const ActivityGoals = () => {
     const [activityGoals, setActivityGoals] = useState([]);
     const [edit, setEdit] = useState(false);
 
     useEffect(() => {
-        //TODO agregar petición al back
-        setActivityGoals(
-            [{ name: 'Calorías quemadas / Semana', value: 0, unit: 'Cal', key: 'burned_calories' }]
-        )
+        getExerciseGoals()
+            .then(res => {
+                setActivityGoals(
+                    [{ name: 'Calorías quemadas / Semana', value: res.data[0].calories_burned_goal, unit: 'Cal', key: 'calories_burned_goal' }]
+                )
+            })
+            .catch(err => {
+                console.error('Error loading exercise goals: ', err);
+            })
     }, [])
 
     const [formActivity] = Form.useForm();
@@ -26,6 +32,7 @@ const ActivityGoals = () => {
             })
         setEdit(false)
     }
+
     const handleCancel = () => {
         setEdit(false)
         const originalValues = Object.fromEntries(
@@ -34,6 +41,15 @@ const ActivityGoals = () => {
         formActivity.resetFields()
         formActivity.setFieldsValue(originalValues);
     }
+
+    useEffect(() => {
+        if (activityGoals.length > 0) {
+            const formValues = Object.fromEntries(
+                activityGoals.map(item => [item.key, item.value])
+            );
+            formActivity.setFieldsValue(formValues);
+        }
+    }, [activityGoals, formActivity]);
 
     return (
         <>
