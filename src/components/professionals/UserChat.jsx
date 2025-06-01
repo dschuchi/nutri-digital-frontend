@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { getMyProfessional } from '../../api/patient';
+import { deletePatient, getMyProfessional } from '../../api/patient';
 import { useAuth } from '../../context/AuthContext';
 import { Chat } from './Chat';
-import { Button, Flex, Typography } from 'antd';
+import { Button, Flex, message, Typography } from 'antd';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { cancelRequest } from '../../api/requestProfessional';
 
@@ -31,6 +31,16 @@ export function UserChat() {
             });
     }, [user.id]);
 
+    const handleChangeProfessional = () => {
+        deletePatient(user.id)
+            .then(() => {
+                navigate('/profesionales')
+            })
+            .catch((err) => {
+                console.error('Error al cambiar profesional: ', err);
+            })
+    }
+
     return (
         <div>
             <Flex justify='space-between'>
@@ -41,7 +51,7 @@ export function UserChat() {
                             <Button style={{ marginInline: 10 }} disabled>
                                 Reseñar
                             </Button>
-                            <Button disabled>
+                            <Button onClick={handleChangeProfessional}>
                                 Cambiar profesional
                             </Button>
                         </>
