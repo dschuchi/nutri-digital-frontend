@@ -20,6 +20,7 @@ function MainLayout() {
         ...(user.professional ? [{ key: 'patients', label: 'Pacientes' }] : [{ key: 'profesionales', label: 'Profesionales' }]),
         ...(user.professional ? [{ key: 'requests', label: 'Solicitudes' }] : []),
         { key: 'lugares', label: 'Lugares' },
+        { key: 'ejercicios', label: 'Ejercicios' },
     ];
 
     const moreMenuItems = [

@@ -14,6 +14,7 @@ import { ChatPage } from '../pages/ChatPage';
 import SitesPage from '../pages/PlaceSearch'
 import { Patients } from '../pages/Patients';
 import { Requests } from '../pages/Requests';
+import Exercise from '../pages/Exercise';
 
 function AppRoutes() {
     return (
@@ -37,6 +38,7 @@ function AppRoutes() {
                 <Route path="/lugares" element={<SitesPage />} />
                 <Route path="/patients" element={<Patients />} />
                 <Route path="/requests" element={<Requests />} />
+                <Route path="/ejercicios" element={<Exercise />} />
             </Route>
         </Routes>
     );
