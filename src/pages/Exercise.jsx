@@ -32,8 +32,6 @@ const Exercise = () => {
             });
     };
 
-    //const goalHydration = 2000;
-    //const totalHydration = hydrationHistory.reduce((acc, item) => acc + (item.cantidad || 0), 0);
     const sortedExerciseHistory = [...exerciseHistory].sort((a, b) => b.key - a.key);
 
     return (
