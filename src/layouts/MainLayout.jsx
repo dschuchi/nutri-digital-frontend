@@ -21,6 +21,7 @@ function MainLayout() {
         ...(user.professional ? [{ key: 'requests', label: 'Solicitudes' }] : []),
         { key: 'lugares', label: 'Lugares' },
         { key: 'ejercicios', label: 'Ejercicios' },
+        { key: 'reportes', label: 'Reportes' },
     ];
 
     const moreMenuItems = [

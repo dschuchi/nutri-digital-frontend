@@ -15,6 +15,7 @@ import SitesPage from '../pages/PlaceSearch'
 import { Patients } from '../pages/Patients';
 import { Requests } from '../pages/Requests';
 import Exercise from '../pages/Exercise';
+import Reports from '../pages/Reports';
 
 function AppRoutes() {
     return (
@@ -39,6 +40,7 @@ function AppRoutes() {
                 <Route path="/patients" element={<Patients />} />
                 <Route path="/requests" element={<Requests />} />
                 <Route path="/ejercicios" element={<Exercise />} />
+                <Route path="/reportes" element={<Reports />} />
             </Route>
         </Routes>
     );
