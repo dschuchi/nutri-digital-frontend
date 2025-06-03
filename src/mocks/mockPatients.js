@@ -5,7 +5,7 @@ export const mockPatients = [
     resumen: {
       caloriasConsumidas: 1800,
       caloriasObjetivo: 2200,
-      ejercicioTotalMinutos: 45,
+      caloriasEjercicio: 340,
       objetivosCumplidos: 4,
       totalObjetivos: 5,
     },
@@ -65,7 +65,7 @@ export const mockPatients = [
     resumen: {
       caloriasConsumidas: 2100,
       caloriasObjetivo: 2000,
-      ejercicioTotalMinutos: 30,
+      caloriasEjercicio: 400,
       objetivosCumplidos: 2,
       totalObjetivos: 4,
     },

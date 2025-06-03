@@ -17,7 +17,7 @@ export default function ObjetivosPaciente({ paciente }) {
           <Col span={12}>
             <Card title="Nutrición">
               <ul style={{ marginBottom: 0 }}>
-                <li>Calorías: {nutricion.calories} kcal</li>
+                <li>Calorías: {nutricion.calories} cal</li>
                 <li>Proteínas: {nutricion.protein} g</li>
                 <li>Grasas: {nutricion.total_fat} g</li>
                 <li>Carbohidratos: {nutricion.total_carbs} g</li>
@@ -29,7 +29,7 @@ export default function ObjetivosPaciente({ paciente }) {
         {ejercicio && (
           <Col span={12}>
             <Card title="Ejercicio">
-              <Text>Meta diaria: {ejercicio.calories_burned_goal} kcal quemadas</Text>
+              <Text>Meta diaria: {ejercicio.calories_burned_goal} cal quemadas</Text>
             </Card>
           </Col>
         )}

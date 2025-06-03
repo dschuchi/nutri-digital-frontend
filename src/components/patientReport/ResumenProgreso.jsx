@@ -8,46 +8,50 @@ export default function ResumenProgreso({ paciente }) {
   const {
     caloriasConsumidas,
     caloriasObjetivo,
-    ejercicioTotalMinutos,
+    caloriasEjercicio,
     objetivosCumplidos,
     totalObjetivos,
   } = paciente.resumen;
 
   return (
-    <>
-      <Row gutter={16}>
-        <Col span={8}>
-          <Card title="Calorías (nutrición)">
-            <Text>Consumidas: {caloriasConsumidas} kcal</Text><br />
-            <Text>Objetivo: {caloriasObjetivo} kcal</Text>
-            <Progress
-              percent={Math.min((caloriasConsumidas / caloriasObjetivo) * 100, 100)}
-              status={caloriasConsumidas > caloriasObjetivo ? 'exception' : 'normal'}
-            />
-          </Card>
-        </Col>
+    <Row gutter={[0, 16]} direction="vertical">
+      <Col span={24}>
+        <Card title="Calorías (nutrición)">
+          <Text>Consumidas: {caloriasConsumidas} cal</Text><br />
+          <Text>Objetivo: {caloriasObjetivo} cal</Text>
+          <Progress
+            percent={parseFloat(
+              (caloriasConsumidas / caloriasObjetivo) * 100
+            ).toFixed(2)}
+            status={caloriasConsumidas > caloriasObjetivo ? 'exception' : 'normal'}
+          />
+        </Card>
+      </Col>
 
-        <Col span={8}>
-          <Card title="Actividad física">
-            <Text>Total minutos: {ejercicioTotalMinutos}</Text>
-            <Progress
-              percent={Math.min((ejercicioTotalMinutos / 60) * 100, 100)}
-              showInfo={false}
-              status="active"
-            />
-          </Card>
-        </Col>
+      <Col span={24}>
+        <Card title="Ejercicio (calorías)">
+          <Text>Total calorías quemadas: {caloriasEjercicio} cal</Text><br />
+          <Text>Objetivo: {paciente.objetivoEjercicio?.calories_burned_goal} cal</Text>
+          <Progress
+            percent={parseFloat(
+              (caloriasEjercicio / paciente.objetivoEjercicio?.calories_burned_goal) * 100
+            ).toFixed(2)}
+            status="active"
+          />
+        </Card>
+      </Col>
 
-        <Col span={8}>
-          <Card title="Cumplimiento de objetivos">
-            <Text>{objetivosCumplidos} de {totalObjetivos} cumplidos</Text>
-            <Progress
-              percent={(objetivosCumplidos / totalObjetivos) * 100}
-              status="active"
-            />
-          </Card>
-        </Col>
-      </Row>
-    </>
+      <Col span={24}>
+        <Card title="Cumplimiento de objetivos">
+          <Text>{objetivosCumplidos} de {totalObjetivos} cumplidos</Text>
+          <Progress
+            percent={parseFloat(
+              (objetivosCumplidos / totalObjetivos) * 100
+            ).toFixed(2)}
+            status="active"
+          />
+        </Card>
+      </Col>
+    </Row>
   );
 }

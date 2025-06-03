@@ -14,31 +14,37 @@ export default function ComparacionObjetivos({ paciente }) {
     <>
       <Title level={4}>Comparación de objetivos vs resultados</Title>
 
-      <Row gutter={16}>
-        <Col span={12}>
+      <Row gutter={[0, 16]} direction="vertical">
+        <Col span={24}>
           <Card title="Nutrición (calorías)">
-            <Text>Consumidas: {resumen?.caloriasConsumidas} kcal</Text><br />
-            <Text>Objetivo: {objetivosNutricionales?.calories} kcal</Text>
+            <Text>Consumidas: {resumen?.caloriasConsumidas} cal</Text><br />
+            <Text>Objetivo: {objetivosNutricionales?.calories} cal</Text>
             <Progress
-              percent={Math.min(
-                (resumen.caloriasConsumidas / objetivosNutricionales.calories) * 100,
-                100
-              )}
-              status={resumen.caloriasConsumidas > objetivosNutricionales.calories ? 'exception' : 'normal'}
+              percent={parseFloat(
+                (resumen.caloriasConsumidas / objetivosNutricionales.calories) * 100
+              ).toFixed(2)}
+              status={
+                resumen.caloriasConsumidas > objetivosNutricionales.calories
+                  ? 'exception'
+                  : 'normal'
+              }
             />
           </Card>
         </Col>
 
-        <Col span={12}>
+        <Col span={24}>
           <Card title="Ejercicio (calorías)">
-            <Text>Quemadas: {ejercicioReal} kcal</Text><br />
-            <Text>Objetivo: {objetivoEjercicio?.calories_burned_goal} kcal</Text>
+            <Text>Quemadas: {ejercicioReal} cal</Text><br />
+            <Text>Objetivo: {objetivoEjercicio?.calories_burned_goal} cal</Text>
             <Progress
-              percent={Math.min(
-                (ejercicioReal / objetivoEjercicio.calories_burned_goal) * 100,
-                100
-              )}
-              status={ejercicioReal < objetivoEjercicio.calories_burned_goal ? 'active' : 'success'}
+              percent={parseFloat(
+                (ejercicioReal / objetivoEjercicio.calories_burned_goal) * 100
+              ).toFixed(2)}
+              status={
+                ejercicioReal < objetivoEjercicio.calories_burned_goal
+                  ? 'active'
+                  : 'success'
+              }
             />
           </Card>
         </Col>
