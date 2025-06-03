@@ -16,6 +16,7 @@ import { Patients } from '../pages/Patients';
 import { Requests } from '../pages/Requests';
 import Exercise from '../pages/Exercise';
 import Reports from '../pages/Reports';
+import PatientReport from '../pages/PatientReport';
 
 function AppRoutes() {
     return (
@@ -41,6 +42,7 @@ function AppRoutes() {
                 <Route path="/requests" element={<Requests />} />
                 <Route path="/ejercicios" element={<Exercise />} />
                 <Route path="/reportes" element={<Reports />} />
+                <Route path="/reporte-paciente" element={<PatientReport />} />
             </Route>
         </Routes>
     );
