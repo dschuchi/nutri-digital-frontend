@@ -5,6 +5,7 @@ import { getUser } from '../../api/user';
 import { useAuth } from '../../context/AuthContext';
 import { NutritionGoalsModal } from '../modals/NutritionGoalsModal';
 import { ActivityGoalsModal } from '../modals/ActivityGoalsModal';
+import { MealPlanModal } from '../modals/MealPlanModal';
 
 export function Chat({ targetUserId, isProfessional = false }) {
     const [messages, setMessages] = useState([]);
@@ -12,6 +13,7 @@ export function Chat({ targetUserId, isProfessional = false }) {
     const [targetName, setTargetName] = useState('');
     const [openNutritionModal, setOpenNutritionModal] = useState(false);
     const [openActivityModal, setOpenActivityModal] = useState(false);
+    const [openMealPlanModal, setOpenMealPlanModal] = useState(false);
     const { user } = useAuth();
     const scrollRef = useRef();
 
@@ -20,7 +22,9 @@ export function Chat({ targetUserId, isProfessional = false }) {
 
         getUser(targetUserId)
             .then(res => {
-                const { name, lastname } = res.data || {};
+                const user = res.data[0];
+                console.log("user: ", user)
+                const { name, lastname } = user || {};
                 setTargetName(`${name || ''} ${lastname || ''}`);
             })
             .catch(() => antdMessage.error('Error al cargar usuario'));
@@ -61,6 +65,9 @@ export function Chat({ targetUserId, isProfessional = false }) {
                                 <Button size="small" onClick={() => setOpenActivityModal(true)}>
                                     Definir objetivo físico
                                 </Button>
+                                <Button size="small" onClick={() => setOpenMealPlanModal(true)}>
+                                    Editar planificación
+                                </Button>
                             </Space>
                         )}
                     </div>
@@ -97,6 +104,12 @@ export function Chat({ targetUserId, isProfessional = false }) {
             <ActivityGoalsModal
                 open={openActivityModal}
                 onClose={() => setOpenActivityModal(false)}
+                patientId={targetUserId}
+            />
+
+            <MealPlanModal
+                open={openMealPlanModal}
+                onClose={() => setOpenMealPlanModal(false)}
                 patientId={targetUserId}
             />
         </>

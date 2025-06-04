@@ -9,6 +9,7 @@ export async function login(username, password) {
 export async function getUser(id) {
     const res = await httpClient.get(`/user/${id}`);
     if (!res) throw new Error('Get users failed');
+    console.log("user: ", res)
     return res;
 }
 
