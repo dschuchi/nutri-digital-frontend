@@ -23,3 +23,11 @@ export async function deleteExercise(id) {
     }
     return res;
 }
+
+export async function getAllExercises() {
+    const res = await httpClient.get('/exercise/all')
+    if (!res) {
+        throw new Error('Failed to fetch all exercises')
+    }
+    return res
+}

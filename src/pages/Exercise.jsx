@@ -1,38 +1,64 @@
 import { Button, Card, DatePicker, Divider, Empty, Flex, Form, Image, InputNumber, Select, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { deleteExercise, getExerciseHistory } from "../api/exercise";
+import { deleteExercise, getAllExercises, getExerciseHistory, newExercise } from "../api/exercise";
+import { useAuth } from '../context/AuthContext';
+
 
 const Exercise = () => {
     const [exerciseHistory, setExerciseHistory] = useState([]);
+    const [allExercises, setAllExercises] = useState([])
     const [date, setDate] = useState(dayjs());
+    const { user } = useAuth()
 
     const fetchExercise = (selectedDate) => {
         const dateString = selectedDate.startOf('day').toISOString();
         getExerciseHistory(dateString)
-            .then()
+            .then(res => {
+                setExerciseHistory(res.data)
+            })
             .catch((err) => {
                 console.error("Error fetching exercise history:", err);
             });
     };
+
+    const fetchAllExercises = () => {
+        getAllExercises()
+            .then(res => {
+                setAllExercises(res.data)
+            })
+            .catch(console.error)
+    }
+
+    useEffect(() => {
+        fetchAllExercises()
+    }, []);
 
     useEffect(() => {
         fetchExercise(date);
     }, [date]);
 
     function onFinish(values) {
-
+        newExercise({
+            id_user: user.id,
+            id_exercise: values.exerciseId,
+            calories_burned: values.calories
+        })
+            .then(() => {
+                fetchExercise(date)
+            })
+            .catch(console.error);
     }
 
     const handleDelete = (id) => {
         deleteExercise(id)
-            .then()
+            .then(() => {
+                fetchExercise(date)
+            })
             .catch((err) => {
                 console.error("Error al borrar el ejercicio:", err);
             });
     };
-
-    const sortedExerciseHistory = [...exerciseHistory].sort((a, b) => b.key - a.key);
 
     return (
         <div>
@@ -46,14 +72,13 @@ const Exercise = () => {
                             style={{ width: '100%' }}
                         >
                             <Form.Item
-                                name="name"
+                                name="exerciseId"
                                 rules={[{ required: true, message: 'Seleccione actividad' }]}
                             >
                                 <Select placeholder="Actividad">
-                                    <Option value='Correr'>Correr</Option>
-                                    <Option value='Caminar'>Caminar</Option>
-                                    <Option value='Nadar'>Nadar</Option>
-                                    <Option value='Futbol'>Futbol</Option>
+                                    {allExercises.map((e) => (
+                                        <Select.Option key={e.id} value={e.id}>{e.name}</Select.Option>
+                                    ))}
                                 </Select>
                             </Form.Item>
                             <Form.Item style={{ marginBottom: 0 }}>
@@ -99,17 +124,20 @@ const Exercise = () => {
                         />
                     </Flex>
                     <Table
-                        dataSource={sortedExerciseHistory}
+                        dataSource={exerciseHistory.map((item) => ({
+                            ...item,
+                            key: item.id
+                        }))}
                         columns={[
                             {
                                 title: 'Fecha',
-                                dataIndex: 'fecha',
-                                key: 'fecha',
+                                dataIndex: 'date',
+                                key: 'date',
                             },
                             {
                                 title: 'Calorias quemadas',
-                                dataIndex: 'cantidad',
-                                key: 'cantidad',
+                                dataIndex: 'calories_burned',
+                                key: 'calories_burned',
                             },
                             {
                                 title: 'Acción',
