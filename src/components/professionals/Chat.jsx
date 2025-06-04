@@ -3,11 +3,15 @@ import { useEffect, useRef, useState } from 'react';
 import { getMessages, sendMessage } from '../../api/messages';
 import { getUser } from '../../api/user';
 import { useAuth } from '../../context/AuthContext';
+import { NutritionGoalsModal } from '../modals/NutritionGoalsModal';
+import { ActivityGoalsModal } from '../modals/ActivityGoalsModal';
 
 export function Chat({ targetUserId, isProfessional = false }) {
     const [messages, setMessages] = useState([]);
     const [text, setText] = useState('');
     const [targetName, setTargetName] = useState('');
+    const [openNutritionModal, setOpenNutritionModal] = useState(false);
+    const [openActivityModal, setOpenActivityModal] = useState(false);
     const { user } = useAuth();
     const scrollRef = useRef();
 
@@ -21,15 +25,14 @@ export function Chat({ targetUserId, isProfessional = false }) {
             })
             .catch(() => antdMessage.error('Error al cargar usuario'));
 
-        getMessages(targetUserId)
-            .then(res => {
-                setMessages(res.data || []);
-                setTimeout(() => {
-                    scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
-            })
-            .catch(() => antdMessage.error('Error al cargar mensajes.'));
+        fetchMessages();
     }, [targetUserId]);
+
+    const fetchMessages = () => {
+        getMessages(targetUserId)
+            .then(res => setMessages(res.data || []))
+            .catch(() => antdMessage.error('Error al actualizar mensajes'));
+    };
 
     const handleSend = () => {
         if (!text.trim()) return;
@@ -41,60 +44,61 @@ export function Chat({ targetUserId, isProfessional = false }) {
             .catch(() => antdMessage.error('Error al enviar mensaje'));
     };
 
-    const handleNutritionGoal = () => {
-        antdMessage.info("Abrir editor de objetivo nutricional");
-    };
-
-    const handleActivityGoal = () => {
-        antdMessage.info("Abrir editor de objetivo físico");
-    };
-
-    const fetchMessages = () => {
-        getMessages(targetUserId)
-            .then(res => setMessages(res.data || []))
-            .catch(() => antdMessage.error('Error al actualizar mensajes'));
-    };
-
     return (
-        <Card
-            title={
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography.Text strong>
-                        Conversación con {targetName || '...'}
-                    </Typography.Text>
-                    {isProfessional && (
-                        <Space>
-                            <Button type="primary" size="small" onClick={handleNutritionGoal}>
-                                Definir objetivo nutricional
-                            </Button>
-                            <Button type="primary" size="small" onClick={handleActivityGoal}>
-                                Definir objetivo físico
-                            </Button>
-                        </Space>
-                    )}
-                </div>
-            }
-        >
-            <List
-                size="small"
-                dataSource={messages}
-                renderItem={(msg, idx) => (
-                    <List.Item key={idx}>
-                        <Typography.Text strong>{msg.fromName}:</Typography.Text> {msg.text}
-                    </List.Item>
-                )}
-            />
-            <div ref={scrollRef} />
+        <>
+            <Card
+                title={
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography.Text strong>
+                            Conversación con {targetName || '...'}
+                        </Typography.Text>
 
-            <Input.TextArea
-                rows={2}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder="Escribe tu mensaje aquí..."
+                        {isProfessional && (
+                            <Space>
+                                <Button size="small" onClick={() => setOpenNutritionModal(true)}>
+                                    Definir objetivo nutricional
+                                </Button>
+                                <Button size="small" onClick={() => setOpenActivityModal(true)}>
+                                    Definir objetivo físico
+                                </Button>
+                            </Space>
+                        )}
+                    </div>
+                }
+            >
+                <List
+                    size="small"
+                    dataSource={messages}
+                    renderItem={(msg, idx) => (
+                        <List.Item key={idx}>
+                            <Typography.Text strong>{msg.fromName}:</Typography.Text> {msg.text}
+                        </List.Item>
+                    )}
+                />
+                <div ref={scrollRef} />
+
+                <Input.TextArea
+                    rows={2}
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="Escribe tu mensaje aquí..."
+                />
+                <Button type="primary" onClick={handleSend} style={{ marginTop: 8 }}>
+                    Enviar
+                </Button>
+            </Card>
+
+            <NutritionGoalsModal
+                open={openNutritionModal}
+                onClose={() => setOpenNutritionModal(false)}
+                patientId={targetUserId}
             />
-            <Button type="primary" onClick={handleSend} style={{ marginTop: 8 }}>
-                Enviar
-            </Button>
-        </Card>
+
+            <ActivityGoalsModal
+                open={openActivityModal}
+                onClose={() => setOpenActivityModal(false)}
+                patientId={targetUserId}
+            />
+        </>
     );
 }
