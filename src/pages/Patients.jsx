@@ -16,6 +16,11 @@ export function Patients() {
         navigate(`/chat?target=${idPatient}`);
     };
 
+    const handleViewReport = (idPatient) => {
+        navigate(`/reporte-paciente?target=${idPatient}`);
+    };
+
+
     const columns = [
         {
             title: 'Nombre',
@@ -31,11 +36,14 @@ export function Patients() {
             title: 'Acciones',
             key: 'actions',
             render: (_, record) => (
-                <>
-                    <Button onClick={()=>handleSendMessage(record.key)}>
+                <Flex gap="small">
+                    <Button onClick={() => handleSendMessage(record.key)}>
                         Enviar mensaje
                     </Button>
-                </>
+                    <Button onClick={() => handleViewReport(record.key)} type="default">
+                        Ver reporte
+                    </Button>
+                </Flex>
             ),
         },
     ];

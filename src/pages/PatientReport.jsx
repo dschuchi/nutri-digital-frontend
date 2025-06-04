@@ -6,6 +6,7 @@ import { mockPatients } from '../mocks/mockPatients';
 import HistorialNutricion from '../components/patientReport/HistorialNutricion';
 import HistorialEjercicio from '../components/patientReport/HistorialEjercicio';
 import ObjetivosPaciente from '../components/patientReport/ObjetivosPaciente';
+import { useSearchParams } from 'react-router-dom';
 
 
 
@@ -15,12 +16,18 @@ const { Title } = Typography;
 export default function PatientReport() {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [activeTab, setActiveTab] = useState('resumen');
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    if (mockPatients.length > 0) {
+    const targetId = searchParams.get('target');
+    const encontrado = mockPatients.find(p => String(p.id) === targetId);
+
+    if (encontrado) {
+      setSelectedPatient(encontrado);
+    } else if (mockPatients.length > 0) {
       setSelectedPatient(mockPatients[0]);
     }
-  }, []);
+  }, [searchParams]);
 
   return (
     <Layout style={{ height: '100vh' }}>
