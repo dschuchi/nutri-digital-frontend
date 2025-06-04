@@ -48,7 +48,7 @@ export function ProfessionalChat({ forcedTargetId }) {
 
             <Content style={{ padding: '16px' }}>
                 {selectedPatientId ? (
-                    <Chat targetUserId={selectedPatientId} />
+                    <Chat targetUserId={selectedPatientId} isProfessional={true} />
                 ) : (
                     <Typography.Text>Seleccioná un paciente para comenzar a chatear.</Typography.Text>
                 )}
