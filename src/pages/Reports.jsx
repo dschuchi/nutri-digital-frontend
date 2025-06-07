@@ -1,4 +1,4 @@
-import { Card, Space } from 'antd';
+import { Card, Col, Row, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import { getReport } from '../api/report';
 import { useAuth } from '../context/AuthContext';
@@ -46,29 +46,85 @@ const Reports = () => {
   }, []);
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }} size="large">
-      <Card title="Calorías quemadas">
-        <BarChartWithGoal
-          data={caloriesData}
-          dataKey="calories"
-          label="Calorías"
-          color="#82ca9d"
-          goal={2000}
-          yUnit="Calorías"
-        />
-      </Card>
+    <Row gutter={[16, 16]}>
+      <Col span={12}>
+        <Card title="Calorías">
+          <BarChartWithGoal
+            data={caloriesData}
+            dataKey="calories"
+            label="Calorías"
+            color="#82ca9d"
+            goal={2000}
+            yUnit="Calorías"
+          />
+        </Card>
+      </Col>
 
-      <Card title="Agua consumida (ml)">
-        <BarChartWithGoal
-          data={waterData}
-          dataKey="mililiters"
-          label="Agua"
-          color="#8884d8"
-          goal={2000}
-          yUnit="Mililitros"
-        />
-      </Card>
-    </Space>
+      <Col span={12}>
+        <Card title="Carbohidratos">
+          <BarChartWithGoal
+            data={caloriesData}
+            dataKey="calories"
+            label="Carbohidratos"
+            color="#ffc658"
+            goal={250}
+            yUnit="g"
+          />
+        </Card>
+      </Col>
+
+      <Col span={12}>
+        <Card title="Grasas">
+          <BarChartWithGoal
+            data={caloriesData}
+            dataKey="calories"
+            label="Grasas"
+            color="#ff7300"
+            goal={70}
+            yUnit="g"
+          />
+        </Card>
+      </Col>
+
+      <Col span={12}>
+        <Card title="Proteínas">
+          <BarChartWithGoal
+            data={caloriesData}
+            dataKey="calories"
+            label="Proteínas"
+            color="#8884d8"
+            goal={150}
+            yUnit="g"
+          />
+        </Card>
+      </Col>
+
+      <Col span={12}>
+        <Card title="Agua consumida (ml)">
+          <BarChartWithGoal
+            data={waterData}
+            dataKey="mililiters"
+            label="Agua"
+            color="#00bcd4"
+            goal={2000}
+            yUnit="ml"
+          />
+        </Card>
+      </Col>
+
+      <Col span={12}>
+        <Card title="Calorías quemadas">
+          <BarChartWithGoal
+            data={caloriesData}
+            dataKey="calories"
+            label="Calorías quemadas"
+            color="#82ca9d"
+            goal={2000}
+            yUnit="Calorías"
+          />
+        </Card>
+      </Col>
+    </Row>
   );
 };
 
