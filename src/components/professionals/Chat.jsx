@@ -76,10 +76,13 @@ export function Chat({ targetUserId, isProfessional = false }) {
                 <List
                     size="small"
                     dataSource={messages}
-                    renderItem={(msg, idx) => (
-                        <List.Item key={idx}>
-                            <Typography.Text strong>{msg.fromName}:</Typography.Text> {msg.text}
-                        </List.Item>
+                    renderItem={(item) => (
+                        <>
+                            <Typography.Text strong>
+                                {item.sender_user_id === user.id ? 'Tú' : targetName}:
+                            </Typography.Text>
+                            <div>{item.text_content}</div>
+                        </>
                     )}
                 />
                 <div ref={scrollRef} />
