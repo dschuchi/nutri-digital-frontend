@@ -6,6 +6,8 @@ import { useAuth } from '../../context/AuthContext';
 import { NutritionGoalsModal } from '../modals/NutritionGoalsModal';
 import { ActivityGoalsModal } from '../modals/ActivityGoalsModal';
 import { MealPlanModal } from '../modals/MealPlanModal';
+import { deletePatient } from '../../api/patient';
+import { useNavigate } from 'react-router-dom';
 
 export function Chat({ targetUserId, isProfessional = false }) {
     const [messages, setMessages] = useState([]);
@@ -16,6 +18,7 @@ export function Chat({ targetUserId, isProfessional = false }) {
     const [openMealPlanModal, setOpenMealPlanModal] = useState(false);
     const { user } = useAuth();
     const scrollRef = useRef();
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (!targetUserId) return;
@@ -48,6 +51,14 @@ export function Chat({ targetUserId, isProfessional = false }) {
             .catch(() => antdMessage.error('Error al enviar mensaje'));
     };
 
+    const handleDischargePatient = () => {
+        deletePatient(targetUserId)
+        .then(()=> {
+            navigate('/patients')
+        })
+        .catch(console.error)
+    }
+
     return (
         <>
             <Card
@@ -67,6 +78,10 @@ export function Chat({ targetUserId, isProfessional = false }) {
                                 </Button>
                                 <Button size="small" onClick={() => setOpenMealPlanModal(true)}>
                                     Editar planificación
+                                </Button>
+
+                                <Button size="small" onClick={() => handleDischargePatient()}>
+                                    Dar de alta
                                 </Button>
                             </Space>
                         )}
