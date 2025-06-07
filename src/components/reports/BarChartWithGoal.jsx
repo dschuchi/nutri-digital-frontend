@@ -15,11 +15,11 @@ const BarChartWithGoal = ({
     dataKey,
     label,
     color = '#8884d8',
-    goal = 2000,
-    yUnit = '',
+    goal,
+    yUnit,
 }) => {
     const actualMax = Math.max(...data.map(d => d[dataKey] ?? 0));
-    const maxY = actualMax > goal ? actualMax + 100 : goal + 200;
+    const maxY = actualMax > goal ? actualMax + 100 : goal + 100;
 
     return (
         <ResponsiveContainer width="100%" height={300}>
@@ -39,7 +39,7 @@ const BarChartWithGoal = ({
                     y={goal}
                     stroke={color}
                     strokeDasharray="3 3"
-                    label={{ value: 'Objetivo', position: 'right', fill: color }}
+                    label={{ value: 'Objetivo', position: 'top', fill: color }}
                 />
                 <Bar dataKey={dataKey} fill={color}>
                     <LabelList dataKey={dataKey} position="top" />
