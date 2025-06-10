@@ -35,7 +35,7 @@ const ActivityGoals = ({ userId }) => {
         formActivity
             .validateFields()
             .then(values => {
-                updateExerciseGoals({ ...values, userId: effectiveUserId })
+                updateExerciseGoals({ ...values}, effectiveUserId)
                     .then(res => {
                         const data = res.data[0];
                         setActivityGoals([
