@@ -16,8 +16,8 @@ export async function getMacroNutrientGoals(userId) {
     return res;
 }
 
-export async function updateMacroNutrientGoals(data) {
-    const res = await httpClient.patch(`/nutrient-goals/macro/update`, data);
+export async function updateMacroNutrientGoals(data, effectiveUserId) {
+    const res = await httpClient.patch(`/nutrient-goals/macro/update?userId=${effectiveUserId}`, data);
     if (!res) {
         throw new Error("Failed to update nutrient goals data");
     }
