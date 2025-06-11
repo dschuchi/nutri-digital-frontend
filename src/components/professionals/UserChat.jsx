@@ -44,7 +44,7 @@ export function UserChat() {
 
     function handleShareReport() {
         // TODO armar bien el mensaje con la URL
-        sendMessage(targetId, 'Te comporte mi informe')
+        sendMessage(targetId, 'Te comparto mi informe')
             .then(console.log)
             .catch(console.error);
     }
@@ -62,7 +62,7 @@ export function UserChat() {
                             <Button onClick={handleChangeProfessional}>
                                 Cambiar profesional
                             </Button>
-                            <Button onClick={handleShareReport}>
+                            <Button hidden onClick={handleShareReport}>
                                 Compartir Informe
                             </Button>
                         </>

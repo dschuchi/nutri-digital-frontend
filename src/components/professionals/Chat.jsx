@@ -80,7 +80,7 @@ export function Chat({ targetUserId, isProfessional = false }) {
                                     Editar planificación
                                 </Button>
 
-                                <Button size="small" onClick={() => handleDischargePatient()}>
+                                <Button hidden size="small" onClick={() => handleDischargePatient()}>
                                     Dar de alta
                                 </Button>
                             </Space>
