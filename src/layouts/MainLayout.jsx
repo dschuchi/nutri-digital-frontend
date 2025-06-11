@@ -1,7 +1,7 @@
 import { Avatar, Button, Dropdown, Flex, Layout, Menu } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { UserOutlined, MoreOutlined } from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons';
 
 const { Header, Content } = Layout;
 
@@ -15,31 +15,43 @@ function MainLayout() {
 
     const menuItems = [
         { key: 'home', label: 'Inicio' },
-        { key: 'objetivos', label: 'Objetivos' },
-        { key: 'hidratacion', label: 'Hidratación' },
-        ...(user.professional ? [{ key: 'patients', label: 'Pacientes' }] : [{ key: 'profesionales', label: 'Profesionales' }]),
-        ...(user.professional ? [{ key: 'requests', label: 'Solicitudes' }] : []),
-        { key: 'lugares', label: 'Lugares' },
-        { key: 'ejercicios', label: 'Ejercicios' },
-        { key: 'reportes', label: 'Reportes' },
-    ];
 
-    const moreMenuItems = [
         {
-            key: 'buscar-alimento',
-            label: 'Buscar alimento',
-            onClick: () => navigate('/buscar-alimento')
+            key: 'salud',
+            label: 'Salud',
+            children: [
+                { key: 'objetivos', label: 'Objetivos' },
+                { key: 'hidratacion', label: 'Hidratación' },
+                { key: 'ejercicios', label: 'Ejercicios' },
+            ],
         },
+
         {
-            key: 'agregar-alimento',
-            label: 'Cargar alimentación',
-            onClick: () => navigate('/agregar-alimento')
+            key: 'alimentacion',
+            label: 'Alimentación',
+            children: [
+                { key: 'agregar-alimento', label: 'Cargar alimentación' },
+                { key: 'alimentos-consumidos', label: 'Alimentos consumidos' },
+            ],
         },
+
         {
-            key: 'alimentos-consumidos',
-            label: 'Alimentos consumidos',
-            onClick: () => navigate('/alimentos-consumidos')
-        }
+            key: 'pacientes',
+            label: user.professional ? 'Pacientes' : 'Profesionales',
+            children: user.professional
+                ? [
+                    { key: 'patients', label: 'Ver pacientes' },
+                    { key: 'requests', label: 'Solicitudes' },
+                ]
+                : [
+                    { key: 'profesionales', label: 'Ver profesionales' },
+                ],
+        },
+
+        { key: 'lugares', label: 'Lugares' },
+
+        // ✅ Reportes sin submenús
+        { key: 'reportes', label: 'Reportes' },
     ];
 
     const dropdownItems = [
@@ -68,17 +80,10 @@ function MainLayout() {
                             lineHeight: '72px',
                             fontSize: 16,
                             flex: 1,
-                            justifyContent: 'flex-end'
+                            justifyContent: 'flex-end',
+                            background: 'transparent',
                         }}
                     />
-
-                    <Dropdown
-                        menu={{ items: moreMenuItems }}
-                        placement="bottomRight"
-                        trigger={['click']}
-                    >
-                        <Button type="text" icon={<MoreOutlined />} style={{ color: 'white', fontSize: 20 }} />
-                    </Dropdown>
 
                     <Dropdown
                         menu={{ items: dropdownItems }}
@@ -92,6 +97,7 @@ function MainLayout() {
                     </Dropdown>
                 </Flex>
             </Header>
+
             <Content style={{ flex: 1, background: '#f5f5f5' }}>
                 <div
                     style={{
@@ -104,7 +110,6 @@ function MainLayout() {
                     <Outlet />
                 </div>
             </Content>
-
         </Layout>
     );
 }
