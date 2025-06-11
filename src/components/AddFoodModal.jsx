@@ -19,7 +19,9 @@ const AddFoodModal = ({ open, onClose, food }) => {
 
   const onFieldsChange = () => {
     const hasErrors = form.getFieldsError().some(({ errors }) => errors.length > 0);
-    const allTouched = form.isFieldsTouched(true);
+    const touchPortion = form.isFieldTouched('portion')
+    const touchMeal = form.isFieldTouched('meal')
+    const allTouched = touchMeal && touchPortion;
     setIsValid(allTouched && !hasErrors);
   };
 
@@ -55,13 +57,16 @@ const AddFoodModal = ({ open, onClose, food }) => {
         layout="vertical"
         onFinish={onFinish}
         onFieldsChange={onFieldsChange}
+        initialValues={{
+          unit: 'unidad'
+        }}
       >
         <Form.Item
           name="portion"
           label="Porción"
           rules={[{ required: true, message: 'Ingresá una porción válida' }]}
         >
-          <InputNumber min={0} style={{ width: '100%' }} placeholder="Cantidad" />
+          <InputNumber min={0} style={{ width: '100%' }} placeholder="Porción" />
         </Form.Item>
 
         <Form.Item
@@ -69,7 +74,7 @@ const AddFoodModal = ({ open, onClose, food }) => {
           label="Unidad"
           rules={[{ required: true, message: 'Seleccioná una unidad' }]}
         >
-          <Select placeholder="Unidad">
+          <Select disabled placeholder="Unidad">
             <Option value="g">Gramos (g)</Option>
             <Option value="ml">Mililitros (ml)</Option>
             <Option value="taza">Taza</Option>
