@@ -42,7 +42,8 @@ const Exercise = () => {
         newExercise({
             id_user: user.id,
             id_exercise: values.exerciseId,
-            calories_burned: values.calories
+            calories_burned: values.calories,
+            date: date.format('YYYY-MM-DD')
         })
             .then(() => {
                 fetchExercise(date)
