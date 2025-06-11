@@ -34,7 +34,7 @@ const MicronutrientsCard = ({ data }) => {
               <Progress
                 type="circle"
                 percent={Math.round(porcentaje)}
-                format={() => `${actual} %`}
+                format={() => <span style={{ color: '#000' }}>{actual} %</span>}
                 strokeColor={color}
                 width={70}
               />

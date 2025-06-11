@@ -41,18 +41,18 @@ const MacroCard = ({ data }) => {
                 type="circle"
                 percent={Math.round(porcentaje)}
                 width={70}
-                format={() => `${actual}%`}
+                format={() => `${actual}g`}
                 strokeColor={color}
               />
               <div style={{ marginTop: 4 }}>
                 {faltan && (
                   <Text style={{ fontSize: 12 }} type="secondary">
-                    falta {objetivo - actual} %
+                    falta {objetivo - actual} g
                   </Text>
                 )}
                 {excedido && (
                   <Text style={{ fontSize: 12 }} type="danger">
-                    {actual - objetivo} % excedido
+                    {actual - objetivo} g excedidos
                   </Text>
                 )}
               </div>
