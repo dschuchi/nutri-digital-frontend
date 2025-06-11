@@ -165,14 +165,17 @@ const SitesPage = () => {
           </Select>
         </Col>
         <Col span={8}>
-          <Slider
-            min={0}
-            max={10000}
-            value={distanceMax}
-            step={100}
-            tooltip={{ formatter: (v) => `${v} m` }}
-            onChange={setDistanceMax}
-          />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Slider
+              min={0}
+              max={30000}
+              value={distanceMax}
+              step={100}
+              onChange={setDistanceMax}
+              style={{ flex: 1 }}
+            />
+            <span>{distanceMax} m</span>
+          </div>
         </Col>
       </Row>
 
