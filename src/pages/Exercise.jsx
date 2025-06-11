@@ -15,7 +15,12 @@ const Exercise = () => {
         const dateString = selectedDate.startOf('day').toISOString();
         getExerciseHistory(dateString, user.id)
             .then(res => {
-                setExerciseHistory(res.data)
+                const processedData = res.data.map(item => ({
+                    id: item.id,
+                    date: dayjs(date).format('YYYY-MM-DD'),
+                    calories_burned: item.calories_burned,
+                }));
+                setExerciseHistory(processedData)
             })
             .catch((err) => {
                 console.error("Error fetching exercise history:", err);
