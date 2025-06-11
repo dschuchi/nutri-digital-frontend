@@ -30,7 +30,7 @@ const MacroGoals = ({ userId }) => {
         formMacro
             .validateFields()
             .then((values) => {
-                updateMacroNutrientGoals({ ...values, userId: effectiveUserId })
+                updateMacroNutrientGoals({ ...values}, effectiveUserId)
                     .then((res) => {
                         setMacroNutrientGoals([
                             { name: 'Calorías', value: res.data[0].calories, unit: 'cal', key: 'calories' },

@@ -1,4 +1,5 @@
 import httpClient from "./httpClient";
+import { useAuth } from '../context/AuthContext';
 
 export async function newExercise(data) {
     const res = await httpClient.post(`/exercise`, data);
@@ -8,8 +9,8 @@ export async function newExercise(data) {
     return res;
 }
 
-export async function getExerciseHistory(date) {
-    const res = await httpClient.get(`/exercise?date=${date}`);
+export async function getExerciseHistory(date, userId) {
+    const res = await httpClient.get(`/exercise?date=${date}&userId=${userId}`);
     if (!res) {
         throw new Error("Failed to fetch exercise history");
     }

@@ -3,16 +3,19 @@ import { getPanelData } from '../../api/progressPanel';
 import { getHydrationHistory } from '../../api/hydration';
 import DashboardContent from './DashboardContent';
 import dayjs from 'dayjs';
+import { useAuth } from '../../context/AuthContext';
 
 const Dashboard = () => {
   const [data, setData] = useState(null);
   const [agua, setAgua] = useState(0);
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const { user } = useAuth()
+
   const fetchData = async (date) => {
     try {
       const formattedDate = dayjs(date).format('YYYY-MM-DD');
-      const response = await getPanelData(formattedDate);
+      const response = await getPanelData(formattedDate, user.id);
       setData(response.data);
 
       const hydrationRes = await getHydrationHistory(formattedDate);

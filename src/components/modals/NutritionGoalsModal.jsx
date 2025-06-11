@@ -13,14 +13,7 @@ export function NutritionGoalsModal({ open, onClose, patientId }) {
       width={700}
       title="Editar objetivos nutricionales"
     >
-      <Tabs defaultActiveKey="macro" centered>
-        <TabPane tab="Macronutrientes" key="macro">
-          <MacroGoals userId={patientId} />
-        </TabPane>
-        <TabPane tab="Micronutrientes" key="micro">
-          <MicroGoals userId={patientId} />
-        </TabPane>
-      </Tabs>
+      <MacroGoals userId={patientId} />
     </Modal>
   );
 }

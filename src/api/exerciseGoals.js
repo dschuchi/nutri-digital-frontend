@@ -1,7 +1,7 @@
 import httpClient from "./httpClient";
 
-export async function getExerciseGoals() {
-    const res = await httpClient.get('/exercise-goals/get');
+export async function getExerciseGoals(userId) {
+    const res = await httpClient.get(`/exercise-goals/get?userId=${userId}`);
     if (!res) {
         throw new Error("Failed to fetch exercise goals");
     }
@@ -9,8 +9,8 @@ export async function getExerciseGoals() {
 }
 
 
-export async function updateExerciseGoals(data) {
-    const res = await httpClient.patch('/exercise-goals/update', data);
+export async function updateExerciseGoals(data, userId) {
+    const res = await httpClient.patch(`/exercise-goals/update?userId=${userId}`, data);
     if (!res) {
         throw new Error("Failed to fetch exercise goals");
     }
