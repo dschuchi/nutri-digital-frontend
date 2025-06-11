@@ -55,7 +55,7 @@ const Reports = () => {
     Promise.all([
       getReport(user.id),
       getMacroNutrientGoals(user.id),
-      getExerciseGoals()
+      getExerciseGoals(user.id)
     ])
       .then(([reportRes, macroGoalsRes, burnedGoalRes]) => {
         const data = reportRes.data;
