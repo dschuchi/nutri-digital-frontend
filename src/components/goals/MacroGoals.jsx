@@ -16,9 +16,9 @@ const MacroGoals = ({ userId }) => {
             .then((res) => {
                 setMacroNutrientGoals([
                     { name: 'Calorías', value: res.data[0].calories, unit: '', key: 'calories' },
-                    { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: '%', key: 'total_carbs' },
-                    { name: 'Grasas', value: res.data[0].total_fat, unit: '%', key: 'total_fat' },
-                    { name: 'Proteínas', value: res.data[0].protein, unit: '%', key: 'protein' },
+                    { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: 'g', key: 'total_carbs' },
+                    { name: 'Grasas', value: res.data[0].total_fat, unit: 'g', key: 'total_fat' },
+                    { name: 'Proteínas', value: res.data[0].protein, unit: 'g', key: 'protein' },
                 ]);
             })
             .catch((err) => { console.error("Error fetching nutrient goals:", err) });
@@ -30,13 +30,13 @@ const MacroGoals = ({ userId }) => {
         formMacro
             .validateFields()
             .then((values) => {
-                updateMacroNutrientGoals({ ...values}, effectiveUserId)
+                updateMacroNutrientGoals({ ...values }, effectiveUserId)
                     .then((res) => {
                         setMacroNutrientGoals([
                             { name: 'Calorías', value: res.data[0].calories, unit: 'cal', key: 'calories' },
-                            { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: '%', key: 'total_carbs' },
-                            { name: 'Grasas', value: res.data[0].total_fat, unit: '%', key: 'total_fat' },
-                            { name: 'Proteínas', value: res.data[0].protein, unit: '%', key: 'protein' },
+                            { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: 'g', key: 'total_carbs' },
+                            { name: 'Grasas', value: res.data[0].total_fat, unit: 'g', key: 'total_fat' },
+                            { name: 'Proteínas', value: res.data[0].protein, unit: 'g', key: 'protein' },
                         ]);
                         setEditMacro(false);
                         setShowError(false);
@@ -122,8 +122,7 @@ const MacroGoals = ({ userId }) => {
                                 style={{ margin: 0, textAlign: 'right' }}
                                 rules={[
                                     { required: true, message: 'Campo requerido' },
-                                    { type: 'number', min: 1, message: 'Debe ser mayor a 0' },
-                                    item.key !== 'calories' && { validator: validateMacroSum },
+                                    { type: 'number', min: 1, message: 'Debe ser mayor a 0' }
                                 ].filter(Boolean)}
                             >
                                 <InputNumber
