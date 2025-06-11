@@ -1,51 +1,83 @@
 import { useEffect, useState } from 'react';
-import { Layout, Card, Typography, Tabs } from 'antd';
+import { Layout, Typography, Tabs, DatePicker, Spin, message } from 'antd';
 import PatientSelector from '../components/patientReport/PatientSelector';
 import PatientReportContent from '../components/patientReport/PatientReportContent';
-import { mockPatients } from '../mocks/mockPatients';
 import HistorialNutricion from '../components/patientReport/HistorialNutricion';
 import HistorialEjercicio from '../components/patientReport/HistorialEjercicio';
 import ObjetivosPaciente from '../components/patientReport/ObjetivosPaciente';
 import { useSearchParams } from 'react-router-dom';
-
-
+import { getPatientData } from '../data/getPatientData';
+import { getMyPatients } from '../api/patient';
+import { useAuth } from '../context/AuthContext';
+import dayjs from 'dayjs';
 
 const { Sider, Content } = Layout;
 const { Title } = Typography;
 
 export default function PatientReport() {
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [patients, setPatients] = useState([]);
   const [activeTab, setActiveTab] = useState('resumen');
   const [searchParams] = useSearchParams();
+  const [selectedDate, setSelectedDate] = useState(dayjs());
+  const [loading, setLoading] = useState(false);
+
+  const { user } = useAuth(); // obtenemos el profesional logueado
 
   useEffect(() => {
-    const targetId = searchParams.get('target');
-    const encontrado = mockPatients.find(p => String(p.id) === targetId);
+    const fetchData = async () => {
+      if (!user?.id) return;
 
-    if (encontrado) {
-      setSelectedPatient(encontrado);
-    } else if (mockPatients.length > 0) {
-      setSelectedPatient(mockPatients[0]);
-    }
-  }, [searchParams]);
+      setLoading(true);
+      try {
+        const patientsRes = await getMyPatients(user.id);
+        const rawPatients = patientsRes.data || [];
+
+        const date = selectedDate.format('YYYY-MM-DD');
+        const enrichedPatients = await Promise.all(
+          rawPatients.map(p =>
+            getPatientData(p.id, date, `${p.name} ${p.lastname}`)
+          )
+        );
+
+        setPatients(enrichedPatients);
+
+        const targetId = parseInt(searchParams.get('target'));
+        const seleccionado = enrichedPatients.find(p => p.id === targetId) || enrichedPatients[0];
+        setSelectedPatient(seleccionado);
+      } catch (err) {
+        console.error(err);
+        message.error('Error al cargar los pacientes');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [user, searchParams, selectedDate]);
 
   return (
     <Layout style={{ height: '100vh' }}>
       <Sider width={260} style={{ backgroundColor: '#fff', padding: '16px 0' }}>
         <PatientSelector
-          patients={mockPatients}
+          patients={patients}
           selectedPatientId={selectedPatient?.id}
           onSelect={setSelectedPatient}
         />
       </Sider>
 
       <Content style={{ padding: '24px', backgroundColor: '#f5f5f5' }}>
-        {selectedPatient ? (
-          <>
-            <Title level={3} style={{ marginBottom: 12 }}>
-                Informe de {selectedPatient.name}
-            </Title>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Title level={3}>
+            {selectedPatient ? `Informe de ${selectedPatient.name}` : 'Informe del paciente'}
+          </Title>
+          <DatePicker value={selectedDate} onChange={setSelectedDate} />
+        </div>
 
+        {loading ? (
+          <Spin size="large" />
+        ) : selectedPatient ? (
+          <>
             <Tabs
               activeKey={activeTab}
               onChange={setActiveTab}
@@ -58,21 +90,11 @@ export default function PatientReport() {
             />
 
             {activeTab === 'resumen' && (
-                <PatientReportContent paciente={selectedPatient} date={'2025-05-24'} />
+              <PatientReportContent paciente={selectedPatient} date={selectedDate.format('YYYY-MM-DD')} />
             )}
-
-            {activeTab === 'nutricion' && (
-                <HistorialNutricion paciente={selectedPatient} />
-            )}
-
-            {activeTab === 'ejercicio' && (
-                <HistorialEjercicio paciente={selectedPatient} />
-            )}
-
-            {activeTab === 'objetivos' && (
-                <ObjetivosPaciente paciente={selectedPatient} />
-            )}
-
+            {activeTab === 'nutricion' && <HistorialNutricion paciente={selectedPatient} />}
+            {activeTab === 'ejercicio' && <HistorialEjercicio paciente={selectedPatient} />}
+            {activeTab === 'objetivos' && <ObjetivosPaciente paciente={selectedPatient} />}
           </>
         ) : (
           <Title level={4}>Seleccione un paciente para ver su informe</Title>

@@ -13,7 +13,7 @@ const Exercise = () => {
 
     const fetchExercise = (selectedDate) => {
         const dateString = selectedDate.startOf('day').toISOString();
-        getExerciseHistory(dateString)
+        getExerciseHistory(dateString, user.id)
             .then(res => {
                 setExerciseHistory(res.data)
             })
