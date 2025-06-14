@@ -17,13 +17,8 @@ const Register = () => {
                 role,
             }
         )
-            .then(() => {
-                alert('Usuario registrado con éxito');
-                navigate('/');
-            })
-            .catch((error) => {
-                alert('Error al registrar el usuario: ' + error.message);
-            })
+            .then(() => { navigate('/') })
+            .catch(console.error)
     };
 
     return (
