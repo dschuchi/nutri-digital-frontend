@@ -53,10 +53,10 @@ export function Chat({ targetUserId, isProfessional = false }) {
 
     const handleDischargePatient = () => {
         deletePatient(targetUserId)
-        .then(()=> {
-            navigate('/patients')
-        })
-        .catch(console.error)
+            .then(() => {
+                navigate('/patients')
+            })
+            .catch(console.error)
     }
 
     return (
@@ -80,7 +80,7 @@ export function Chat({ targetUserId, isProfessional = false }) {
                                     Editar planificación
                                 </Button>
 
-                                <Button hidden size="small" onClick={() => handleDischargePatient()}>
+                                <Button size="small" onClick={() => handleDischargePatient()}>
                                     Dar de alta
                                 </Button>
                             </Space>
