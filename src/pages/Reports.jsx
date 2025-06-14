@@ -1,5 +1,5 @@
-import { Button, Card, Col, Row, message } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button, Card, Col, Row, Select, message } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
 import { getReport } from '../api/report';
 import { useAuth } from '../context/AuthContext';
 import BarChartWithGoal from '../components/reports/BarChartWithGoal';
@@ -58,7 +58,75 @@ const Reports = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [myProfessionalId, setMyProfessionalId] = useState(null)
   const [messageApi, contextHolder] = message.useMessage();
+  const [chartKey, setChartKey] = useState('calories');
 
+  const charts = useMemo(
+    () => [
+      {
+        key: 'calories',
+        title: 'Calorías',
+        data: foodConsumed,
+        dataKey: 'calories',
+        label: 'Calorías',
+        color: '#82ca9d',
+        goal: macroGoals?.calories,
+        yUnit: 'cal',
+      },
+      {
+        key: 'protein',
+        title: 'Proteínas',
+        data: foodConsumed,
+        dataKey: 'protein',
+        label: 'Proteínas',
+        color: '#8884d8',
+        goal: macroGoals?.protein,
+        yUnit: 'g',
+      },
+      {
+        key: 'fat',
+        title: 'Grasas',
+        data: foodConsumed,
+        dataKey: 'total_fat',
+        label: 'Grasas',
+        color: '#ff7300',
+        goal: macroGoals?.total_fat,
+        yUnit: 'g',
+      },
+      {
+        key: 'carbs',
+        title: 'Carbohidratos',
+        data: foodConsumed,
+        dataKey: 'total_carbs',
+        label: 'Carbohidratos',
+        color: '#ffc658',
+        goal: macroGoals?.total_carbs,
+        yUnit: 'g',
+      },
+      {
+        key: 'water',
+        title: 'Agua consumida (ml)',
+        data: waterData,
+        dataKey: 'mililiters',
+        label: 'Agua',
+        color: '#00bcd4',
+        goal: waterGoal,
+        yUnit: 'ml',
+      },
+      {
+        key: 'burned',
+        title: 'Calorías quemadas',
+        data: caloriesBurnedData,
+        dataKey: 'calories',
+        label: 'Calorías quemadas',
+        color: '#d884d8',
+        goal: burnedGoal?.calories_burned_goal,
+        yUnit: 'cal',
+      },
+    ],
+    [foodConsumed, waterData, caloriesBurnedData, macroGoals, waterGoal, burnedGoal]
+  );
+
+  const selectedChart = charts.find((c) => c.key === chartKey);
 
   useEffect(() => {
     Promise.all([
@@ -111,85 +179,30 @@ const Reports = () => {
       <Button hidden={isProfessional()} disabled={disableButton()} onClick={handleShareReport}>
         Compartir informe a mi profesional
       </Button>
-      <Row gutter={[16, 16]}>
-        <Col span={12}>
-          <Card title="Calorías">
-            <BarChartWithGoal
-              data={foodConsumed}
-              dataKey="calories"
-              label="Calorías"
-              color="#82ca9d"
-              goal={macroGoals.calories}
-              yUnit="cal"
-            />
-          </Card>
-        </Col>
 
-        <Col span={12}>
-          <Card title="Proteínas">
-            <BarChartWithGoal
-              data={foodConsumed}
-              dataKey="protein"
-              label="Proteínas"
-              color="#8884d8"
-              goal={macroGoals.protein}
-              yUnit="g"
-            />
-          </Card>
-        </Col>
+      <Select
+        value={chartKey}
+        onChange={setChartKey}
+        style={{ width: 260, marginBottom: 24 }}
+        placeholder="Selecciona un gráfico"
+      >
+        {charts.map(({ key, title }) => (
+          <Select.Option key={key} value={key}>
+            {title}
+          </Select.Option>
+        ))}
+      </Select>
 
-        <Col span={12}>
-          <Card title="Grasas">
-            <BarChartWithGoal
-              data={foodConsumed}
-              dataKey="total_fat"
-              label="Grasas"
-              color="#ff7300"
-              goal={macroGoals.total_fat}
-              yUnit="g"
-            />
-          </Card>
-        </Col>
-
-        <Col span={12}>
-          <Card title="Carbohidratos">
-            <BarChartWithGoal
-              data={foodConsumed}
-              dataKey="total_carbs"
-              label="Carbohidratos"
-              color="#ffc658"
-              goal={macroGoals.total_carbs}
-              yUnit="g"
-            />
-          </Card>
-        </Col>
-
-        <Col span={12}>
-          <Card title="Agua consumida (ml)">
-            <BarChartWithGoal
-              data={waterData}
-              dataKey="mililiters"
-              label="Agua"
-              color="#00bcd4"
-              goal={waterGoal}
-              yUnit="ml"
-            />
-          </Card>
-        </Col>
-
-        <Col span={12}>
-          <Card title="Calorías quemadas">
-            <BarChartWithGoal
-              data={caloriesBurnedData}
-              dataKey="calories"
-              label="Calorías quemadas"
-              color="#d884d8"
-              goal={burnedGoal.calories_burned_goal}
-              yUnit="cal"
-            />
-          </Card>
-        </Col>
-      </Row>
+      <Card title={selectedChart.title}>
+        <BarChartWithGoal
+          data={selectedChart.data}
+          dataKey={selectedChart.dataKey}
+          label={selectedChart.label}
+          color={selectedChart.color}
+          goal={selectedChart.goal}
+          yUnit={selectedChart.yUnit}
+        />
+      </Card>
     </>
   );
 };
