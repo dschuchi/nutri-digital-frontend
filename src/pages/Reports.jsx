@@ -1,4 +1,4 @@
-import { Button, Card, Col, Row, Select, message } from 'antd';
+import { Button, Card, Flex, Select, message } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { getReport } from '../api/report';
 import { useAuth } from '../context/AuthContext';
@@ -176,32 +176,36 @@ const Reports = () => {
   return (
     <>
       {contextHolder}
-      <Button hidden={isProfessional()} disabled={disableButton()} onClick={handleShareReport}>
-        Compartir informe a mi profesional
-      </Button>
+      <Flex justify='space-between'>
+        <Select
+          size='large'
+          value={chartKey}
+          onChange={setChartKey}
+          style={{ width: 260, marginBottom: 24 }}
+          placeholder="Selecciona un gráfico"
+        >
+          {charts.map(({ key, title }) => (
+            <Select.Option key={key} value={key}>
+              {title}
+            </Select.Option>
+          ))}
+        </Select>
+        <Button size='large' hidden={isProfessional()} disabled={disableButton()} onClick={handleShareReport}>
+          Compartir informe a mi profesional
+        </Button>
+      </Flex>
 
-      <Select
-        value={chartKey}
-        onChange={setChartKey}
-        style={{ width: 260, marginBottom: 24 }}
-        placeholder="Selecciona un gráfico"
-      >
-        {charts.map(({ key, title }) => (
-          <Select.Option key={key} value={key}>
-            {title}
-          </Select.Option>
-        ))}
-      </Select>
-
-      <Card title={selectedChart.title}>
-        <BarChartWithGoal
-          data={selectedChart.data}
-          dataKey={selectedChart.dataKey}
-          label={selectedChart.label}
-          color={selectedChart.color}
-          goal={selectedChart.goal}
-          yUnit={selectedChart.yUnit}
-        />
+      <Card>
+        <div style={{ height: '60vh' }}>
+          <BarChartWithGoal
+            data={selectedChart.data}
+            dataKey={selectedChart.dataKey}
+            label={selectedChart.label}
+            color={selectedChart.color}
+            goal={selectedChart.goal}
+            yUnit={selectedChart.yUnit}
+          />
+        </div>
       </Card>
     </>
   );
