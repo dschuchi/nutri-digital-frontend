@@ -170,7 +170,7 @@ const Reports = () => {
   }
 
   if (isLoading) {
-    return <div>Cargando...</div>; // O un spinner si usás algún componente de UI
+    return <div>Cargando...</div>;
   }
 
   return (
