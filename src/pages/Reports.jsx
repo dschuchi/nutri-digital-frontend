@@ -94,6 +94,10 @@ const Reports = () => {
   }
 
   function disableButton() {
+    return userParam != null || myProfessionalId == null;
+  }
+
+  function isProfessional() {
     return userParam != null
   }
 
@@ -104,8 +108,8 @@ const Reports = () => {
   return (
     <>
       {contextHolder}
-      <Button disabled={disableButton()} onClick={handleShareReport}>
-        Compartir Informe
+      <Button hidden={isProfessional()} disabled={disableButton()} onClick={handleShareReport}>
+        Compartir informe a mi profesional
       </Button>
       <Row gutter={[16, 16]}>
         <Col span={12}>
