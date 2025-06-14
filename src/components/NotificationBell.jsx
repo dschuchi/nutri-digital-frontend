@@ -28,6 +28,12 @@ const NotificationsBell = () => {
 
     useEffect(() => {
         fetchNotifications()
+
+        const intervalId = setInterval(() => {
+            fetchNotifications(); // Repetir periódicamente
+        }, 10000); // cada 10 segundos
+
+        return () => clearInterval(intervalId); // Limpieza
     }, []);
 
     const unreadCount = useMemo(() => items.length, [items]);
