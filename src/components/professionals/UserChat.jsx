@@ -5,7 +5,6 @@ import { Chat } from './Chat';
 import { Button, Flex, message, Typography } from 'antd';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { cancelRequest } from '../../api/requestProfessional';
-import { sendMessage } from '../../api/messages';
 
 export function UserChat() {
     const { user } = useAuth();
@@ -42,13 +41,6 @@ export function UserChat() {
             })
     }
 
-    function handleShareReport() {
-        // TODO armar bien el mensaje con la URL
-        sendMessage(targetId, 'Te comparto mi informe')
-            .then(console.log)
-            .catch(console.error);
-    }
-
     return (
         <div>
             <Flex justify='space-between'>
@@ -61,9 +53,6 @@ export function UserChat() {
                             </Button>
                             <Button onClick={handleChangeProfessional}>
                                 Cambiar profesional
-                            </Button>
-                            <Button hidden onClick={handleShareReport}>
-                                Compartir Informe
                             </Button>
                         </>
                     ) : (

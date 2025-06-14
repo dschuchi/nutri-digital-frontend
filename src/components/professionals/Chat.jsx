@@ -96,7 +96,7 @@ export function Chat({ targetUserId, isProfessional = false }) {
                             <Typography.Text strong>
                                 {item.sender_user_id === user.id ? 'Tú' : targetName}:
                             </Typography.Text>
-                            <div>{item.text_content}</div>
+                            <div dangerouslySetInnerHTML={{ __html: item.text_content }}></div>
                         </>
                     )}
                 />

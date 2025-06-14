@@ -1,4 +1,4 @@
-import { Card, Col, Row, Space } from 'antd';
+import { Button, Card, Col, Row, message } from 'antd';
 import { useEffect, useState } from 'react';
 import { getReport } from '../api/report';
 import { useAuth } from '../context/AuthContext';
@@ -6,6 +6,9 @@ import BarChartWithGoal from '../components/reports/BarChartWithGoal';
 import dayjs from 'dayjs';
 import { getMacroNutrientGoals } from '../api/nutrientGoals';
 import { getExerciseGoals } from '../api/exerciseGoals';
+import { getMyProfessional } from '../api/patient';
+import { sendMessage } from '../api/messages';
+import { useSearchParams } from 'react-router-dom';
 
 function buildSimpleData(dataArray, keyName, valueName) {
   const daysInMonth = Array.from({ length: 30 }, (_, i) =>
@@ -42,6 +45,10 @@ function buildNutritionData(foodConsumed) {
 
 const Reports = () => {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const userParam = searchParams.get('id_user')
+  const idUser = userParam || user.id
+
   const [foodConsumed, setFoodConsumed] = useState([]);
   const [waterData, setWaterData] = useState([]);
   const [caloriesBurnedData, setCaloriesBurnedData] = useState([]);
@@ -49,15 +56,18 @@ const Reports = () => {
   const [burnedGoal, setBurnedGoal] = useState()
   const [waterGoal, setWaterGoal] = useState(2000)
   const [isLoading, setIsLoading] = useState(true);
+  const [myProfessionalId, setMyProfessionalId] = useState(null)
+  const [messageApi, contextHolder] = message.useMessage();
 
 
   useEffect(() => {
     Promise.all([
-      getReport(user.id),
-      getMacroNutrientGoals(user.id),
-      getExerciseGoals(user.id)
+      getReport(idUser),
+      getMacroNutrientGoals(idUser),
+      getExerciseGoals(idUser),
+      getMyProfessional(idUser)
     ])
-      .then(([reportRes, macroGoalsRes, burnedGoalRes]) => {
+      .then(([reportRes, macroGoalsRes, burnedGoalRes, myProfRes]) => {
         const data = reportRes.data;
 
         setFoodConsumed(buildNutritionData(data.foodConsumed || []));
@@ -66,96 +76,117 @@ const Reports = () => {
 
         setMacroGoals(macroGoalsRes.data[0]);
         setBurnedGoal(burnedGoalRes.data[0]);
+
+        if (myProfRes.data?.length > 0) {
+          setMyProfessionalId(myProfRes.data[0]);
+        }
       })
       .catch(console.error)
       .finally(() => setIsLoading(false));
   }, []);
 
+  function handleShareReport() {
+    sendMessage(myProfessionalId.id, `Te comparto mi <a href='http://localhost:5173/reportes?id_user=${idUser}'>informe</a>`)
+      .then(() => {
+        messageApi.success('Informe enviado')
+      })
+      .catch(console.error);
+  }
+
+  function disableButton() {
+    return userParam != null
+  }
+
   if (isLoading) {
     return <div>Cargando...</div>; // O un spinner si usás algún componente de UI
   }
 
-
   return (
-    <Row gutter={[16, 16]}>
-      <Col span={12}>
-        <Card title="Calorías">
-          <BarChartWithGoal
-            data={foodConsumed}
-            dataKey="calories"
-            label="Calorías"
-            color="#82ca9d"
-            goal={macroGoals.calories}
-            yUnit="cal"
-          />
-        </Card>
-      </Col>
+    <>
+      {contextHolder}
+      <Button disabled={disableButton()} onClick={handleShareReport}>
+        Compartir Informe
+      </Button>
+      <Row gutter={[16, 16]}>
+        <Col span={12}>
+          <Card title="Calorías">
+            <BarChartWithGoal
+              data={foodConsumed}
+              dataKey="calories"
+              label="Calorías"
+              color="#82ca9d"
+              goal={macroGoals.calories}
+              yUnit="cal"
+            />
+          </Card>
+        </Col>
 
-      <Col span={12}>
-        <Card title="Proteínas">
-          <BarChartWithGoal
-            data={foodConsumed}
-            dataKey="protein"
-            label="Proteínas"
-            color="#8884d8"
-            goal={macroGoals.protein}
-            yUnit="g"
-          />
-        </Card>
-      </Col>
+        <Col span={12}>
+          <Card title="Proteínas">
+            <BarChartWithGoal
+              data={foodConsumed}
+              dataKey="protein"
+              label="Proteínas"
+              color="#8884d8"
+              goal={macroGoals.protein}
+              yUnit="g"
+            />
+          </Card>
+        </Col>
 
-      <Col span={12}>
-        <Card title="Grasas">
-          <BarChartWithGoal
-            data={foodConsumed}
-            dataKey="total_fat"
-            label="Grasas"
-            color="#ff7300"
-            goal={macroGoals.total_fat}
-            yUnit="g"
-          />
-        </Card>
-      </Col>
+        <Col span={12}>
+          <Card title="Grasas">
+            <BarChartWithGoal
+              data={foodConsumed}
+              dataKey="total_fat"
+              label="Grasas"
+              color="#ff7300"
+              goal={macroGoals.total_fat}
+              yUnit="g"
+            />
+          </Card>
+        </Col>
 
-      <Col span={12}>
-        <Card title="Carbohidratos">
-          <BarChartWithGoal
-            data={foodConsumed}
-            dataKey="total_carbs"
-            label="Carbohidratos"
-            color="#ffc658"
-            goal={macroGoals.total_carbs}
-            yUnit="g"
-          />
-        </Card>
-      </Col>
+        <Col span={12}>
+          <Card title="Carbohidratos">
+            <BarChartWithGoal
+              data={foodConsumed}
+              dataKey="total_carbs"
+              label="Carbohidratos"
+              color="#ffc658"
+              goal={macroGoals.total_carbs}
+              yUnit="g"
+            />
+          </Card>
+        </Col>
 
-      <Col span={12}>
-        <Card title="Agua consumida (ml)">
-          <BarChartWithGoal
-            data={waterData}
-            dataKey="mililiters"
-            label="Agua"
-            color="#00bcd4"
-            goal={waterGoal}
-            yUnit="ml"
-          />
-        </Card>
-      </Col>
+        <Col span={12}>
+          <Card title="Agua consumida (ml)">
+            <BarChartWithGoal
+              data={waterData}
+              dataKey="mililiters"
+              label="Agua"
+              color="#00bcd4"
+              goal={waterGoal}
+              yUnit="ml"
+            />
+          </Card>
+        </Col>
 
-      <Col span={12}>
-        <Card title="Calorías quemadas">
-          <BarChartWithGoal
-            data={caloriesBurnedData}
-            dataKey="calories"
-            label="Calorías quemadas"
-            color="#d884d8"
-            goal={burnedGoal.calories_burned_goal}
-            yUnit="cal"
-          />
-        </Card>
-      </Col>
-    </Row>
+        <Col span={12}>
+          <Card title="Calorías quemadas">
+            <BarChartWithGoal
+              data={caloriesBurnedData}
+              dataKey="calories"
+              label="Calorías quemadas"
+              color="#d884d8"
+              goal={burnedGoal.calories_burned_goal}
+              yUnit="cal"
+            />
+          </Card>
+        </Col>
+      </Row>
+    </>
   );
 };
 
