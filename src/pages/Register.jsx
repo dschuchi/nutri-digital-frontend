@@ -7,7 +7,7 @@ const Register = () => {
     const navigate = useNavigate();
 
     const onFinish = (values) => {
-        const role = values.isDoctor ? 'doctor' : 'usuario';
+        const role = values.isDoctor ? 'professional' : 'usuario';
         register(
             {
                 user: values.username,
