@@ -2,6 +2,7 @@ import { Avatar, Button, Dropdown, Flex, Layout, Menu } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { UserOutlined } from '@ant-design/icons';
+import NotificationsBell from '../components/NotificationBell';
 
 const { Header, Content } = Layout;
 
@@ -84,6 +85,9 @@ function MainLayout() {
                             background: 'transparent',
                         }}
                     />
+
+                    <NotificationsBell />
+
 
                     <Dropdown
                         menu={{ items: dropdownItems }}
