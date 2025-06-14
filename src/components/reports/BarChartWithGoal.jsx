@@ -44,8 +44,7 @@ const BarChartWithGoal = ({
                 <ReferenceLine
                     y={goal}
                     stroke={color}
-                    strokeDasharray="3 3"
-                    label={{ value: 'Objetivo', position: 'top', fill: color }}
+                    label={{ value: `Obj: ${goal}`, position: 'insideBottomLeft', fill: color }}
                 />
                 <Bar dataKey={dataKey} fill={color}>
                     <LabelList dataKey={dataKey} position="top" />
