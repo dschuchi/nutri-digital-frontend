@@ -9,6 +9,12 @@ import {
     ReferenceLine,
     LabelList,
 } from 'recharts';
+import dayjs from "dayjs";
+import "dayjs/locale/es";
+dayjs.locale("es");
+
+const mesActual = dayjs().format('MMMM');
+const mesTitleCase = mesActual.charAt(0).toUpperCase() + mesActual.slice(1);
 
 const BarChartWithGoal = ({
     data,
@@ -27,8 +33,8 @@ const BarChartWithGoal = ({
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                     dataKey="date"
-                    tickFormatter={(value) => value.slice(5)}
-                    label={{ value: 'Fecha', position: 'bottom', offset: 0 }}
+                    tickFormatter={(value) => dayjs(value).format('DD')}
+                    label={{ value: mesTitleCase, position: 'bottom', offset: 0 }}
                 />
                 <YAxis
                     domain={[0, maxY]}
