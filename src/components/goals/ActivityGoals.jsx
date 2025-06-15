@@ -10,6 +10,8 @@ const ActivityGoals = ({ userId }) => {
     const [activityGoals, setActivityGoals] = useState([]);
     const [edit, setEdit] = useState(false);
     const [formActivity] = Form.useForm();
+    const [isDisabled, setIsDisabled] = useState(true)
+
 
     useEffect(() => {
         getExerciseGoals(effectiveUserId)
@@ -19,7 +21,7 @@ const ActivityGoals = ({ userId }) => {
                     { name: 'Calorías quemadas / Semana', value: data.calories_burned_goal, unit: 'Cal', key: 'calories_burned_goal' }
                 ]);
             })
-            .catch(err => console.error("Error loading exercise goals:", err));
+            .catch(console.error);
     }, [effectiveUserId]);
 
     useEffect(() => {
@@ -35,7 +37,7 @@ const ActivityGoals = ({ userId }) => {
         formActivity
             .validateFields()
             .then(values => {
-                updateExerciseGoals({ ...values}, effectiveUserId)
+                updateExerciseGoals({ ...values }, effectiveUserId)
                     .then(res => {
                         const data = res.data[0];
                         setActivityGoals([
@@ -43,9 +45,9 @@ const ActivityGoals = ({ userId }) => {
                         ]);
                         setEdit(false);
                     })
-                    .catch(err => console.error("Error updating exercise goals:", err));
+                    .catch(console.error);
             })
-            .catch(err => console.error("Error validando activity goals:", err));
+            .catch(console.error);
     };
 
     const handleCancel = () => {
@@ -57,6 +59,14 @@ const ActivityGoals = ({ userId }) => {
         formActivity.setFieldsValue(originalValues);
     };
 
+    const handleValuesChange = async () => {
+        try {
+            await formActivity.validateFields()
+        } catch (err) {
+            setIsDisabled(err.errorFields.length > 0)
+        }
+    };
+
     return (
         <>
             <Flex justify="space-between" align="center">
@@ -64,7 +74,7 @@ const ActivityGoals = ({ userId }) => {
                 <div>
                     {edit ? (
                         <>
-                            <Button onClick={handleSave}>Guardar</Button>
+                            <Button disabled={isDisabled} onClick={handleSave}>Guardar</Button>
                             <Button onClick={handleCancel}>Cancelar</Button>
                         </>
                     ) : (
@@ -72,7 +82,11 @@ const ActivityGoals = ({ userId }) => {
                     )}
                 </div>
             </Flex>
-            <Form form={formActivity} name="activity-goals">
+            <Form
+                form={formActivity}
+                name="activity-goals"
+                onValuesChange={handleValuesChange}
+            >
                 <List
                     bordered
                     dataSource={activityGoals}
