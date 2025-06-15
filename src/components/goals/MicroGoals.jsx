@@ -10,6 +10,8 @@ const MicroGoals = ({ userId }) => {
     const [microNutrientGoals, setMicroNutrientGoals] = useState([]);
     const [editMicro, setEditMicro] = useState(false);
     const [formMicro] = Form.useForm();
+    const [isDisabled, setIsDisabled] = useState(true)
+
 
     useEffect(() => {
         getMicroNutrientGoals(effectiveUserId)
@@ -31,7 +33,7 @@ const MicroGoals = ({ userId }) => {
                     { name: 'Hierro', value: data.iron, unit: '%DV', key: 'iron' },
                 ]);
             })
-            .catch(err => console.error("Error fetching nutrient goals:", err));
+            .catch(console.error);
     }, [effectiveUserId]);
 
     useEffect(() => {
@@ -67,9 +69,9 @@ const MicroGoals = ({ userId }) => {
                         ]);
                         setEditMicro(false);
                     })
-                    .catch(err => console.error("Error updating nutrient goals:", err));
+                    .catch(console.error);
             })
-            .catch(info => console.log("Validación fallida:", info));
+            .catch(console.error);
     };
 
     const handleCancel = () => {
@@ -81,6 +83,14 @@ const MicroGoals = ({ userId }) => {
         formMicro.setFieldsValue(originalValues);
     };
 
+    const handleValuesChange = async () => {
+        try {
+            await formMicro.validateFields()
+        } catch (err) {
+            setIsDisabled(err.errorFields.length > 0)
+        }
+    };
+
     return (
         <>
             <Flex justify="space-between" align="center">
@@ -88,7 +98,7 @@ const MicroGoals = ({ userId }) => {
                 <div>
                     {editMicro ? (
                         <>
-                            <Button onClick={handleSaveMicro}>Guardar</Button>
+                            <Button disabled={isDisabled} onClick={handleSaveMicro}>Guardar</Button>
                             <Button onClick={handleCancel}>Cancelar</Button>
                         </>
                     ) : (
@@ -96,7 +106,11 @@ const MicroGoals = ({ userId }) => {
                     )}
                 </div>
             </Flex>
-            <Form form={formMicro} name="micro-goals">
+            <Form
+                form={formMicro}
+                name="micro-goals"
+                onValuesChange={handleValuesChange}
+            >
                 <List
                     bordered
                     dataSource={microNutrientGoals}
