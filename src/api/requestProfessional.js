@@ -31,3 +31,9 @@ export async function getRequestClient(idUser) {
     if (!res) throw new Error('Failed to fetch client requests');
     return res;
 }
+
+export async function getRequestsPending(idProfessional) {
+    const res = await httpClient.get(`/request/pendings?id=${idProfessional}`);
+    if (!res) throw new Error('Failed to fetch pending client requests');
+    return res;
+}

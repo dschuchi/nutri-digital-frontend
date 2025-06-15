@@ -2,38 +2,48 @@ import { useEffect, useState, useMemo } from 'react';
 import { Badge, Button, List, Popover, Typography, Space } from 'antd';
 import { BellOutlined, DeleteOutlined } from '@ant-design/icons';
 import { getReminder } from '../api/reminder';
+import { getRequestsPending } from '../api/requestProfessional';
+import { useAuth } from '../context/AuthContext';
 
 const statusLabels = {
     consumed: 'No se registraron calorías consumidas',
     hidratation: 'No se registró hidratación',
     exercise: 'No se registró ejercicio',
+    requestPending: 'Hay nuevas solicitudes de pacientes'
 };
 
 const NotificationsBell = () => {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { user } = useAuth()
 
-    const fetchNotifications = () => {
+    const loadAllNotifications = () => {
         setLoading(true);
-        getReminder()
-            .then((res) => {
-                const list = Object.entries(res.data)
-                    .filter(([, value]) => value === false)
-                    .map(([key]) => ({ key }));
-                setItems(list);
+
+        Promise.all([
+            getReminder(),
+            getRequestsPending(user.id),
+        ])
+            .then(([remindersRes, pendingRes]) => {
+                const result = Object.entries(remindersRes.data)
+                    .filter(([, v]) => v === false)
+                    .map(([k]) => ({ key: k }));
+
+                if (pendingRes.data.pending) {
+                    result.push({ key: 'requestPending' });
+                }
+                setItems(result);
             })
             .catch(console.error)
-            .finally(() => setLoading(false))
+            .finally(() => setLoading(false));
     };
 
     useEffect(() => {
-        fetchNotifications()
-
+        loadAllNotifications()
         const intervalId = setInterval(() => {
-            fetchNotifications(); // Repetir periódicamente
-        }, 10000); // cada 10 segundos
-
-        return () => clearInterval(intervalId); // Limpieza
+            loadAllNotifications();
+        }, 10000); // 10 segundos
+        return () => clearInterval(intervalId); // Limpieza (requerido)
     }, []);
 
     const unreadCount = useMemo(() => items.length, [items]);
