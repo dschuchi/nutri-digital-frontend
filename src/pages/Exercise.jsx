@@ -10,6 +10,7 @@ const Exercise = () => {
     const [allExercises, setAllExercises] = useState([])
     const [date, setDate] = useState(dayjs());
     const { user } = useAuth()
+    const [form] = Form.useForm();
 
     const fetchExercise = (selectedDate) => {
         const dateString = selectedDate.startOf('day').toISOString();
@@ -73,6 +74,7 @@ const Exercise = () => {
                 <Flex vertical gap={'large'}>
                     <Card title='Cada paso cuenta: registra tu esfuerzo'>
                         <Form
+                            form={form}
                             name="exercise"
                             onFinish={onFinish}
                             style={{ width: '100%' }}
@@ -88,7 +90,7 @@ const Exercise = () => {
                                 </Select>
                             </Form.Item>
                             <Form.Item style={{ marginBottom: 0 }}>
-                                <Flex gap="small" align="center" style={{ width: '100%' }}>
+                                <Flex gap="small" style={{ width: '100%' }}>
                                     <Form.Item
                                         name="calories"
                                         rules={[
@@ -104,9 +106,24 @@ const Exercise = () => {
                                             style={{ width: '100%' }}
                                         />
                                     </Form.Item>
-                                    <Button type="primary" htmlType="submit">
-                                        Agregar
-                                    </Button>
+                                    <Form.Item shouldUpdate>
+                                        {() => {
+                                            const hasErrors = form
+                                                .getFieldsError()
+                                                .some(({ errors }) => errors.length);
+                                            const value = form.getFieldValue("calories") && form.getFieldValue("exerciseId");
+
+                                            return (
+                                                <Button
+                                                    type="primary"
+                                                    htmlType="submit"
+                                                    disabled={!value || hasErrors}
+                                                >
+                                                    Agregar
+                                                </Button>
+                                            );
+                                        }}
+                                    </Form.Item>
                                 </Flex>
                             </Form.Item>
                         </Form>
