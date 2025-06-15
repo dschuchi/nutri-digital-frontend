@@ -1,4 +1,4 @@
-import { Button, Card, DatePicker, Divider, Empty, Flex, Form, InputNumber, Table, Typography } from "antd";
+import { Button, Card, DatePicker, Empty, Flex, Form, InputNumber, Table, Typography } from "antd";
 import { deleteHydration, getHydrationHistory, newHydration } from "../api/hydration";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
@@ -7,6 +7,7 @@ import WaterGlassCard from "../components/Dashboard/WaterGlassCard/WaterGlassCar
 const Hydration = () => {
     const [hydrationHistory, setHydrationHistory] = useState([]);
     const [date, setDate] = useState(dayjs());
+    const [form] = Form.useForm();
 
     const fetchHydration = (selectedDate) => {
         const dateString = selectedDate.startOf('day').toISOString();
@@ -69,12 +70,13 @@ const Hydration = () => {
                 <Flex vertical gap={'large'}>
                     <Card title='¡Registra tu hidratación!' style={{ width: '30vw' }}>
                         <Form
+                            form={form}
                             name="hydration"
                             onFinish={onFinish}
                             style={{ width: '100%' }}
                         >
                             <Form.Item style={{ marginBottom: 0 }}>
-                                <Flex gap="small" align="center" style={{ width: '100%' }}>
+                                <Flex gap="small" style={{ width: '100%' }}>
                                     <Form.Item
                                         name="hydration"
                                         rules={[
@@ -90,14 +92,29 @@ const Hydration = () => {
                                             style={{ width: '100%' }}
                                         />
                                     </Form.Item>
-                                    <Button type="primary" htmlType="submit">
-                                        Agregar
-                                    </Button>
+                                    <Form.Item shouldUpdate>
+                                        {() => {
+                                            const hasErrors = form
+                                                .getFieldsError()
+                                                .some(({ errors }) => errors.length);
+                                            const value = form.getFieldValue("hydration");
+
+                                            return (
+                                                <Button
+                                                    type="primary"
+                                                    htmlType="submit"
+                                                    disabled={!value || hasErrors}
+                                                >
+                                                    Agregar
+                                                </Button>
+                                            );
+                                        }}
+                                    </Form.Item>
                                 </Flex>
                             </Form.Item>
                         </Form>
                     </Card>
-                    <WaterGlassCard  consumoActual={totalHydration} consumoObjetivo={goalHydration} />
+                    <WaterGlassCard consumoActual={totalHydration} consumoObjetivo={goalHydration} />
                 </Flex>
                 <Card style={{ width: '70vw' }}>
                     <Flex justify="space-between" align="center" style={{ marginBottom: 16 }}>
