@@ -21,20 +21,20 @@ const SitesPage = () => {
     yaBusque.current = true;
 
     const getLocationAndLoadPlaces = async () => {
-        try {
+      try {
         const getUserOrigin = () =>
-            new Promise((resolve, reject) => {
+          new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject);
-            });
+          });
 
         const position = await getUserOrigin();
         const { latitude, longitude } = position.coords;
 
         const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
         const res = await fetch(url, {
-            headers: {
+          headers: {
             'User-Agent': 'NutriDigital/1.0 (franz@example.com)',
-            },
+          },
         });
 
         const geo = await res.json();
@@ -43,56 +43,56 @@ const SitesPage = () => {
         setPlaces(data);
 
         localStorage.setItem('ubicacion-confirmada', 'true');
-        } catch (error) {
+      } catch (error) {
         console.warn("Error en geolocalización, usando búsqueda sin origen.");
         const data = await getPlaces();
         setPlaces(data);
-        } finally {
+      } finally {
         setLoading(false);
-        }
+      }
     };
 
     const yaConfirmo = localStorage.getItem('ubicacion-confirmada') === 'true';
     if (yaConfirmo) {
-        getLocationAndLoadPlaces();
-        return;
+      getLocationAndLoadPlaces();
+      return;
     }
 
     navigator.permissions
-        .query({ name: 'geolocation' })
-        .then((result) => {
+      .query({ name: 'geolocation' })
+      .then((result) => {
         if (result.state === 'granted') {
-            getLocationAndLoadPlaces();
+          getLocationAndLoadPlaces();
         } else {
-            Modal.confirm({
+          Modal.confirm({
             title: '¿Querés compartir tu ubicación?',
             content: 'Necesitamos tu ubicación para mostrarte los sitios más cercanos.',
             okText: 'Sí, compartir',
             cancelText: 'No, volver al inicio',
             onOk: async () => {
-                await getLocationAndLoadPlaces();
+              await getLocationAndLoadPlaces();
             },
             onCancel: () => {
-                navigate('/');
+              navigate('/');
             },
-            });
+          });
         }
-        })
-        .catch(() => {
+      })
+      .catch(() => {
         Modal.confirm({
-            title: '¿Querés compartir tu ubicación?',
-            content: 'Necesitamos tu ubicación para mostrarte los sitios más cercanos.',
-            okText: 'Sí, compartir',
-            cancelText: 'No, volver al inicio',
-            onOk: async () => {
+          title: '¿Querés compartir tu ubicación?',
+          content: 'Necesitamos tu ubicación para mostrarte los sitios más cercanos.',
+          okText: 'Sí, compartir',
+          cancelText: 'No, volver al inicio',
+          onOk: async () => {
             await getLocationAndLoadPlaces();
-            },
-            onCancel: () => {
+          },
+          onCancel: () => {
             navigate('/');
-            },
+          },
         });
-        });
-    }, [navigate]);
+      });
+  }, [navigate]);
 
   useEffect(() => {
     let filteredData = [...places];
@@ -165,16 +165,34 @@ const SitesPage = () => {
           </Select>
         </Col>
         <Col span={8}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 16,
+              padding: "0px 16px",
+              backgroundColor: "#fafafa",
+              borderRadius: 8,
+              border: "1px solid #d9d9d9"
+            }}
+          >
+            <Typography.Text style={{ whiteSpace: "nowrap" }}>
+              Distancia máx.
+            </Typography.Text>
+
             <Slider
               min={0}
               max={30000}
-              value={distanceMax}
               step={100}
+              value={distanceMax}
               onChange={setDistanceMax}
               style={{ flex: 1 }}
+              tooltip={{ formatter: null }}
             />
-            <span>{distanceMax} m</span>
+
+            <Typography.Text type="secondary" style={{ minWidth: 60, textAlign: "right" }}>
+              {distanceMax.toLocaleString()} m
+            </Typography.Text>
           </div>
         </Col>
       </Row>
