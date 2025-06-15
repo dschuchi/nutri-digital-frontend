@@ -99,12 +99,12 @@ export function Chat({ targetUserId, isProfessional = false }) {
                     size="small"
                     dataSource={messages}
                     renderItem={(item) => (
-                        <>
+                        <div style={{ paddingBottom: 10 }}>
                             <Typography.Text strong>
                                 {item.sender_user_id === user.id ? 'Tú' : targetName}:
                             </Typography.Text>
                             <div dangerouslySetInnerHTML={{ __html: item.text_content }}></div>
-                        </>
+                        </div>
                     )}
                 />
                 <div ref={scrollRef} />
