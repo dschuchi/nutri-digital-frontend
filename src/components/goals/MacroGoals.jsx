@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { Alert, Button, Flex, Form, InputNumber, List, Typography } from "antd";
+import { Button, Flex, Form, InputNumber, List, Typography } from "antd";
 import { getMacroNutrientGoals, updateMacroNutrientGoals } from "../../api/nutrientGoals";
 
 const MacroGoals = ({ userId }) => {
@@ -9,7 +9,6 @@ const MacroGoals = ({ userId }) => {
 
     const [macroNutrientGoals, setMacroNutrientGoals] = useState([]);
     const [editMacro, setEditMacro] = useState(false);
-    const [showError, setShowError] = useState(false);
 
     useEffect(() => {
         getMacroNutrientGoals(effectiveUserId)
@@ -39,20 +38,16 @@ const MacroGoals = ({ userId }) => {
                             { name: 'Proteínas', value: res.data[0].protein, unit: 'g', key: 'protein' },
                         ]);
                         setEditMacro(false);
-                        setShowError(false);
                     })
                     .catch((err) => {
                         console.error("Error updating nutrient goals:", err);
                     });
             })
-            .catch(() => {
-                setShowError(true);
-            });
+            .catch(console.error);
     };
 
     const handleCancel = () => {
         setEditMacro(false);
-        setShowError(false);
         const originalValues = Object.fromEntries(
             macroNutrientGoals.map(item => [item.key, item.value])
         );
@@ -68,23 +63,6 @@ const MacroGoals = ({ userId }) => {
             formMacro.setFieldsValue(formValues);
         }
     }, [macroNutrientGoals, formMacro]);
-
-    const validateMacroSum = (_, value) => {
-        const values = formMacro.getFieldsValue();
-        const total =
-            Number(values.total_carbs || 0) +
-            Number(values.total_fat || 0) +
-            Number(values.protein || 0);
-        if (
-            values.total_carbs !== undefined &&
-            values.total_fat !== undefined &&
-            values.protein !== undefined &&
-            total !== 100
-        ) {
-            return Promise.reject();
-        }
-        return Promise.resolve();
-    };
 
     return (
         <>
@@ -102,17 +80,6 @@ const MacroGoals = ({ userId }) => {
                 </div>
             </Flex>
             <Form form={formMacro} name="macro-goals">
-                {showError && (
-                    <Form.Item>
-                        <Alert
-                            message="La suma de carbohidratos, grasas y proteínas debe ser exactamente 100%"
-                            type="error"
-                            showIcon
-                            closable
-                            onClose={() => setShowError(false)}
-                        />
-                    </Form.Item>
-                )}
                 <List bordered>
                     {macroNutrientGoals.map((item) => (
                         <List.Item key={item.key}>
