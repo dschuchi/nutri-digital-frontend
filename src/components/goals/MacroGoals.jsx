@@ -9,18 +9,19 @@ const MacroGoals = ({ userId }) => {
 
     const [macroNutrientGoals, setMacroNutrientGoals] = useState([]);
     const [editMacro, setEditMacro] = useState(false);
+    const [isDisabled, setIsDisabled] = useState(true)
 
     useEffect(() => {
         getMacroNutrientGoals(effectiveUserId)
             .then((res) => {
                 setMacroNutrientGoals([
-                    { name: 'Calorías', value: res.data[0].calories, unit: '', key: 'calories' },
+                    { name: 'Calorías', value: res.data[0].calories, unit: 'cal', key: 'calories' },
                     { name: 'Carbohidratos', value: res.data[0].total_carbs, unit: 'g', key: 'total_carbs' },
                     { name: 'Grasas', value: res.data[0].total_fat, unit: 'g', key: 'total_fat' },
                     { name: 'Proteínas', value: res.data[0].protein, unit: 'g', key: 'protein' },
                 ]);
             })
-            .catch((err) => { console.error("Error fetching nutrient goals:", err) });
+            .catch(console.error);
     }, [effectiveUserId]);
 
     const [formMacro] = Form.useForm();
@@ -39,9 +40,7 @@ const MacroGoals = ({ userId }) => {
                         ]);
                         setEditMacro(false);
                     })
-                    .catch((err) => {
-                        console.error("Error updating nutrient goals:", err);
-                    });
+                    .catch(console.error);
             })
             .catch(console.error);
     };
@@ -64,6 +63,14 @@ const MacroGoals = ({ userId }) => {
         }
     }, [macroNutrientGoals, formMacro]);
 
+    const handleValuesChange = async () => {
+        try {
+            await formMacro.validateFields()
+        } catch (err) {
+            setIsDisabled(err.errorFields.length > 0)
+        }
+    };
+
     return (
         <>
             <Flex justify="space-between" align="center">
@@ -71,7 +78,7 @@ const MacroGoals = ({ userId }) => {
                 <div>
                     {editMacro ? (
                         <>
-                            <Button onClick={handleSaveMacro}>Guardar</Button>
+                            <Button disabled={isDisabled} onClick={handleSaveMacro}>Guardar</Button>
                             <Button onClick={handleCancel}>Cancelar</Button>
                         </>
                     ) : (
@@ -79,7 +86,11 @@ const MacroGoals = ({ userId }) => {
                     )}
                 </div>
             </Flex>
-            <Form form={formMacro} name="macro-goals">
+            <Form
+                form={formMacro}
+                name="macro-goals"
+                onValuesChange={handleValuesChange}
+            >
                 <List bordered>
                     {macroNutrientGoals.map((item) => (
                         <List.Item key={item.key}>
