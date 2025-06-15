@@ -19,6 +19,7 @@ export function Chat({ targetUserId, isProfessional = false }) {
     const { user } = useAuth();
     const scrollRef = useRef();
     const navigate = useNavigate()
+    const [isDisabled, setIsDisabled] = useState(true)
 
     useEffect(() => {
         if (!targetUserId) return;
@@ -47,6 +48,7 @@ export function Chat({ targetUserId, isProfessional = false }) {
             .then(() => {
                 setText('');
                 fetchMessages();
+                setIsDisabled(true)
             })
             .catch(() => antdMessage.error('Error al enviar mensaje'));
     };
@@ -57,6 +59,11 @@ export function Chat({ targetUserId, isProfessional = false }) {
                 navigate('/patients')
             })
             .catch(console.error)
+    }
+
+    const handleOnChange = (e) => {
+        setText(e.target.value)
+        setIsDisabled(e.target.value <= 0)
     }
 
     return (
@@ -105,10 +112,10 @@ export function Chat({ targetUserId, isProfessional = false }) {
                 <Input.TextArea
                     rows={2}
                     value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={handleOnChange}
                     placeholder="Escribe tu mensaje aquí..."
                 />
-                <Button type="primary" onClick={handleSend} style={{ marginTop: 8 }}>
+                <Button disabled={isDisabled} type="primary" onClick={handleSend} style={{ marginTop: 8 }}>
                     Enviar
                 </Button>
             </Card>
