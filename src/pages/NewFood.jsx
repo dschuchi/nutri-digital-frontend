@@ -23,8 +23,8 @@ export default function NewFood() {
         { name: "potassium", label: "Potasio" },
         { name: "dietary_fiber", label: "Fibra" },
         { name: "cholesterol", label: "Colesterol" },
-        { name: "vitamin_a", label: "Vitamina A" },
-        { name: "vitamin_c", label: "Vitamina C" },
+        { name: "vitamin_a", label: "Vitamina A" },
+        { name: "vitamin_c", label: "Vitamina C" },
         { name: "calcium", label: "Calcio" },
         { name: "iron", label: "Hierro" },
     ];
