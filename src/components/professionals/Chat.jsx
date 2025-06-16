@@ -1,4 +1,4 @@
-import { Button, Card, Input, List, Space, Typography, message as antdMessage } from 'antd';
+import { Button, Card, Flex, Input, List, Space, Typography, message as antdMessage } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { getMessages, sendMessage } from '../../api/messages';
 import { getUser } from '../../api/user';
@@ -66,6 +66,10 @@ export function Chat({ targetUserId, isProfessional = false }) {
         setIsDisabled(e.target.value <= 0)
     }
 
+    useEffect(() => {
+        scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
+
     return (
         <>
             <Card
@@ -95,29 +99,34 @@ export function Chat({ targetUserId, isProfessional = false }) {
                     </div>
                 }
             >
-                <List
-                    size="small"
-                    dataSource={messages}
-                    renderItem={(item) => (
-                        <div style={{ paddingBottom: 10 }}>
-                            <Typography.Text strong>
-                                {item.sender_user_id === user.id ? 'Tú' : targetName}:
-                            </Typography.Text>
-                            <div dangerouslySetInnerHTML={{ __html: item.text_content }}></div>
-                        </div>
-                    )}
-                />
-                <div ref={scrollRef} />
+                <Flex vertical justify='flex-end' style={{ height: '60vh' }}>
+                    <div style={{ flex: 1, overflowY: 'auto', paddingRight: 8 }}>
+                        <List
+                            size="small"
+                            dataSource={messages}
+                            renderItem={(item) => (
+                                <div style={{ paddingBottom: 10 }}>
+                                    <Typography.Text strong>
+                                        {item.sender_user_id === user.id ? 'Tú' : targetName}:
+                                    </Typography.Text>
+                                    <div dangerouslySetInnerHTML={{ __html: item.text_content }}></div>
+                                </div>
+                            )}
+                        />
+                        <div ref={scrollRef} />
+                    </div>
 
-                <Input.TextArea
-                    rows={2}
-                    value={text}
-                    onChange={handleOnChange}
-                    placeholder="Escribe tu mensaje aquí..."
-                />
-                <Button disabled={isDisabled} type="primary" onClick={handleSend} style={{ marginTop: 8 }}>
-                    Enviar
-                </Button>
+
+                    <Input.TextArea
+                        rows={2}
+                        value={text}
+                        onChange={handleOnChange}
+                        placeholder="Escribe tu mensaje aquí..."
+                    />
+                    <Button disabled={isDisabled} type="primary" onClick={handleSend} style={{ marginTop: 8 }}>
+                        Enviar
+                    </Button>
+                </Flex>
             </Card>
 
             <NutritionGoalsModal
