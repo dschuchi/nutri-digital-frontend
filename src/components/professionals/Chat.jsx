@@ -27,7 +27,6 @@ export function Chat({ targetUserId, isProfessional = false }) {
         getUser(targetUserId)
             .then(res => {
                 const user = res.data[0];
-                console.log("user: ", user)
                 const { name, lastname } = user || {};
                 setTargetName(`${name || ''} ${lastname || ''}`);
             })

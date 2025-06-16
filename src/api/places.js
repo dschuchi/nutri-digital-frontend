@@ -9,7 +9,6 @@ export async function getPlaces(origin) {
   try {
     const query = origin ? `?origin=${encodeURIComponent(origin)}` : '';
     const response = await httpClient.get(`/place${query}`);
-    console.log("data: ", response.data);
     return response.data;
   } catch (error) {
     console.error('Error al obtener los lugares:', error);

@@ -26,14 +26,6 @@ export async function getPatientData(userId, date, name = `Paciente ${userId}`, 
     const exerciseTypes = exerciseTypesRes.data || [];
     const exerciseGoal = exerciseGoalRes.data?.[0]?.calories_burned_goal || 0;
 
-    // console.log("panelRes: ", panelRes);
-    // console.log("panelData: ", panelData);
-
-    // console.log("consumedList: ", consumedList);
-    // console.log("allExercises: ", allExercises);
-    // console.log("exerciseTypes: ", exerciseTypes);
-    // console.log("exerciseGoal: ", exerciseGoal);
-
     // Filtramos solo los ejercicios del usuario actual
     const ejerciciosUsuario = allExercises.filter(e => e.id_user === userId);
 

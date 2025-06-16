@@ -3,7 +3,6 @@ import { Table, Typography } from 'antd';
 const { Title } = Typography;
 
 export default function HistorialNutricion({ paciente }) {
-  console.log("paciente: ", paciente);
   if (!paciente?.historialNutricion?.length) return <p>No hay datos de nutrición disponibles.</p>;
 
   const columns = [
