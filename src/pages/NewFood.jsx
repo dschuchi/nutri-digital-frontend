@@ -12,7 +12,7 @@ export default function NewFood() {
     const nutrientFields = [
         { name: "name", label: "Nombre" },
         { name: "calories", label: "Calorías" },
-        { name: "serving", label: "Porción" },
+        { name: "serving", label: "Tamaña de la Porción" },
         { name: "total_carbs", label: "Carbohidratos" },
         { name: "sugars", label: "Azúcares" },
         { name: "total_fat", label: "Grasas Totales" },
