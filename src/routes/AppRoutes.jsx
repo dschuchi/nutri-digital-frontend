@@ -17,6 +17,7 @@ import { Requests } from '../pages/Requests';
 import Exercise from '../pages/Exercise';
 import Reports from '../pages/Reports';
 import PatientReport from '../pages/PatientReport';
+import NewFood from '../pages/NewFood';
 
 function AppRoutes() {
     return (
@@ -43,6 +44,7 @@ function AppRoutes() {
                 <Route path="/ejercicios" element={<Exercise />} />
                 <Route path="/reportes" element={<Reports />} />
                 <Route path="/reporte-paciente" element={<PatientReport />} />
+                <Route path="/nueva-comida" element={<NewFood />} />
             </Route>
         </Routes>
     );
