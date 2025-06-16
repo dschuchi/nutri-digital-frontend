@@ -1,5 +1,8 @@
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { Button, Card, Flex, Select, message } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+
 import { getReport } from '../api/report';
 import { useAuth } from '../context/AuthContext';
 import BarChartWithGoal from '../components/reports/BarChartWithGoal';
@@ -23,7 +26,6 @@ function buildSimpleData(dataArray, keyName, valueName) {
     };
   });
 }
-
 
 function buildNutritionData(foodConsumed) {
   const daysInMonth = Array.from({ length: 30 }, (_, i) =>
@@ -59,6 +61,7 @@ const Reports = () => {
   const [myProfessionalId, setMyProfessionalId] = useState(null)
   const [messageApi, contextHolder] = message.useMessage();
   const [chartKey, setChartKey] = useState('calories');
+  const [loadingPdf, setLoadingPdf] = useState(false);
 
   const charts = useMemo(
     () => [
@@ -128,6 +131,9 @@ const Reports = () => {
 
   const selectedChart = charts.find((c) => c.key === chartKey);
 
+  // Refs para cada gráfico (para capturar)
+  const chartRefs = useMemo(() => charts.map(() => React.createRef()), [charts]);
+
   useEffect(() => {
     Promise.all([
       getReport(idUser),
@@ -169,6 +175,65 @@ const Reports = () => {
     return userParam != null
   }
 
+  // Descargar todos los gráficos en PDF, 2 por página con título
+  const handleDownloadPDF = async () => {
+    setLoadingPdf(true);
+    try {
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: 'a4' });
+
+      const pageWidth = pdf.internal.pageSize.getWidth(); // ~595px
+      const pageHeight = pdf.internal.pageSize.getHeight(); // ~842px
+
+      const margin = 20;
+      const usableWidth = pageWidth - margin * 2;
+      const usableHeight = (pageHeight - margin * 3) / 2; // Altura por gráfico (2 por página)
+
+      for (let i = 0; i < charts.length; i += 2) {
+        if (i > 0) pdf.addPage();
+
+        for (let j = 0; j < 2; j++) {
+          const chartIndex = i + j;
+          if (chartIndex >= charts.length) break;
+
+          const ref = chartRefs[chartIndex];
+          if (!ref.current) continue;
+
+          // Título del gráfico
+          const title = charts[chartIndex].title;
+
+          // Renderizar canvas del gráfico
+          const canvas = await html2canvas(ref.current, { scale: 2, backgroundColor: '#ffffff' });
+          const imgData = canvas.toDataURL('image/png');
+
+          // Calcular dimensiones para mantener aspect ratio
+          const imgProps = {
+            width: canvas.width,
+            height: canvas.height,
+          };
+          const imgWidth = usableWidth;
+          const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+          // Posiciones
+          const x = margin;
+          const y = margin + j * (usableHeight + margin);
+
+          // Dibujar título
+          pdf.setFontSize(16);
+          pdf.text(title, x, y);
+
+          // Dibujar imagen debajo del título (dejamos 20px de margen para el título)
+          pdf.addImage(imgData, 'PNG', x, y + 10, imgWidth, imgHeight);
+        }
+      }
+
+      pdf.save('reportes.pdf');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingPdf(false);
+    }
+  };
+
   if (isLoading) {
     return <div>Cargando...</div>;
   }
@@ -176,9 +241,9 @@ const Reports = () => {
   return (
     <>
       {contextHolder}
-      <Flex justify='space-between'>
+      <Flex justify="space-between" style={{ marginBottom: 16 }}>
         <Select
-          size='large'
+          size="large"
           value={chartKey}
           onChange={setChartKey}
           style={{ width: 260, marginBottom: 24 }}
@@ -190,8 +255,13 @@ const Reports = () => {
             </Select.Option>
           ))}
         </Select>
-        <Button size='large' hidden={isProfessional()} disabled={disableButton()} onClick={handleShareReport}>
+
+        <Button size="large" hidden={isProfessional()} disabled={disableButton()} onClick={handleShareReport}>
           Compartir informe a mi profesional
+        </Button>
+
+        <Button hidden size="large" type="primary" onClick={handleDownloadPDF} loading={loadingPdf}>
+          Descargar los 6 gráficos en PDF
         </Button>
       </Flex>
 
@@ -207,6 +277,22 @@ const Reports = () => {
           />
         </div>
       </Card>
+
+      {/* Gráficos ocultos para generar PDF */}
+      <div style={{ position: 'absolute', top: -9999, left: -9999 }}>
+        {charts.map((chart, index) => (
+          <div key={chart.key} ref={chartRefs[index]} style={{ width: 800, height: 400 }}>
+            <BarChartWithGoal
+              data={chart.data}
+              dataKey={chart.dataKey}
+              label={chart.label}
+              color={chart.color}
+              goal={chart.goal}
+              yUnit={chart.yUnit}
+            />
+          </div>
+        ))}
+      </div>
     </>
   );
 };
