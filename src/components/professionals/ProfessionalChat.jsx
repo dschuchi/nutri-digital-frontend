@@ -1,4 +1,3 @@
-// pages/ProfessionalChat.jsx
 import { useEffect, useState } from 'react';
 import { getMyPatients } from '../../api/patient';
 import { useAuth } from '../../context/AuthContext';
@@ -26,7 +25,7 @@ export function ProfessionalChat({ forcedTargetId }) {
     }, [user.id, forcedTargetId]);
 
     return (
-        <Layout style={{ minHeight: '80vh', border: '1px solid #f0f0f0', borderRadius: 8 }}>
+        <Layout>
             <Sider width={250} style={{ background: '#fff', padding: '16px' }}>
                 <Typography.Title level={4}>Pacientes</Typography.Title>
                 {patients.length === 0 ? (
