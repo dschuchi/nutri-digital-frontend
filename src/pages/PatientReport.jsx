@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Layout, Typography, Tabs, DatePicker, Spin, message } from 'antd';
+import { Layout, Typography, Tabs, DatePicker, Spin, message, Flex, Space } from 'antd';
 import PatientSelector from '../components/patientReport/PatientSelector';
 import PatientReportContent from '../components/patientReport/PatientReportContent';
 import HistorialNutricion from '../components/patientReport/HistorialNutricion';
@@ -20,6 +20,7 @@ export default function PatientReport() {
   const [activeTab, setActiveTab] = useState('resumen');
   const [searchParams] = useSearchParams();
   const [selectedDate, setSelectedDate] = useState(dayjs());
+  const [dateFrom, setDateFrom] = useState(dayjs());
   const [loading, setLoading] = useState(false);
 
   const { user } = useAuth(); // obtenemos el profesional logueado
@@ -34,9 +35,10 @@ export default function PatientReport() {
         const rawPatients = patientsRes.data || [];
 
         const date = selectedDate.format('YYYY-MM-DD');
+        const dateFromFormatted = dateFrom.format('YYYY-MM-DD');
         const enrichedPatients = await Promise.all(
           rawPatients.map(p =>
-            getPatientData(p.id, date, `${p.name} ${p.lastname}`)
+            getPatientData(p.id, date, `${p.name} ${p.lastname}`, dateFromFormatted)
           )
         );
 
@@ -54,7 +56,7 @@ export default function PatientReport() {
     };
 
     fetchData();
-  }, [user, searchParams, selectedDate]);
+  }, [user, searchParams, selectedDate, dateFrom]);
 
   return (
     <Layout style={{ height: '100vh' }}>
@@ -71,7 +73,18 @@ export default function PatientReport() {
           <Title level={3}>
             {selectedPatient ? `Informe de ${selectedPatient.name}` : 'Informe del paciente'}
           </Title>
-          <DatePicker value={selectedDate} onChange={setSelectedDate} />
+          <Flex justify='flex-end'>
+            <Space>
+              <Typography.Text strong>
+                Desde
+              </Typography.Text>
+              <DatePicker disabled={activeTab == 'nutricion' || activeTab == 'ejercicio'} value={dateFrom} onChange={setDateFrom} allowClear={false} maxDate={selectedDate} />
+              <Typography.Text strong>
+                Hasta
+              </Typography.Text>
+              <DatePicker value={selectedDate} onChange={setSelectedDate} allowClear={false} />
+            </Space>
+          </Flex>
         </div>
 
         {loading ? (
@@ -83,9 +96,9 @@ export default function PatientReport() {
               onChange={setActiveTab}
               items={[
                 { key: 'resumen', label: 'Resumen General' },
+                { key: 'objetivos', label: 'Objetivos' },
                 { key: 'nutricion', label: 'Historial de Nutrición' },
                 { key: 'ejercicio', label: 'Historial de Ejercicio' },
-                { key: 'objetivos', label: 'Objetivos' },
               ]}
             />
 

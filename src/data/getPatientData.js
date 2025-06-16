@@ -10,10 +10,10 @@ import { getExerciseGoals } from '../api/exerciseGoals';
  * @param {string} name - Nombre del paciente (opcional).
  * @returns {Promise<Object>} Paciente con estructura similar a mockPatients.
  */
-export async function getPatientData(userId, date, name = `Paciente ${userId}`) {
+export async function getPatientData(userId, date, name = `Paciente ${userId}`, dateFrom) {
   try {
     const [panelRes, consumedRes, exercisesRes, exerciseTypesRes, exerciseGoalRes] = await Promise.all([
-      getPanelData(date, userId),
+      getPanelData(date, userId, dateFrom),
       getConsumedEntries(userId, date),
       getExerciseHistory(date, userId),
       getAllExercises(),
@@ -26,13 +26,13 @@ export async function getPatientData(userId, date, name = `Paciente ${userId}`) 
     const exerciseTypes = exerciseTypesRes.data || [];
     const exerciseGoal = exerciseGoalRes.data?.[0]?.calories_burned_goal || 0;
 
-    console.log("panelRes: ",panelRes);
-    console.log("panelData: ",panelData);
+    // console.log("panelRes: ", panelRes);
+    // console.log("panelData: ", panelData);
 
-    console.log("consumedList: ",consumedList);
-    console.log("allExercises: ",allExercises);
-    console.log("exerciseTypes: ",exerciseTypes);
-    console.log("exerciseGoal: ",exerciseGoal);
+    // console.log("consumedList: ", consumedList);
+    // console.log("allExercises: ", allExercises);
+    // console.log("exerciseTypes: ", exerciseTypes);
+    // console.log("exerciseGoal: ", exerciseGoal);
 
     // Filtramos solo los ejercicios del usuario actual
     const ejerciciosUsuario = allExercises.filter(e => e.id_user === userId);
@@ -44,7 +44,7 @@ export async function getPatientData(userId, date, name = `Paciente ${userId}`) 
     const objetivosCumplidos = nutrientKeys.filter(k => {
       const consumido = consumed[k];
       const objetivo = goals[k];
-      return consumido != null && objetivo != null && consumido <= objetivo;
+      return consumido != null && objetivo != null && consumido >= objetivo;
     }).length;
 
     const historialEjercicio = ejerciciosUsuario.map(e => {
