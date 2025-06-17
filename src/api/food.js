@@ -7,3 +7,11 @@ export async function search(name) {
     }
     return res;
 }
+
+export async function newFood(data) {
+    const res = await httpClient.post('/food/add', data);
+    if (!res) {
+        throw new Error("Failed to post food data");
+    }
+    return res;
+}

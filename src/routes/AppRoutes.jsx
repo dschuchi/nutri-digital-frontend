@@ -44,7 +44,7 @@ function AppRoutes() {
                 <Route path="/ejercicios" element={<Exercise />} />
                 <Route path="/reportes" element={<Reports />} />
                 <Route path="/reporte-paciente" element={<PatientReport />} />
-                <Route path="/nueva-comida" element={<NewFood />} />
+                <Route path="/nuevo-alimento" element={<NewFood />} />
             </Route>
         </Routes>
     );
