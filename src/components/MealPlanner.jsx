@@ -22,7 +22,8 @@ export default function MealPlanner({ embedded = false }) {
   const fetchData = async () => {
     try {
       const res = await getPlannedMeals(user.id, day);
-      setData(res.data || []);
+      const validArray = Array.isArray(res.data?.userPlanningMeal) ? res.data.userPlanningMeal : [];
+      setData(validArray);
     } catch (err) {
       message.error("Error al obtener las comidas planificadas");
     }
