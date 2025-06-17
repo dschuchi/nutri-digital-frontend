@@ -33,12 +33,12 @@ export function Professionals() {
             title: 'Calificaciones',
             dataIndex: 'rate',
             key: 'rate',
-            render: (text) => (
+            render: (_, record) => (
                 <Flex align='center' gap={'small'}>
                     <div>
-                        {text} / 5 <StarFilled />
+                        {record.rate} / 5 <StarFilled />
                     </div>
-                    <Button disabled>
+                    <Button onClick={() => professionalReviews(record.key)}>
                         <MailFilled />
                     </Button>
                 </Flex>
@@ -54,6 +54,10 @@ export function Professionals() {
             ),
         },
     ];
+
+    const professionalReviews = (idProf) => {
+        navigate(`/review/${idProf}`)
+    }
 
     function handleSendRequest(professionalId) {
         sendRequest(professionalId)

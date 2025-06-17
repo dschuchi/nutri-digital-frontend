@@ -18,6 +18,7 @@ import Exercise from '../pages/Exercise';
 import Reports from '../pages/Reports';
 import PatientReport from '../pages/PatientReport';
 import NewFood from '../pages/NewFood';
+import Review from '../pages/Review';
 
 function AppRoutes() {
     return (
@@ -45,6 +46,7 @@ function AppRoutes() {
                 <Route path="/reportes" element={<Reports />} />
                 <Route path="/reporte-paciente" element={<PatientReport />} />
                 <Route path="/nuevo-alimento" element={<NewFood />} />
+                <Route path="/review/:id" element={<Review />} />
             </Route>
         </Routes>
     );
