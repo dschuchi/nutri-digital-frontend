@@ -33,6 +33,7 @@ function MainLayout() {
             children: [
                 { key: 'agregar-alimento', label: 'Cargar alimentación' },
                 { key: 'alimentos-consumidos', label: 'Alimentos consumidos' },
+                { key: 'planificador', label: 'Planificar' },
             ],
         },
 

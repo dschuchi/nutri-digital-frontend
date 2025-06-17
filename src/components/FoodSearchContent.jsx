@@ -8,7 +8,7 @@ const { Panel } = Collapse;
 
 const ITEMS_PER_PAGE = 10;
 
-const FoodSearchContent = () => {
+const FoodSearchContent = ({ onSelect }) => {
   const [query, setQuery] = useState('');
   const [allFoods, setAllFoods] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -156,8 +156,12 @@ const FoodSearchContent = () => {
                     type="primary"
                     style={{ marginTop: 12 }}
                     onClick={() => {
-                      setFoodToLoad(item);
-                      setModalVisible(true);
+                      if (onSelect){
+                        onSelect(item);
+                      } else {
+                        setFoodToLoad(item);
+                        setModalVisible(true);
+                      }
                     }}
                   >
                     Cargar
