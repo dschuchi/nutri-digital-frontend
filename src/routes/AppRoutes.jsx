@@ -19,7 +19,7 @@ import Reports from '../pages/Reports';
 import PatientReport from '../pages/PatientReport';
 import NewFood from '../pages/NewFood';
 import Review from '../pages/Review';
-import { MealPlanningPage } from '../pages/MealPlanningPage';
+import MealPlanningPage from '../pages/MealPlanningPage';
 
 function AppRoutes() {
     return (

@@ -11,17 +11,18 @@ const { Text } = Typography;
 
 const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
-export default function MealPlanner({ embedded = false }) {
+export default function MealPlanner({ embedded = false, userId: targetUserId }) {
   const [data, setData] = useState([]);
   const [day, setDay] = useState(dayjs().format("YYYY-MM-DD"));
   const [selectedMeal, setSelectedMeal] = useState(null);
   const [portion, setPortion] = useState(1);
   const { user } = useAuth();
+  const actualUserId = targetUserId || user?.id;
   const [foodModalVisible, setFoodModalVisible] = useState(false);
 
   const fetchData = async () => {
     try {
-      const res = await getPlannedMeals(user.id, day);
+      const res = await getPlannedMeals(actualUserId, day);
       const validArray = Array.isArray(res.data?.userPlanningMeal) ? res.data.userPlanningMeal : [];
       setData(validArray);
     } catch (err) {
@@ -30,15 +31,15 @@ export default function MealPlanner({ embedded = false }) {
   };
 
   useEffect(() => {
-    if (user?.id) fetchData();
-  }, [user, day]);
+    if (actualUserId) fetchData();
+  }, [actualUserId, day]);
 
   const handleAdd = async () => {
     if (!selectedMeal) return message.warning("Selecciona una comida primero");
 
     try {
       const payload = {
-        id_user: user.id,
+        id_user: actualUserId,
         name_food: selectedMeal.name,
         id_food: selectedMeal.id,
         portion: portion.toString(),
