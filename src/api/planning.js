@@ -26,3 +26,30 @@ export async function getPlannedMeals(userId, day) {
     throw err;
   }
 }
+
+export async function deletePlannedMeal(userId, foodId, day) {
+  const res = await httpClient.delete(`/planning?userId=${userId}&foodId=${foodId}&day=${day}`);
+  if (!res) {
+    throw new Error("Failed to delete planned meal");
+  }
+  return res;
+}
+
+export async function deleteAllPlanning() {
+  const res = await httpClient.delete("/planning/all");
+  if (!res) {
+    throw new Error("Failed to delete all planning data");
+  }
+  return res;
+}
+
+export async function updatePlannedMeal(userId, foodId, day, updatedData) {
+  const res = await httpClient.patch(
+    `/planning/update?userId=${userId}&foodId=${foodId}&day=${day}`,
+    updatedData
+  );
+  if (!res) {
+    throw new Error("Failed to update planned meal");
+  }
+  return res;
+}

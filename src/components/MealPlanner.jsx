@@ -1,30 +1,51 @@
 import { useState, useEffect } from "react";
-import { Table, Button, Select, Input, Space, Typography, Row, Col, message } from "antd";
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { addPlannedMeal, getPlannedMeals } from "../api/planning";
-import dayjs from "dayjs";
+import { Table, Button, Select, Input, Space, Typography, Row, Col, message, Popconfirm, Modal } from "antd";
+import { MinusOutlined, PlusOutlined, DeleteOutlined, EditOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { addPlannedMeal, getPlannedMeals, deletePlannedMeal, updatePlannedMeal, deleteAllPlanning } from "../api/planning";
 import { useAuth } from "../context/AuthContext";
 import FoodSearchModal from "./FoodSearchModal";
 
 const { Option } = Select;
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
+const ResumenNutricional = ({ macros, goals }) => (
+  <div style={{ marginBottom: 24 }}>
+    <Title level={4}>Resumen nutricional</Title>
+    <Row gutter={16}>
+      <Col span={6}><Text>Calorías: {macros.calories ?? "-"} / {goals.calories ?? "-"}</Text></Col>
+      <Col span={6}><Text>Carbs: {macros.total_carbs ?? "-"} / {goals.total_carbs ?? "-"}</Text></Col>
+      <Col span={6}><Text>Proteínas: {macros.protein ?? "-"} / {goals.protein ?? "-"}</Text></Col>
+      <Col span={6}><Text>Grasas: {macros.total_fat ?? "-"} / {goals.total_fat ?? "-"}</Text></Col>
+    </Row>
+  </div>
+);
+
 export default function MealPlanner({ embedded = false, userId: targetUserId }) {
   const [data, setData] = useState([]);
-  const [day, setDay] = useState(dayjs().format("YYYY-MM-DD"));
+  const [day, setDay] = useState("Lunes");
   const [selectedMeal, setSelectedMeal] = useState(null);
   const [portion, setPortion] = useState(1);
   const { user } = useAuth();
   const actualUserId = targetUserId || user?.id;
   const [foodModalVisible, setFoodModalVisible] = useState(false);
+  const [macros, setMacros] = useState({});
+  const [goals, setGoals] = useState({});
+  const [editingRecord, setEditingRecord] = useState(null);
+  const [editingPortion, setEditingPortion] = useState(1);
 
   const fetchData = async () => {
     try {
       const res = await getPlannedMeals(actualUserId, day);
-      const validArray = Array.isArray(res.data?.userPlanningMeal) ? res.data.userPlanningMeal : [];
-      setData(validArray);
+      const {
+        userPlanningMeal = [],
+        macrosPlanningMeal = {},
+        macrosGoals = {}
+      } = res.data || {};
+      setData(userPlanningMeal);
+      setMacros(macrosPlanningMeal);
+      setGoals(macrosGoals);
     } catch (err) {
       message.error("Error al obtener las comidas planificadas");
     }
@@ -55,6 +76,57 @@ export default function MealPlanner({ embedded = false, userId: targetUserId }) 
     }
   };
 
+  const handleDelete = async (foodId) => {
+    try {
+      await deletePlannedMeal(actualUserId, foodId, day);
+      message.success("Comida eliminada exitosamente");
+      fetchData();
+    } catch (err) {
+      message.error("Error al eliminar comida");
+    }
+  };
+
+  const handleEdit = (record) => {
+    setEditingRecord(record);
+    setEditingPortion(parseInt(record.portion));
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const payload = {
+        id_user: actualUserId,
+        name_food: editingRecord.name_food,
+        id_food: editingRecord.id_food,
+        portion: editingPortion.toString(),
+        day,
+      };
+      await updatePlannedMeal(actualUserId, editingRecord.id_food, day, payload);
+      message.success("Comida actualizada exitosamente");
+      setEditingRecord(null);
+      fetchData();
+    } catch (err) {
+      message.error("Error al actualizar comida");
+    }
+  };
+
+  const confirmClearAll = () => {
+    Modal.confirm({
+      title: "¿Seguro que deseas descartar toda la planificación?",
+      icon: <ExclamationCircleOutlined />,
+      okText: "Sí",
+      cancelText: "No",
+      onOk: async () => {
+        try {
+          await deleteAllPlanning();
+          message.success("Planificación eliminada exitosamente");
+          fetchData();
+        } catch (err) {
+          message.error("Error al eliminar la planificación completa");
+        }
+      }
+    });
+  };
+
   const incrementPortion = () => setPortion(prev => Math.min(prev + 1, 99));
   const decrementPortion = () => setPortion(prev => Math.max(prev - 1, 1));
   const handlePortionChange = (e) => {
@@ -74,8 +146,8 @@ export default function MealPlanner({ embedded = false, userId: targetUserId }) 
             onChange={setDay}
             style={{ width: '100%' }}
           >
-            {daysOfWeek.map((d, idx) => (
-              <Option key={idx} value={dayjs().day(idx + 1).format("YYYY-MM-DD")}>{d}</Option>
+            {daysOfWeek.map((d) => (
+              <Option key={d} value={d}>{d}</Option>
             ))}
           </Select>
         </Col>
@@ -87,32 +159,32 @@ export default function MealPlanner({ embedded = false, userId: targetUserId }) 
           </Button>
         </Col>
 
-        <Col xs={24} md={8}>
-          <Text strong>Porciones</Text><br />
-          <Space>
-            <Button icon={<MinusOutlined />} onClick={decrementPortion} />
-            <Input
-              type="number"
-              min={1}
-              max={99}
-              value={portion}
-              onChange={handlePortionChange}
-              style={{ width: 70, textAlign: 'center' }}
-            />
-            <Button icon={<PlusOutlined />} onClick={incrementPortion} />
-          </Space>
-        </Col>
-
-        <Col xs={24} md={4}>
-          <Button
-            type="primary"
-            onClick={handleAdd}
-            disabled={!selectedMeal}
-            block
-            style={{ marginTop: 22 }}
-          >
-            Agregar
-          </Button>
+        <Col xs={24} md={12}>
+          <Text strong>Porciones</Text>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 4 }}>
+            <Space>
+              <Button icon={<MinusOutlined />} onClick={decrementPortion} />
+              <Input
+                type="number"
+                min={1}
+                max={99}
+                value={portion}
+                onChange={handlePortionChange}
+                style={{ width: 70, textAlign: 'center' }}
+              />
+              <Button icon={<PlusOutlined />} onClick={incrementPortion} />
+            </Space>
+            <Button
+              type="primary"
+              onClick={handleAdd}
+              disabled={!selectedMeal}
+            >
+              Agregar
+            </Button>
+            <Button danger onClick={confirmClearAll}>
+              Descartar planificación
+            </Button>
+          </div>
         </Col>
       </Row>
 
@@ -126,6 +198,8 @@ export default function MealPlanner({ embedded = false, userId: targetUserId }) 
         </div>
       )}
 
+      <ResumenNutricional macros={macros} goals={goals} />
+
       <Table
         dataSource={data}
         rowKey="id"
@@ -133,6 +207,23 @@ export default function MealPlanner({ embedded = false, userId: targetUserId }) 
           { title: "Comida", dataIndex: "name_food", key: "name" },
           { title: "Porción", dataIndex: "portion", key: "portion" },
           { title: "Día", dataIndex: "day", key: "day" },
+          {
+            title: "",
+            key: "actions",
+            render: (_, record) => (
+              <Space>
+                <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
+                <Popconfirm
+                  title="¿Eliminar esta comida?"
+                  onConfirm={() => handleDelete(record.id_food)}
+                  okText="Sí"
+                  cancelText="No"
+                >
+                  <Button type="text" icon={<DeleteOutlined />} danger />
+                </Popconfirm>
+              </Space>
+            )
+          }
         ]}
         locale={{ emptyText: "No hay comidas planificadas para este día" }}
       />
@@ -146,6 +237,24 @@ export default function MealPlanner({ embedded = false, userId: targetUserId }) 
           message.success(`Seleccionaste ${food.name}`);
         }}
       />
+
+      <Modal
+        title="Editar porción"
+        open={!!editingRecord}
+        onCancel={() => setEditingRecord(null)}
+        onOk={handleUpdate}
+        okText="Guardar"
+        cancelText="Cancelar"
+      >
+        <Input
+          type="number"
+          min={1}
+          max={99}
+          value={editingPortion}
+          onChange={(e) => setEditingPortion(parseInt(e.target.value))}
+          style={{ width: 100 }}
+        />
+      </Modal>
     </div>
   );
 }
