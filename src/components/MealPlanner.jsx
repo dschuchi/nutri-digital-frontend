@@ -33,8 +33,8 @@ export default function MealPlanner({ embedded = false, userId: targetUserId }) 
         macrosGoals = {}
       } = res.data || {};
       setData(userPlanningMeal);
-      setMacros(macrosPlanningMeal);
-      setGoals(macrosGoals);
+      if (!macrosPlanningMeal) setMacros(macrosPlanningMeal);
+      if (!macrosGoals) setGoals(macrosGoals);
     } catch (err) {
       message.error("Error al obtener las comidas planificadas");
     }

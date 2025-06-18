@@ -15,25 +15,25 @@ export const ResumenNutricionalMealPlanner = ({ macros, goals }) => {
       title: 'Calorías',
       icon: <FireOutlined />,
       value: macros.calories,
-      goal: goals.calories,
+      goal: goals.calories*7,
     },
     {
       title: 'Carbs',
       icon: <RiseOutlined />,
       value: macros.total_carbs,
-      goal: goals.total_carbs,
+      goal: goals.total_carbs*7,
     },
     {
       title: 'Proteínas',
       icon: <DashboardOutlined />,
       value: macros.protein,
-      goal: goals.protein,
+      goal: goals.protein*7,
     },
     {
       title: 'Grasas',
       icon: <FallOutlined />,
       value: macros.total_fat,
-      goal: goals.total_fat,
+      goal: goals.total_fat*7,
     },
   ];
 
