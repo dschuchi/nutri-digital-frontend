@@ -4,23 +4,12 @@ import { MinusOutlined, PlusOutlined, DeleteOutlined, EditOutlined, ExclamationC
 import { addPlannedMeal, getPlannedMeals, deletePlannedMeal, updatePlannedMeal, deleteAllPlanning } from "../api/planning";
 import { useAuth } from "../context/AuthContext";
 import FoodSearchModal from "./FoodSearchModal";
+import { ResumenNutricionalMealPlanner } from "./ResumenNutricionalMealPlanner";
 
 const { Option } = Select;
 const { Text, Title } = Typography;
 
 const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-
-const ResumenNutricional = ({ macros, goals }) => (
-  <div style={{ marginBottom: 24 }}>
-    <Title level={4}>Resumen nutricional</Title>
-    <Row gutter={16}>
-      <Col span={6}><Text>Calorías: {macros.calories ?? "-"} / {goals.calories ?? "-"}</Text></Col>
-      <Col span={6}><Text>Carbs: {macros.total_carbs ?? "-"} / {goals.total_carbs ?? "-"}</Text></Col>
-      <Col span={6}><Text>Proteínas: {macros.protein ?? "-"} / {goals.protein ?? "-"}</Text></Col>
-      <Col span={6}><Text>Grasas: {macros.total_fat ?? "-"} / {goals.total_fat ?? "-"}</Text></Col>
-    </Row>
-  </div>
-);
 
 export default function MealPlanner({ embedded = false, userId: targetUserId }) {
   const [data, setData] = useState([]);
@@ -198,7 +187,7 @@ export default function MealPlanner({ embedded = false, userId: targetUserId }) 
         </div>
       )}
 
-      <ResumenNutricional macros={macros} goals={goals} />
+      <ResumenNutricionalMealPlanner macros={macros} goals={goals}/>
 
       <Table
         dataSource={data}
