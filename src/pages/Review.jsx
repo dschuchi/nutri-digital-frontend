@@ -69,7 +69,7 @@ export default function Review() {
               <div>
                 <Text strong>{item.author}</Text>{' '}
                 <Text type="secondary">
-                  {new Date(item.review_date).toLocaleDateString()}
+                  {item.review_date.split('T')[0]}
                 </Text>
                 <p style={{ marginTop: 8 }}>{item.comment}</p>
               </div>
