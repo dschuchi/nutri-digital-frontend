@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
-import { Button, Card, Flex, Select, message } from 'antd';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Button, Card, Flex, Select, Space, message } from 'antd';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -256,13 +256,17 @@ const Reports = () => {
           ))}
         </Select>
 
-        <Button size="large" hidden={isProfessional()} disabled={disableButton()} onClick={handleShareReport}>
-          Compartir informe a mi profesional
-        </Button>
+        <Flex justify='space-between'>
+          <Space>
+            <Button size="large" hidden={isProfessional()} disabled={disableButton()} onClick={handleShareReport}>
+              Compartir informe a mi profesional
+            </Button>
 
-        <Button hidden size="large" type="primary" onClick={handleDownloadPDF} loading={loadingPdf}>
-          Descargar los 6 gráficos en PDF
-        </Button>
+            <Button size="large" type="primary" onClick={handleDownloadPDF} loading={loadingPdf}>
+              Descargar reporte
+            </Button>
+          </Space>
+        </Flex>
       </Flex>
 
       <Card>
