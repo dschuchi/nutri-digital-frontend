@@ -1,4 +1,4 @@
-import { Modal, Form, InputNumber, Select, Button, message } from 'antd';
+import { Modal, Form, InputNumber, Select, Button, message, Input } from 'antd';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { addConsumedEntry } from '../api/consumed';
@@ -44,6 +44,11 @@ const AddFoodModal = ({ open, onClose, food }) => {
     }
   };
 
+  function extraerPorcion(texto) {
+    const match = texto.match(/\(([^)]+)\)/);
+    return match ? match[1] : null;
+  }
+
   return (
     <Modal
       open={open}
@@ -58,7 +63,7 @@ const AddFoodModal = ({ open, onClose, food }) => {
         onFinish={onFinish}
         onFieldsChange={onFieldsChange}
         initialValues={{
-          unit: 'unidad'
+          unit: extraerPorcion(food.name)
         }}
       >
         <Form.Item
@@ -71,15 +76,10 @@ const AddFoodModal = ({ open, onClose, food }) => {
 
         <Form.Item
           name="unit"
-          label="Unidad"
+          label="Tamaño de la porción"
           rules={[{ required: true, message: 'Seleccioná una unidad' }]}
         >
-          <Select disabled placeholder="Unidad">
-            <Option value="g">Gramos (g)</Option>
-            <Option value="ml">Mililitros (ml)</Option>
-            <Option value="taza">Taza</Option>
-            <Option value="unidad">Unidad</Option>
-          </Select>
+          <Input disabled />
         </Form.Item>
 
         <Form.Item
