@@ -55,7 +55,7 @@ export default function Review() {
 
         <Rate allowHalf disabled value={average} />
         <Text style={{ marginLeft: 8 }}>
-          {average}/5 ({reviews.length} reseñas)
+          {average || 0}/5 ({reviews.length} reseñas)
         </Text>
       </div>
 
