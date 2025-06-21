@@ -80,7 +80,7 @@ export function UserChat() {
                 <Flex>
                     {targetId ? (
                         <>
-                            <Button disabled onClick={openReviewModal} style={{ marginInline: 10 }}>
+                            <Button onClick={openReviewModal} style={{ marginInline: 10 }}>
                                 Reseñar
                             </Button>
                             <Button onClick={handleChangeProfessional}>
