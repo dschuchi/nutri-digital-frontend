@@ -6,10 +6,10 @@ import { getRequestsPending } from '../api/requestProfessional';
 import { useAuth } from '../context/AuthContext';
 
 const statusLabels = {
-    consumed: 'No se registraron calorías consumidas',
-    hidratation: 'No se registró hidratación',
-    exercise: 'No se registró ejercicio',
-    requestPending: 'Hay nuevas solicitudes de pacientes'
+    consumed: '¡No te olvides de cargar lo que comiste hoy y seguir tu progreso!',
+    hidratation: '¡Hidratarte es clave! No olvides registrar tu consumo de agua.',
+    exercise: '¡Tu cuerpo te lo va a agradecer! Registrá tu ejercicio diario.',
+    requestPending: 'Tienes nuevas solicitudes de pacientes pendientes de aprobación.',
 };
 
 const NotificationsBell = () => {
@@ -32,6 +32,13 @@ const NotificationsBell = () => {
                 if (pendingRes.data.pending) {
                     result.push({ key: 'requestPending' });
                 }
+
+                result.sort((a, b) => {
+                    if (a.key === 'requestPending') return -1;
+                    if (b.key === 'requestPending') return 1;
+                    return 0;
+                });
+
                 setItems(result);
             })
             .catch(console.error)
