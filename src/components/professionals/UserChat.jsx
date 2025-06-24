@@ -21,16 +21,26 @@ export function UserChat() {
     }
 
     useEffect(() => {
-        getMyProfessional(user.id)
-            .then(res => {
-                if (res.data?.length > 0) {
-                    setTargetId(res.data[0].id);
-                }
-            })
-            .catch(err => {
-                console.error("Error al obtener profesional:", err);
-            });
-    }, [user.id]);
+        let intervalId;
+        if (!targetId) {
+            intervalId = setInterval(() => {
+                getMyProfessional(user.id)
+                    .then(res => {
+                        if (res.data?.length > 0) {
+                            setTargetId(res.data[0].id);
+                            clearInterval(intervalId);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Error al obtener profesional:", err);
+                    });
+            }, 5000); // 5 segundos
+        }
+
+        return () => {
+            if (intervalId) clearInterval(intervalId);
+        };
+    }, [user.id, targetId]);
 
     const handleChangeProfessional = () => {
         deletePatient(user.id)
