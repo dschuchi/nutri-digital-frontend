@@ -9,9 +9,7 @@ export function Requests() {
 
     function handleApprove(idRequest) {
         approveRequest(idRequest)
-            .then(
-                loadRequest()
-            )
+            .then(loadRequest)
             .catch((error) => {
                 console.error("Error al aprobar la solicitud:", error);
             });
@@ -19,9 +17,7 @@ export function Requests() {
 
     function handleReject(idRequest) {
         cancelRequest(idRequest)
-            .then(
-                loadRequest()
-            )
+            .then(loadRequest)
             .catch((error) => {
                 console.error("Error al rechazar la solicitud:", error);
             });
