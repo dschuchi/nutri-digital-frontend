@@ -12,12 +12,12 @@ const { Title } = Typography;
 
 const DashboardContent = ({ data, agua, objetivoAgua = 2000, selectedDate, onDateChange, onChangeDay }) => {
   const safe = (v) => (v == null ? 0 : v);
-  const { consumed, goals } = data;
+  const { consumed, goals, caloriesLost } = data;
 
   const calorias = {
     objetivo: safe(goals.calories),
     alimentos: safe(consumed.calories),
-    ejercicio: 0
+    ejercicio: caloriesLost
   };
 
   const macronutrientes = {
