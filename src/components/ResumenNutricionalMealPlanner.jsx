@@ -49,7 +49,7 @@ export const ResumenNutricionalMealPlanner = ({ macros, goals }) => {
               <Card size="small" bordered style={{ borderColor: color }}>
                 <Text strong>{icon} {title}</Text>
                 <div style={{ marginTop: 8 }}>
-                  <Text>{value ?? '-'} / {goal ?? '-'}</Text>
+                  <Text>{value ?? '-'} / {goal || '-'}</Text>
                   <Progress
                     percent={percent}
                     strokeColor={color}
